@@ -86,7 +86,7 @@ merged_Seurat <- merge(x = object_list[[1]], y = object_list[2:length(object_lis
 
 ### Normalizing, constructing the UMAP, clustering
 
-```{r}
+```{r, results='hide', warning=F, message=F}
 
 # Calculating the % of MT and ribosomal reads
 merged_Seurat <- PercentageFeatureSet(merged_Seurat,
@@ -162,7 +162,7 @@ top_markers <- markers %>%  group_by(group) %>% slice_max(order_by = auc, n = 2)
 
 FeaturePlot(merged_Seurat,
             features = top_markers$feature,
-            ncol = 4,
+            ncol = 5,
             reduction = "umap",
             raster = T,
             cols = c("gray89", "tomato3")) &
@@ -173,7 +173,7 @@ FeaturePlot(merged_Seurat,
 
 ```
 
-```{r}
+```{r, fig.width=10}
 
 # seurat_object, plot_features, group_var, group_colors, column_title, km=5, row.order = NULL
 dotplot_heatmap <- create_dotplot_heatmap(seurat_object = merged_Seurat,
@@ -182,8 +182,6 @@ dotplot_heatmap <- create_dotplot_heatmap(seurat_object = merged_Seurat,
                                           group_colors = cluster_col,
                                           column_title = "",
                                           km = 5, row.order = NULL)
-
-dotplot_heatmap
 
 ```
 
