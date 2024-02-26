@@ -141,7 +141,8 @@ DimPlot(merged_Seurat,
         group.by = "snn_res.0.5",
         reduction = "umap",
         raster = T,
-        cols = cluster_col) &
+        cols = cluster_col,
+        label = T) &
   coord_fixed(ratio = 1) &
   theme_minimal() &
   NoLegend() &
@@ -191,6 +192,8 @@ dotplot_heatmap <- create_dotplot_heatmap(seurat_object = merged_Seurat,
 ```
 
 ```{r}
+
+top_markers <- markers %>%  group_by(group) %>% slice_max(order_by = auc, n = 20)
 
 write.table(top_markers, "/home/hnatri/PD1_mm/cluster_markers.tsv",
             quote = F, row.names = F, sep = "\t")
