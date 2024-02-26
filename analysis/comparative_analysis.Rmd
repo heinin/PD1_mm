@@ -47,12 +47,7 @@ seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_m
 
 ```
 
-### Adding annotations from the Google Sheet
 
-```{r}
-
-
-```
 
 
 

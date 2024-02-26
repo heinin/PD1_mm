@@ -1,0 +1,151 @@
+---
+title: "Processing Kluc tumor scRNAseq data"
+author: "heinin"
+date: "2024-02-23"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Processing Seurat objects for analysis.
+
+### Packages and environment variables
+
+```{r, warning=F, message=F}
+
+suppressPackageStartupMessages({
+  #library(cli)
+  library(Seurat)
+  library(SeuratObject)
+  library(SeuratDisk)
+  library(tidyverse)
+  library(tibble)
+  library(ggplot2)
+  library(ggpubr)
+  library(ggrepel)
+  library(workflowr)
+  library(googlesheets4)})
+
+setwd("/home/hnatri/PD1_mm/")
+set.seed(9999)
+options(ggrepel.max.overlaps = Inf)
+
+# Colors, themes, cell type markers, and plot functions
+source("/home/hnatri/PD1_mm/code/utilities.R")
+source("/home/hnatri/PD1_mm/code/PD1_mm_themes.R")
+source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
+
+```
+
+### Importing data
+
+```{r}
+
+ADJ_D16_Seurat <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/ADJ_D16_Seurat.rds")
+CTRL_D16_Seurat <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/CTRL_D16_Seurat.rds")
+NEO_D16_Seurat <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/NEO_D16_Seurat.rds")
+CTRL_D12_Seurat <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/CTRL_D12_Seurat.rds")
+NEO_D12_Seurat <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/NEO_D12_Seurat.rds")
+
+# Adding metadata
+ADJ_D16_Seurat$Day <- 16
+ADJ_D16_Seurat$Treatment <- "ADJ"
+
+CTRL_D16_Seurat$Day <- 16
+CTRL_D16_Seurat$Treatment <- "CTRL"
+
+NEO_D16_Seurat$Day <- 16
+NEO_D16_Seurat$Treatment <- "NEO"
+
+CTRL_D12_Seurat$Day <- 12
+CTRL_D12_Seurat$Treatment <- "CTRL"
+
+NEO_D12_Seurat$Day <- 12
+NEO_D12_Seurat$Treatment <- "NEO"
+
+# Merging data
+object_list <- ls(pattern="_Seurat")
+object_list <- str_sort(object_list, numeric = TRUE)
+object_list <- do.call("list", mget(object_list))
+
+# Renaming cells
+object_list <- lapply(object_list, function(xx){
+  new_names <- colnames(xx)
+  new_names <- paste0(xx$Day[1], "_", xx$Treatment[1], "_", new_names)
+  xx <- RenameCells(xx, new.names = new_names)
+  
+  xx
+})
+
+merged_Seurat <- merge(x = object_list[[1]], y = object_list[2:length(object_list)])
+
+```
+
+### Normalizing, constructing the UMAP, clustering
+
+```{r, results='hide', warning=F, message=F}
+
+# Calculating the % of MT and ribosomal reads
+merged_Seurat <- PercentageFeatureSet(merged_Seurat,
+                                      pattern = "^MT-",
+                                      col.name = "percent.mt_RNA",
+                                      assay = "RNA")
+merged_Seurat <- PercentageFeatureSet(merged_Seurat,
+                                      pattern = "^RP[SL]|^MRP[SL]",
+                                      col.name = "percent.ribo_RNA",
+                                      assay = "RNA")
+            
+merged_Seurat <- SCTransform(merged_Seurat,
+                             method = "glmGamPoi",
+                             variable.features.n = 1000,
+                             vars.to.regress = c("percent.mt_RNA"),
+                             vst.flavor = "v2",
+                             return.only.var.genes = T,
+                             verbose = F)
+
+merged_Seurat <- RunPCA(merged_Seurat,
+                        assay = "SCT",
+                        approx = F,
+                        verbose = F)
+
+# Number of PCs to include in the UMAP
+get_pcs(merged_Seurat)
+
+merged_Seurat <- RunUMAP(merged_Seurat,
+                         reduction = "pca",
+                         reduction.name = "umap",
+                         dims = 1:8,
+                         return.model = TRUE)
+
+merged_Seurat <- FindNeighbors(merged_Seurat,
+                               reduction = "pca",
+                               dims = 1:8,
+                               graph.name = c("nn", "snn"))
+
+merged_Seurat <- FindClusters(merged_Seurat,
+                              resolution = c(0.1,0.2,0.3,0.5,0.8,1),
+                              graph.name = "snn")
+
+saveRDS(merged_Seurat, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+
+```
+
+### Visualizing clusters
+
+```{r}
+
+DimPlot(merged_Seurat,
+        group.by = "snn_res.0.5",
+        reduction = "umap",
+        raster = T,
+        cols = cluster_col,
+        label = T) &
+  coord_fixed(ratio = 1) &
+  theme_minimal() &
+  NoLegend() &
+  manuscript_theme
+
+```
+

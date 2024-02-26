@@ -10,5 +10,6 @@ editor_options:
 
 ### Analyzing scRNAseq data from Kluc mice treated with PD1 antibody and/or CAR T.
 
-1. [Feature expression and cell type annotation](annotate.html)\
-2.
+1. [Processing Seurat objects for analysis](processing.html)\
+2. [Feature expression and cell type annotation](annotate.html)\
+3. [Comparative analysis](comparative_analysis.html)\

@@ -27,7 +27,8 @@ suppressPackageStartupMessages({
   library(ggpubr)
   library(ggrepel)
   library(workflowr)
-  library(googlesheets4)})
+  library(googlesheets4)
+  library(scImmuCC)})
 
 setwd("/home/hnatri/PD1_mm/")
 set.seed(9999)
@@ -44,92 +45,69 @@ source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
 
 ```{r}
 
-ADJ_D16_Seurat <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/ADJ_D16_Seurat.rds")
-CTRL_D16_Seurat <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/CTRL_D16_Seurat.rds")
-NEO_D16_Seurat <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/NEO_D16_Seurat.rds")
-CTRL_D12_Seurat <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/CTRL_D12_Seurat.rds")
-NEO_D12_Seurat <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/NEO_D12_Seurat.rds")
-
-# Adding metadata
-ADJ_D16_Seurat$Day <- 16
-ADJ_D16_Seurat$Treatment <- "ADJ"
-
-CTRL_D16_Seurat$Day <- 16
-CTRL_D16_Seurat$Treatment <- "CTRL"
-
-NEO_D16_Seurat$Day <- 16
-NEO_D16_Seurat$Treatment <- "NEO"
-
-CTRL_D12_Seurat$Day <- 12
-CTRL_D12_Seurat$Treatment <- "CTRL"
-
-NEO_D12_Seurat$Day <- 12
-NEO_D12_Seurat$Treatment <- "NEO"
-
-# Merging data
-object_list <- ls(pattern="_Seurat")
-object_list <- str_sort(object_list, numeric = TRUE)
-object_list <- do.call("list", mget(object_list))
-
-# Renaming cells
-object_list <- lapply(object_list, function(xx){
-  new_names <- colnames(xx)
-  new_names <- paste0(xx$Day[1], "_", xx$Treatment[1], "_", new_names)
-  xx <- RenameCells(xx, new.names = new_names)
-  
-  xx
-})
-
-merged_Seurat <- merge(x = object_list[[1]], y = object_list[2:length(object_list)])
+seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 
 ```
 
-### Normalizing, constructing the UMAP, clustering
+### Adding human gene names to a separate assay
 
-```{r, results='hide', warning=F, message=F}
+```{r}
 
-# Calculating the % of MT and ribosomal reads
-merged_Seurat <- PercentageFeatureSet(merged_Seurat,
-                                      pattern = "^MT-",
-                                      col.name = "percent.mt_RNA",
-                                      assay = "RNA")
-merged_Seurat <- PercentageFeatureSet(merged_Seurat,
-                                      pattern = "^RP[SL]|^MRP[SL]",
-                                      col.name = "percent.ribo_RNA",
-                                      assay = "RNA")
-            
-merged_Seurat <- SCTransform(merged_Seurat,
-                             method = "glmGamPoi",
-                             variable.features.n = 1000,
-                             vars.to.regress = c("percent.mt_RNA"),
-                             vst.flavor = "v2",
-                             return.only.var.genes = T,
-                             verbose = F)
+# Converting mouse gene names to human
+mouse_human_genes <- read.csv("http://www.informatics.jax.org/downloads/reports/HOM_MouseHumanSequence.rpt", sep="\t")
 
-merged_Seurat <- RunPCA(merged_Seurat,
-                        assay = "SCT",
-                        approx = F,
-                        verbose = F)
+convert_mouse_to_human <- function(gene_list){
+  gene_names <- as.data.frame(matrix(nrow = length(gene_list),
+                                     ncol = 2))
+  colnames(gene_names) <- c("mouse", "human")
+  rownames(gene_names) <- gene_list
+  gene_names$mouse <- gene_list
+  
+  for(gene in gene_list){
+    class_key = (mouse_human_genes %>% filter(Symbol == gene & Common.Organism.Name=="mouse, laboratory"))[['DB.Class.Key']]
+    if(!identical(class_key, integer(0)) ){
+      human_genes = (mouse_human_genes %>% filter(DB.Class.Key == class_key & Common.Organism.Name=="human"))[,"Symbol"]
+      
+      if(length(human_genes)==0){
+        gene_names[gene, "human"] <- NA
+      } else if (length(human_genes)>1){
+        #  human_genes <- paste0(human_genes, collapse = ", ")
+        bind_df <- data.frame("mouse" = rep(gene, times = length(human_genes)),
+                              "human" = human_genes)
+        gene_names <- rbind(gene_names, bind_df)
+      } else {
+        gene_names[gene, "human"] <- human_genes
+      }
+    }
+  }
+  return(gene_names)
+}
 
-# Number of PCs to include in the UMAP
-get_pcs(merged_Seurat)
+gene_names <- convert_mouse_to_human(rownames(seurat_data@assays$RNA))
 
-merged_Seurat <- RunUMAP(merged_Seurat,
-                         reduction = "pca",
-                         reduction.name = "umap",
-                         dims = 1:8,
-                         return.model = TRUE)
+length(rownames(seurat_data@assays$RNA))
+dim(gene_names)
 
-merged_Seurat <- FindNeighbors(merged_Seurat,
-                               reduction = "pca",
-                               dims = 1:8,
-                               graph.name = c("nn", "snn"))
+# Keeping mouse genes with a single human ortholog
+gene_names <- gene_names %>%
+  group_by(mouse) %>%
+  filter(!is.na(human),
+         n() == 1) %>%
+  ungroup()
 
-merged_Seurat <- FindClusters(merged_Seurat,
-                              resolution = c(0.1,0.2,0.3,0.5,0.8,1),
-                              graph.name = "snn")
+assay_data <- LayerData(seurat_data, assay = "RNA", layer = "counts")
+assay_data <- assay_data[which(rownames(assay_data) %in% gene_names$mouse),]
+new_names <- rownames(assay_data)
+new_names <- mapvalues(x = new_names,
+                       from = gene_names$mouse,
+                       to = gene_names$human)
+rownames(assay_data) <- new_names
 
-saveRDS(merged_Seurat, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+seurat_data[["RNA_human"]] <- CreateAssayObject(assay_data,
+                                               min.cells = 0,
+                                               min.features = 0)
+
+#saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 
 ```
 
@@ -137,7 +115,7 @@ saveRDS(merged_Seurat, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_m
 
 ```{r}
 
-DimPlot(merged_Seurat,
+DimPlot(seurat_data,
         group.by = "snn_res.0.5",
         reduction = "umap",
         raster = T,
@@ -154,17 +132,19 @@ DimPlot(merged_Seurat,
 
 ```{r, fig.height=12}
 
+DefaultAssay(seurat_data) <- "RNA"
+
 plot_features <- c()
 
 # Top markers for each cluster
-markers <- presto::wilcoxauc(merged_Seurat,
+markers <- presto::wilcoxauc(seurat_data,
                              group_by = "snn_res.0.5",
                              assay = "data",
                              seurat_assay = "RNA")
 
 top_markers <- markers %>%  group_by(group) %>% slice_max(order_by = auc, n = 2)
 
-FeaturePlot(merged_Seurat,
+FeaturePlot(seurat_data,
             features = top_markers$feature,
             ncol = 5,
             reduction = "umap",
@@ -182,7 +162,7 @@ FeaturePlot(merged_Seurat,
 top_markers <- markers %>%  group_by(group) %>% slice_max(order_by = auc, n = 5)
 
 # seurat_object, plot_features, group_var, group_colors, column_title, km=5, row.order = NULL
-dotplot_heatmap <- create_dotplot_heatmap(seurat_object = merged_Seurat,
+dotplot_heatmap <- create_dotplot_heatmap(seurat_object = seurat_data,
                                           plot_features = unique(top_markers$feature),
                                           group_var = "snn_res.0.5",
                                           group_colors = cluster_col,
@@ -190,6 +170,8 @@ dotplot_heatmap <- create_dotplot_heatmap(seurat_object = merged_Seurat,
                                           km = 5, row.order = NULL)
 
 ```
+
+### Saving top markers to a file
 
 ```{r}
 
@@ -200,5 +182,85 @@ write.table(top_markers, "/home/hnatri/PD1_mm/cluster_markers.tsv",
 
 # To build on command line, run Rscript -e "rmarkdown::render('/home/hnatri/PD1_mm/analysis/annotate.Rmd')"
 # Then "mv /home/hnatri/PD1_mm/analysis/annotate.Rmd /home/hnatri/PD1_mm/docs/"
+
+```
+
+### Canonical mouse immune markers
+
+```{r, fig.width=10, fig.height=12}
+
+# Mouse immune markers
+gs4_deauth()
+canonical_markers  <- gs4_get("https://docs.google.com/spreadsheets/d/1ApwXjEVtpPB87al6q3ab8TKvZYJTh3iNH1cuO-A_OoU/edit?usp=sharing")
+sheet_names(canonical_markers)
+mm_immune_markers <- read_sheet(canonical_markers, sheet = "Mm immune markers")
+
+dotplot_heatmap <- create_dotplot_heatmap(seurat_object = seurat_data,
+                                          plot_features = mm_immune_markers$gene_name,
+                                          group_var = "snn_res.0.5",
+                                          group_colors = cluster_col,
+                                          column_title = "",
+                                          km = 5, row.order = NULL)
+
+```
+
+### Using sc-ImmuCC to annotate immune cells
+
+```{r, results='hide', warning=F, message=F}
+
+count_data <- LayerData(seurat_data, assay = "RNA_human", layer = "counts")
+
+#scImmuCC_Layered(count = count_data, Non_Immune = FALSE)
+
+# Importing results
+scicc_labels <- read.csv("/home/hnatri/PD1_mm/docs/Layer1_scImmuCC_label.csv",
+                         row.names = "X")
+
+length(colnames(seurat_data))
+length(intersect(scicc_labels$barcodes, colnames(seurat_data)))
+
+seurat_data$scImmuCC_celltype <- mapvalues(x = colnames(seurat_data),
+                                           from = scicc_labels$barcodes,
+                                           to = scicc_labels$cell_type)
+
+# Plotting
+DimPlot(seurat_data,
+        group.by = "scImmuCC_celltype",
+        reduction = "umap",
+        raster = T,
+        #cols = scImmuCC_celltype_col,
+        label = T) &
+  coord_fixed(ratio = 1) &
+  theme_minimal() &
+  NoLegend() &
+  manuscript_theme
+
+#saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+
+```
+
+```{r, fig.height=10, fig.width=8}
+
+DimPlot(seurat_data,
+        split.by = "scImmuCC_celltype",
+        group.by = "snn_res.0.5",
+        ncol = 3,
+        reduction = "umap",
+        raster = T,
+        cols = cluster_col) &
+  coord_fixed(ratio = 1) &
+  theme_minimal() &
+  NoLegend()
+
+table(seurat_data$scImmuCC_celltype,
+      seurat_data$snn_res.0.5)
+
+```
+
+### Adding annotations from the Google Sheet
+
+```{r}
+
+
 
 ```
