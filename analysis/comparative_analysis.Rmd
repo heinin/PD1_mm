@@ -1,0 +1,58 @@
+---
+title: "Comparative analysis of the Kluc tumor scRNAseq data"
+author: "heinin"
+date: "2024-02-26"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Adding annotations and comparing treatment groups/timepoints.
+
+### Packages and environment variables
+
+```{r, warning=F, message=F}
+
+suppressPackageStartupMessages({
+  #library(cli)
+  library(Seurat)
+  library(SeuratObject)
+  library(SeuratDisk)
+  library(tidyverse)
+  library(tibble)
+  library(ggplot2)
+  library(ggpubr)
+  library(ggrepel)
+  library(workflowr)
+  library(googlesheets4)})
+
+setwd("/home/hnatri/PD1_mm/")
+set.seed(9999)
+options(ggrepel.max.overlaps = Inf)
+
+# Colors, themes, cell type markers, and plot functions
+source("/home/hnatri/PD1_mm/code/utilities.R")
+source("/home/hnatri/PD1_mm/code/PD1_mm_themes.R")
+source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
+
+```
+
+### Importing data
+
+```{r}
+
+seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+
+```
+
+### Adding annotations from the Google Sheet
+
+```{r}
+
+
+```
+
+
+

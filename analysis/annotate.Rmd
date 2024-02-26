@@ -128,6 +128,9 @@ merged_Seurat <- FindNeighbors(merged_Seurat,
 merged_Seurat <- FindClusters(merged_Seurat,
                               resolution = c(0.1,0.2,0.3,0.5,0.8,1),
                               graph.name = "snn")
+
+saveRDS(merged_Seurat, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+
 ```
 
 ### Visualizing clusters
@@ -173,7 +176,9 @@ FeaturePlot(merged_Seurat,
 
 ```
 
-```{r, fig.width=10}
+```{r, fig.width=10, fig.height=12}
+
+top_markers <- markers %>%  group_by(group) %>% slice_max(order_by = auc, n = 5)
 
 # seurat_object, plot_features, group_var, group_colors, column_title, km=5, row.order = NULL
 dotplot_heatmap <- create_dotplot_heatmap(seurat_object = merged_Seurat,
@@ -185,4 +190,12 @@ dotplot_heatmap <- create_dotplot_heatmap(seurat_object = merged_Seurat,
 
 ```
 
+```{r}
 
+write.table(top_markers, "/home/hnatri/PD1_mm/cluster_markers.tsv",
+            quote = F, row.names = F, sep = "\t")
+
+# To build on command line, run Rscript -e "rmarkdown::render('/home/hnatri/PD1_mm/analysis/annotate.Rmd')"
+# Then "mv /home/hnatri/PD1_mm/analysis/annotate.Rmd /home/hnatri/PD1_mm/docs/"
+
+```
