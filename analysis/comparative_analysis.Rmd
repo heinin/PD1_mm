@@ -52,13 +52,29 @@ seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_m
 
 ```{r}
 
+celltypes <- sort(as.character(unique(seurat_data$celltype)))
+plot_colors <- colorRampPalette(brewer.pal(11, "Paired"))(length(celltypes))
+names(plot_colors) <- celltypes
+
 DimPlot(seurat_data,
         group.by = "celltype",
         reduction = "umap",
         raster = T,
-        label = T) &
+        label = T,
+        cols = plot_colors) &
   coord_fixed(ratio = 1) &
-  theme_minimal() &
+  theme_bw() &
+  NoLegend()
+
+DimPlot(seurat_data,
+        group.by = "celltype",
+        split.by = "Treatment",
+        reduction = "umap",
+        raster = T,
+        #label = T,
+        cols = plot_colors) &
+  coord_fixed(ratio = 1) &
+  theme_bw() &
   NoLegend()
 
 ```
@@ -74,9 +90,7 @@ the significance level.
 unique(seurat_data$Treatment)
 unique(seurat_data$Day)
 
-celltypes <- sort(as.character(unique(seurat_data$celltype)))
-plot_colors <- colorRampPalette(brewer.pal(11, "Paired"))(length(celltypes))
-names(plot_colors) <- celltypes
+table(seurat_data$celltype, seurat_data$Treatment)
 
 create_clusterpropplot(seurat_data,
                        group_var = "Treatment",

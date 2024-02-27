@@ -83,20 +83,55 @@ merged_Seurat <- merge(x = object_list[[1]], y = object_list[2:length(object_lis
 
 ```
 
-### Normalizing, constructing the UMAP, clustering
+### QC metrics
 
 ```{r, results='hide', warning=F, message=F}
 
 # Calculating the % of MT and ribosomal reads
 merged_Seurat <- PercentageFeatureSet(merged_Seurat,
-                                      pattern = "^MT-",
+                                      pattern = "^mt-",
                                       col.name = "percent.mt_RNA",
                                       assay = "RNA")
-merged_Seurat <- PercentageFeatureSet(merged_Seurat,
-                                      pattern = "^RP[SL]|^MRP[SL]",
-                                      col.name = "percent.ribo_RNA",
-                                      assay = "RNA")
-            
+
+VlnPlot(merged_Seurat,
+        features = c("nCount_RNA", "nFeature_RNA", "percent.mt_RNA"),
+        pt.size = 0,
+        group.by = "orig.ident")
+
+# nCount vs. percent.mt_RNA
+par(mfrow=c(2,4))
+smoothScatter(merged_Seurat$percent.mt_RNA, log2(merged_Seurat$nCount_RNA),
+              xlab = "% MT", ylab = "log2(nCount_RNA)")
+abline(v = 10, h = log2(1000), lty = "dashed", lwd = 1.25, col = "red")
+
+smoothScatter(merged_Seurat$percent.mt_RNA, merged_Seurat$nCount_RNA,
+              xlab = "% MT", ylab = "log2(nCount_RNA)")
+abline(v = 10, h = 1000, lty = "dashed", lwd = 1.25, col = "red")
+
+# nFeature vs. percent.mt_RNA
+smoothScatter(merged_Seurat$percent.mt_RNA, log2(merged_Seurat$nFeature_RNA),
+              xlab = "% MT", ylab = "log2(nFeature_RNA)")
+abline(v = 10, h = log2(500), lty = "dashed", lwd = 1.25, col = "red")
+
+smoothScatter(merged_Seurat$percent.mt_RNA, merged_Seurat$nFeature_RNA,
+              xlab = "% MT", ylab = "nFeature_RNA")
+abline(v = 10, h = 500, lty = "dashed", lwd = 1.25, col = "red")
+
+```
+
+### Filtering
+
+```{r}
+
+merged_Seurat <- subset(merged_Seurat, subset = percent.mt_RNA < 10 &
+                          nCount_RNA > 1000 & nFeature_RNA > 500)
+
+```
+
+### Normalizing, constructing the UMAP, clustering
+
+```{r, results='hide', warning=F, message=F}
+
 merged_Seurat <- SCTransform(merged_Seurat,
                              method = "glmGamPoi",
                              variable.features.n = 1000,
@@ -130,6 +165,9 @@ merged_Seurat <- FindClusters(merged_Seurat,
 
 saveRDS(merged_Seurat, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 
+# To build on command line, run Rscript -e "rmarkdown::render('/home/hnatri/PD1_mm/analysis/processing.Rmd')"
+# Then "mv /home/hnatri/PD1_mm/analysis/processing.html /home/hnatri/PD1_mm/docs/"
+
 ```
 
 ### Visualizing clusters
@@ -148,4 +186,5 @@ DimPlot(merged_Seurat,
   manuscript_theme
 
 ```
+
 

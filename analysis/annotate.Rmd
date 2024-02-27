@@ -104,10 +104,10 @@ new_names <- mapvalues(x = new_names,
 rownames(assay_data) <- new_names
 
 seurat_data[["RNA_human"]] <- CreateAssayObject(assay_data,
-                                               min.cells = 0,
-                                               min.features = 0)
+                                                min.cells = 0,
+                                                min.features = 0)
 
-#saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 
 ```
 
@@ -122,7 +122,7 @@ DimPlot(seurat_data,
         cols = cluster_col,
         label = T) &
   coord_fixed(ratio = 1) &
-  theme_classic() &
+  theme_bw() &
   NoLegend() &
   manuscript_theme
 
@@ -151,7 +151,7 @@ FeaturePlot(seurat_data,
             raster = T,
             cols = c("gray89", "tomato3")) &
   coord_fixed(ratio = 1) &
-  theme_classic() &
+  theme_bw() &
   NoLegend() &
   manuscript_theme
 
@@ -179,9 +179,6 @@ top_markers <- markers %>%  group_by(group) %>% slice_max(order_by = auc, n = 20
 
 write.table(top_markers, "/home/hnatri/PD1_mm/cluster_markers.tsv",
             quote = F, row.names = F, sep = "\t")
-
-# To build on command line, run Rscript -e "rmarkdown::render('/home/hnatri/PD1_mm/analysis/annotate.Rmd')"
-# Then "mv /home/hnatri/PD1_mm/analysis/annotate.Rmd /home/hnatri/PD1_mm/docs/"
 
 ```
 
@@ -213,7 +210,7 @@ count_data <- LayerData(seurat_data, assay = "RNA_human", layer = "counts")
 #scImmuCC_Layered(count = count_data, Non_Immune = FALSE)
 
 # Importing results
-scicc_labels <- read.csv("/home/hnatri/PD1_mm/docs/Layer1_scImmuCC_label.csv",
+scicc_labels <- read.csv("/home/hnatri/PD1_mm/Layer1_scImmuCC_label.csv",
                          row.names = "X")
 
 length(colnames(seurat_data))
@@ -231,11 +228,11 @@ DimPlot(seurat_data,
         #cols = scImmuCC_celltype_col,
         label = T) &
   coord_fixed(ratio = 1) &
-  theme_classic() &
+  theme_bw() &
   NoLegend() &
   manuscript_theme
 
-#saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 
 ```
 
@@ -249,7 +246,7 @@ DimPlot(seurat_data,
         raster = T,
         cols = cluster_col) &
   coord_fixed(ratio = 1) &
-  theme_classic() &
+  theme_bw() &
   NoLegend()
 
 table(seurat_data$scImmuCC_celltype,
@@ -262,7 +259,7 @@ table(seurat_data$scImmuCC_celltype,
 ```{r}
 
 gs4_deauth()
-markers_annotations  <- gs4_get("https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharing")
+markers_annotations  <- gs4_get("https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharin#g")
 sheet_names(markers_annotations)
 annotations <- read_sheet(markers_annotations, sheet = "Cluster annotations")
 
@@ -276,10 +273,18 @@ DimPlot(seurat_data,
         raster = T,
         label = T) &
   coord_fixed(ratio = 1) &
-  theme_classic() &
+  theme_bw() &
   NoLegend()
 
+FeaturePlot(seurat_data,
+            features = c("percent.mt_RNA", "nCount_RNA", "nFeature_RNA"),
+            reduction = "umap",
+            raster = T,
+            ncol = 3) &
+  coord_fixed(ratio = 1) &
+  theme_bw() &
+  NoLegend()
 
-#saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 
 ```
