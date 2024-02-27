@@ -122,7 +122,7 @@ DimPlot(seurat_data,
         cols = cluster_col,
         label = T) &
   coord_fixed(ratio = 1) &
-  theme_minimal() &
+  theme_classic() &
   NoLegend() &
   manuscript_theme
 
@@ -151,7 +151,7 @@ FeaturePlot(seurat_data,
             raster = T,
             cols = c("gray89", "tomato3")) &
   coord_fixed(ratio = 1) &
-  theme_minimal() &
+  theme_classic() &
   NoLegend() &
   manuscript_theme
 
@@ -231,7 +231,7 @@ DimPlot(seurat_data,
         #cols = scImmuCC_celltype_col,
         label = T) &
   coord_fixed(ratio = 1) &
-  theme_minimal() &
+  theme_classic() &
   NoLegend() &
   manuscript_theme
 
@@ -249,7 +249,7 @@ DimPlot(seurat_data,
         raster = T,
         cols = cluster_col) &
   coord_fixed(ratio = 1) &
-  theme_minimal() &
+  theme_classic() &
   NoLegend()
 
 table(seurat_data$scImmuCC_celltype,
@@ -261,6 +261,25 @@ table(seurat_data$scImmuCC_celltype,
 
 ```{r}
 
+gs4_deauth()
+markers_annotations  <- gs4_get("https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharing")
+sheet_names(markers_annotations)
+annotations <- read_sheet(markers_annotations, sheet = "Cluster annotations")
 
+seurat_data$celltype <- mapvalues(seurat_data$snn_res.0.5,
+                                  from = annotations$snn_res.0.5,
+                                  to = annotations$annotation)
+
+DimPlot(seurat_data,
+        group.by = "celltype",
+        reduction = "umap",
+        raster = T,
+        label = T) &
+  coord_fixed(ratio = 1) &
+  theme_classic() &
+  NoLegend()
+
+
+#saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 
 ```

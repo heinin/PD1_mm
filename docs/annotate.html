@@ -428,10 +428,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has staged changes. To know which version of the
-R Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -598,15 +598,15 @@ docs/Layer1_scImmuCC_label.csv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree407ac358c929413de43e478575181ab95e6c2e15targetblank407ac35a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree3e207b9b95b4dc3943413f3ed48ff5834b1b9f0ctargetblank3e207b9a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/407ac358c929413de43e478575181ab95e6c2e15" target="_blank">407ac35</a>
+<a href="https://github.com/heinin/PD1_mm/tree/3e207b9b95b4dc3943413f3ed48ff5834b1b9f0c" target="_blank">3e207b9</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree407ac358c929413de43e478575181ab95e6c2e15targetblank407ac35a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree3e207b9b95b4dc3943413f3ed48ff5834b1b9f0ctargetblank3e207b9a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -616,7 +616,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/407ac358c929413de43e478575181ab95e6c2e15" target="_blank">407ac35</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/3e207b9b95b4dc3943413f3ed48ff5834b1b9f0c" target="_blank">3e207b9</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -632,12 +632,8 @@ were generated:
 <pre><code>
 Unstaged changes:
     Modified:   analysis/annotate.Rmd
-
-Staged changes:
-    Modified:   analysis/annotate.Rmd
     Modified:   analysis/comparative_analysis.Rmd
     Modified:   analysis/index.Rmd
-    New:        analysis/processing.Rmd
 
 </code></pre>
 <p>
@@ -683,6 +679,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/3e207b9b95b4dc3943413f3ed48ff5834b1b9f0c/analysis/annotate.Rmd" target="_blank">3e207b9</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-02-26
+</td>
+<td>
+Added scImmuCC annotations
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/3e207b9b95b4dc3943413f3ed48ff5834b1b9f0c/docs/annotate.html" target="_blank">3e207b9</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-02-26
+</td>
+<td>
+Added scImmuCC annotations
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -932,10 +962,47 @@ unique</code></pre>
         cols = cluster_col,
         label = T) &amp;
   coord_fixed(ratio = 1) &amp;
-  theme_minimal() &amp;
+  theme_classic() &amp;
   NoLegend() &amp;
   manuscript_theme</code></pre>
 <p><img src="figure/annotate.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/3e207b9b95b4dc3943413f3ed48ff5834b1b9f0c/docs/figure/annotate.Rmd/unnamed-chunk-4-1.png" target="_blank">3e207b9</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="cell-type-marker-expression" class="section level3">
 <h3>Cell type marker expression</h3>
@@ -958,10 +1025,47 @@ FeaturePlot(seurat_data,
             raster = T,
             cols = c(&quot;gray89&quot;, &quot;tomato3&quot;)) &amp;
   coord_fixed(ratio = 1) &amp;
-  theme_minimal() &amp;
+  theme_classic() &amp;
   NoLegend() &amp;
   manuscript_theme</code></pre>
 <p><img src="figure/annotate.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/3e207b9b95b4dc3943413f3ed48ff5834b1b9f0c/docs/figure/annotate.Rmd/unnamed-chunk-5-1.png" target="_blank">3e207b9</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>top_markers &lt;- markers %&gt;%  group_by(group) %&gt;% slice_max(order_by = auc, n = 5)
 
 # seurat_object, plot_features, group_var, group_colors, column_title, km=5, row.order = NULL
@@ -972,6 +1076,43 @@ dotplot_heatmap &lt;- create_dotplot_heatmap(seurat_object = seurat_data,
                                           column_title = &quot;&quot;,
                                           km = 5, row.order = NULL)</code></pre>
 <p><img src="figure/annotate.Rmd/unnamed-chunk-6-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/3e207b9b95b4dc3943413f3ed48ff5834b1b9f0c/docs/figure/annotate.Rmd/unnamed-chunk-6-1.png" target="_blank">3e207b9</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="saving-top-markers-to-a-file" class="section level3">
 <h3>Saving top markers to a file</h3>
@@ -1021,6 +1162,43 @@ sheet_names(canonical_markers)</code></pre>
                                           km = 5, row.order = NULL)</code></pre>
 <pre><code>Warning: The following requested variables were not found: Cd51, Nirp3, 117r</code></pre>
 <p><img src="figure/annotate.Rmd/unnamed-chunk-8-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/3e207b9b95b4dc3943413f3ed48ff5834b1b9f0c/docs/figure/annotate.Rmd/unnamed-chunk-8-1.png" target="_blank">3e207b9</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="using-sc-immucc-to-annotate-immune-cells"
 class="section level3">
@@ -1048,10 +1226,47 @@ DimPlot(seurat_data,
         #cols = scImmuCC_celltype_col,
         label = T) &amp;
   coord_fixed(ratio = 1) &amp;
-  theme_minimal() &amp;
+  theme_classic() &amp;
   NoLegend() &amp;
   manuscript_theme</code></pre>
 <p><img src="figure/annotate.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/3e207b9b95b4dc3943413f3ed48ff5834b1b9f0c/docs/figure/annotate.Rmd/unnamed-chunk-9-1.png" target="_blank">3e207b9</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#saveRDS(seurat_data, &quot;/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds&quot;)</code></pre>
 <pre class="r"><code>DimPlot(seurat_data,
         split.by = &quot;scImmuCC_celltype&quot;,
@@ -1061,9 +1276,46 @@ DimPlot(seurat_data,
         raster = T,
         cols = cluster_col) &amp;
   coord_fixed(ratio = 1) &amp;
-  theme_minimal() &amp;
+  theme_classic() &amp;
   NoLegend()</code></pre>
 <p><img src="figure/annotate.Rmd/unnamed-chunk-10-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/3e207b9b95b4dc3943413f3ed48ff5834b1b9f0c/docs/figure/annotate.Rmd/unnamed-chunk-10-1.png" target="_blank">3e207b9</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-02-26
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>table(seurat_data$scImmuCC_celltype,
       seurat_data$snn_res.0.5)</code></pre>
 <pre><code>            
@@ -1092,6 +1344,28 @@ DimPlot(seurat_data,
 <div id="adding-annotations-from-the-google-sheet"
 class="section level3">
 <h3>Adding annotations from the Google Sheet</h3>
+<pre class="r"><code>gs4_deauth()
+markers_annotations  &lt;- gs4_get(&quot;https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharing&quot;)
+sheet_names(markers_annotations)</code></pre>
+<pre><code>[1] &quot;Cluster top markers&quot; &quot;Cluster annotations&quot; &quot;scImmuCC&quot;           
+[4] &quot;Mm immune markers&quot;  </code></pre>
+<pre class="r"><code>annotations &lt;- read_sheet(markers_annotations, sheet = &quot;Cluster annotations&quot;)</code></pre>
+<pre><code>✔ Reading from &quot;PD1 mm scRNAseq tables&quot;.</code></pre>
+<pre><code>✔ Range &#39;&#39;Cluster annotations&#39;&#39;.</code></pre>
+<pre class="r"><code>seurat_data$celltype &lt;- mapvalues(seurat_data$snn_res.0.5,
+                                  from = annotations$snn_res.0.5,
+                                  to = annotations$annotation)
+
+DimPlot(seurat_data,
+        group.by = &quot;celltype&quot;,
+        reduction = &quot;umap&quot;,
+        raster = T,
+        label = T) &amp;
+  coord_fixed(ratio = 1) &amp;
+  theme_classic() &amp;
+  NoLegend()</code></pre>
+<p><img src="figure/annotate.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>saveRDS(seurat_data, &quot;/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds&quot;)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

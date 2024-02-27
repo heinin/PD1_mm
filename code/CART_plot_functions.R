@@ -49,7 +49,7 @@ create_clusterpropplot <- function(seurat_object,
     ylab(var_names[2]) + 
     ylim(0, max(prop_table[,2:3])+2) + 
     xlim(0, max(prop_table[,2:3])+2) +
-    geom_text_repel(size = 2.5) +
+    geom_text_repel(size = 4) +
     theme(legend.position = "none") + 
     geom_abline(intercept = 0, slope = 1, linewidth = 0.5, linetype = "dashed") +
     theme(panel.background = element_rect(colour = "gray88")) +

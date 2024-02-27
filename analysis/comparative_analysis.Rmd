@@ -26,7 +26,8 @@ suppressPackageStartupMessages({
   library(ggpubr)
   library(ggrepel)
   library(workflowr)
-  library(googlesheets4)})
+  library(googlesheets4)
+  library(scProportionTest)})
 
 setwd("/home/hnatri/PD1_mm/")
 set.seed(9999)
@@ -44,6 +45,191 @@ source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
 ```{r}
 
 seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+
+```
+
+### DimPlot of cell type annotations
+
+```{r}
+
+DimPlot(seurat_data,
+        group.by = "celltype",
+        reduction = "umap",
+        raster = T,
+        label = T) &
+  coord_fixed(ratio = 1) &
+  theme_minimal() &
+  NoLegend()
+
+```
+
+### Cell type proportion differences
+
+In scatter plots, the proportions of cell types in each pair of treatment groups
+are plotted against each other with one group on each axis. The forest plots show
+the significance level.
+
+```{r}
+
+unique(seurat_data$Treatment)
+unique(seurat_data$Day)
+
+celltypes <- sort(as.character(unique(seurat_data$celltype)))
+plot_colors <- colorRampPalette(brewer.pal(11, "Paired"))(length(celltypes))
+names(plot_colors) <- celltypes
+
+create_clusterpropplot(seurat_data,
+                       group_var = "Treatment",
+                       group1 = "ADJ",
+                       group2 = "CTRL",
+                       plot_var = "celltype",
+                       plot_colors = plot_colors,
+                       var_names = c("ADJ", "CTRL"),
+                       legend_title = "Treatment")
+
+create_clusterpropplot(seurat_data,
+                       group_var = "Treatment",
+                       group1 = "NEO",
+                       group2 = "CTRL",
+                       plot_var = "celltype",
+                       plot_colors = plot_colors,
+                       var_names = c("NEO", "CTRL"),
+                       legend_title = "Treatment")
+
+create_clusterpropplot(seurat_data,
+                       group_var = "Treatment",
+                       group1 = "ADJ",
+                       group2 = "NEO",
+                       plot_var = "celltype",
+                       plot_colors = plot_colors,
+                       var_names = c("ADJ", "NEO"),
+                       legend_title = "Treatment")
+
+# Day 12
+create_clusterpropplot(subset(seurat_data, subset = Day == 12),
+                       group_var = "Treatment",
+                       group1 = "NEO",
+                       group2 = "CTRL",
+                       plot_var = "celltype",
+                       plot_colors = plot_colors,
+                       var_names = c("NEO", "CTRL"),
+                       legend_title = "Treatment, Day 12")
+
+# Day 16
+create_clusterpropplot(subset(seurat_data, subset = Day == 16),
+                       group_var = "Treatment",
+                       group1 = "ADJ",
+                       group2 = "CTRL",
+                       plot_var = "celltype",
+                       plot_colors = plot_colors,
+                       var_names = c("ADJ", "CTRL"),
+                       legend_title = "Treatment, Day 16")
+
+create_clusterpropplot(subset(seurat_data, subset = Day == 16),
+                       group_var = "Treatment",
+                       group1 = "NEO",
+                       group2 = "CTRL",
+                       plot_var = "celltype",
+                       plot_colors = plot_colors,
+                       var_names = c("NEO", "CTRL"),
+                       legend_title = "Treatment, Day 16")
+
+create_clusterpropplot(subset(seurat_data, subset = Day == 16),
+                       group_var = "Treatment",
+                       group1 = "ADJ",
+                       group2 = "NEO",
+                       plot_var = "celltype",
+                       plot_colors = plot_colors,
+                       var_names = c("ADJ", "NEO"),
+                       legend_title = "Treatment, Day 16")
+
+
+# Using scProportionTest
+prop_test <- sc_utils(seurat_data)
+
+prop_test <- permutation_test(
+  prop_test, cluster_identity = "celltype",
+  sample_1 = "CTRL", sample_2 = "ADJ",
+  sample_identity = "Treatment")
+
+perm_plot <- permutation_plot(prop_test)
+
+perm_plot + scale_colour_manual(values = c("tomato", "azure2")) +
+  #NoLegend() +
+  ggtitle("ADJ vs. CTRL, all timepoints")
+
+prop_test <- permutation_test(
+  prop_test, cluster_identity = "celltype",
+  sample_1 = "CTRL", sample_2 = "NEO",
+  sample_identity = "Treatment")
+
+perm_plot <- permutation_plot(prop_test)
+
+perm_plot + scale_colour_manual(values = c("tomato", "azure2")) +
+  #NoLegend() +
+  ggtitle("NEO vs. CTRL, all timepoints")
+
+prop_test <- permutation_test(
+  prop_test, cluster_identity = "celltype",
+  sample_1 = "ADJ", sample_2 = "NEO",
+  sample_identity = "Treatment")
+
+perm_plot <- permutation_plot(prop_test)
+
+perm_plot + scale_colour_manual(values = c("tomato", "azure2")) +
+  #NoLegend() +
+  ggtitle("NEO vs. ADJ, all timepoints")
+
+# Day 12 only
+# For day 12, no ADJ sample
+prop_test <- sc_utils(subset(seurat_data, subset = Day == 12))
+
+prop_test <- permutation_test(
+  prop_test, cluster_identity = "celltype",
+  sample_1 = "CTRL", sample_2 = "NEO",
+  sample_identity = "Treatment")
+
+perm_plot <- permutation_plot(prop_test)
+
+perm_plot + scale_colour_manual(values = c("tomato", "azure2")) +
+  #NoLegend() +
+  ggtitle("NEO vs. CTRL, day 12")
+
+# Day 16 only
+prop_test <- sc_utils(subset(seurat_data, subset = Day == 16))
+
+prop_test <- permutation_test(
+  prop_test, cluster_identity = "celltype",
+  sample_1 = "CTRL", sample_2 = "ADJ",
+  sample_identity = "Treatment")
+
+perm_plot <- permutation_plot(prop_test)
+
+perm_plot + scale_colour_manual(values = c("tomato", "azure2")) +
+  #NoLegend() +
+  ggtitle("ADJ vs. CTRL, day 16")
+
+prop_test <- permutation_test(
+  prop_test, cluster_identity = "celltype",
+  sample_1 = "CTRL", sample_2 = "NEO",
+  sample_identity = "Treatment")
+
+perm_plot <- permutation_plot(prop_test)
+
+perm_plot + scale_colour_manual(values = c("tomato", "azure2")) +
+  #NoLegend() +
+  ggtitle("NEO vs. CTRL, day 16")
+
+prop_test <- permutation_test(
+  prop_test, cluster_identity = "celltype",
+  sample_1 = "ADJ", sample_2 = "NEO",
+  sample_identity = "Treatment")
+
+perm_plot <- permutation_plot(prop_test)
+
+perm_plot + scale_colour_manual(values = c("tomato", "azure2")) +
+  #NoLegend() +
+  ggtitle("NEO vs. ADJ, day 16")
 
 ```
 
