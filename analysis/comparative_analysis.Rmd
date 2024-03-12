@@ -247,7 +247,203 @@ perm_plot + scale_colour_manual(values = c("tomato", "azure2")) +
 
 ```
 
+### Cluster markers
 
+```{r}
 
+# Dropping MT and RP genes before calling markers
+RBMTgenes <- grep(pattern = "^RP[SL]|^MRP[SL]|^MT-",
+                  x = rownames(seurat_data@assays$RNA_human@data),
+                  value = TRUE, invert = TRUE)
+seurat_data <- subset(seurat_data, features = RBMTgenes)
 
+# Top markers for each cluster
+markers <- presto::wilcoxauc(seurat_data,
+                             group_by = "celltype",
+                             assay = "data",
+                             seurat_assay = "RNA_human")
 
+sig_markers <- markers %>% filter(auc>0.8, padj<0.01)
+
+dim(sig_markers)
+table(sig_markers$group)
+
+table(sig_markers$group) %>% as.data.frame() %>%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab("Cell type") +
+    ylab("# cell type markers")
+
+# Saving to a file
+write.table(sig_markers, "/scratch/hnatri/CART/PD1_CART_celltype_markers.tsv",
+            sep = "\t", quote = F, row.names = F)
+
+# Top markers for each cluster
+sig_markers %>% group_by(group) %>% slice_max(order_by = auc, n = 10)
+
+```
+
+### DEGs between treatment groups
+
+```{r}
+# For each cluster, top DEGs between NEO and CTRL
+DEG_NEO_CTRL <- lapply(unique(seurat_data$celltype), function(xx){
+  data_subset <- subset(seurat_data, subset = celltype == xx)
+  if (all((c("NEO", "CTRL") %in% data_subset$Treatment) == c(T, T))){
+    markers <- presto::wilcoxauc(data_subset,
+                                 group_by = "Treatment",
+                                 groups_use = c("NEO", "CTRL"),
+                                 assay = "data",
+                                 seurat_assay = "RNA_human")
+    markers$celltype <- xx
+    
+    return(markers)
+  } else {
+    return(NULL)
+  }
+})
+names(DEG_NEO_CTRL) <- unique(seurat_data$celltype)
+DEG_NEO_CTRL[sapply(DEG_NEO_CTRL, is.null)] <- NULL
+
+DEG_NEO_CTRL_df <- as.data.frame(do.call(rbind, DEG_NEO_CTRL))
+
+DEG_NEO_CTRL_df_sig <- DEG_NEO_CTRL_df %>%
+  filter(group=="NEO",
+         padj < 0.01,
+         auc > 0.6,
+         (pct_in > 50 | pct_out > 50))
+
+# Saving to a file
+write.table(DEG_NEO_CTRL_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_sig.tsv",
+            sep = "\t", quote = F, row.names = F)
+
+# Plotting numbers of DEGs
+table(DEG_NEO_CTRL_df_sig$celltype) %>% as.data.frame() %>%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab("Cell type") +
+    ylab("# DEGs, NEO vs. CTRL, all timepoints")
+
+# Top DEGs for each cluster
+DEG_NEO_CTRL_df_sig %>% group_by(group) %>% slice_max(order_by = auc, n = 10)
+
+# For each cluster, top DEGs between NEO and ADJ
+DEG_NEO_ADJ <- lapply(unique(seurat_data$celltype), function(xx){
+  data_subset <- subset(seurat_data, subset = celltype == xx)
+  if (all((c("NEO", "ADJ") %in% data_subset$Treatment) == c(T, T))){
+    markers <- presto::wilcoxauc(data_subset,
+                                 group_by = "Treatment",
+                                 groups_use = c("NEO", "ADJ"),
+                                 assay = "data",
+                                 seurat_assay = "RNA_human")
+    markers$celltype <- xx
+    
+    return(markers)
+  } else {
+    return(NULL)
+  }
+})
+names(DEG_NEO_ADJ) <- unique(seurat_data$celltype)
+DEG_NEO_ADJ[sapply(DEG_NEO_ADJ, is.null)] <- NULL
+
+DEG_NEO_ADJ_df <- as.data.frame(do.call(rbind, DEG_NEO_ADJ))
+
+DEG_NEO_ADJ_df_sig <- DEG_NEO_ADJ_df %>%
+  filter(group == "NEO",
+         padj < 0.01,
+         auc > 0.6,
+         (pct_in > 50 | pct_out > 50))
+
+# Saving to a file
+write.table(DEG_NEO_ADJ_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_sig.tsv",
+            sep = "\t", quote = F, row.names = F)
+
+# Plotting
+table(DEG_NEO_ADJ_df_sig$celltype) %>% as.data.frame() %>%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab("Cell type") +
+    ylab("# DEGs, NEO vs. ADJ, all timepoints")
+
+# Top DEGs for each cluster
+DEG_NEO_ADJ_df_sig %>% group_by(group) %>% slice_max(order_by = auc, n = 10)
+
+# For each cluster, top DEGs between ADJ and CTRL
+DEG_ADJ_CTRL <- lapply(unique(seurat_data$celltype), function(xx){
+  data_subset <- subset(seurat_data, subset = celltype == xx)
+  if (all((c("ADJ", "CTRL") %in% data_subset$Treatment) == c(T, T))){
+    markers <- presto::wilcoxauc(data_subset,
+                                 group_by = "Treatment",
+                                 groups_use = c("ADJ", "CTRL"),
+                                 assay = "data",
+                                 seurat_assay = "RNA_human")
+    markers$celltype <- xx
+    
+    return(markers)
+  } else {
+    return(NULL)
+  }
+})
+names(DEG_ADJ_CTRL) <- unique(seurat_data$celltype)
+DEG_ADJ_CTRL[sapply(DEG_ADJ_CTRL, is.null)] <- NULL
+
+DEG_ADJ_CTRL_df <- as.data.frame(do.call(rbind, DEG_ADJ_CTRL))
+
+DEG_ADJ_CTRL_df_sig <- DEG_ADJ_CTRL_df %>%
+  filter(group == "NEO",
+         padj < 0.01,
+         auc > 0.6,
+         (pct_in > 50 | pct_out > 50))
+
+# Saving to a file
+write.table(DEG_ADJ_CTRL_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_sig.tsv",
+            sep = "\t", quote = F, row.names = F)
+
+# Plotting
+table(DEG_ADJ_CTRL_df_sig$celltype) %>% as.data.frame() %>%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab("Cell type") +
+    ylab("# DEGs, ADJ vs. CTRL, all timepoints")
+
+# Top DEGs for each cluster
+DEG_ADJ_CTRL_df_sig %>% group_by(group) %>% slice_max(order_by = auc, n = 10)
+
+```
+
+### Human T cell canonical markers
+
+```{r}
+
+# Canonical T cell markers
+gs4_deauth()
+canonical_markers  <- gs4_get("https://docs.google.com/spreadsheets/d/186PIcU3Jb0Xm3IuZgENEChluykvwsK4JnHF8FbeJASA/edit?usp=sharing")
+sheet_names(canonical_markers)
+canonical_markers <- read_sheet(canonical_markers, sheet = "T cells, gene sets")
+head(canonical_markers)
+
+# Overlapping with cluster markers
+sig_markers %>% filter(feature %in% canonical_markers$RNA)
+canonical_markers %>% filter(RNA %in% sig_markers$feature) %>% as.data.frame()
+
+# Overlapping with DEGs
+DEG_NEO_CTRL_df_sig %>% filter(feature %in% canonical_markers$RNA)
+DEG_NEO_ADJ_df_sig %>% filter(feature %in% canonical_markers$RNA)
+
+```

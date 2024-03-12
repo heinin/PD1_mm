@@ -142,7 +142,7 @@ markers <- presto::wilcoxauc(seurat_data,
                              assay = "data",
                              seurat_assay = "RNA")
 
-top_markers <- markers %>%  group_by(group) %>% slice_max(order_by = auc, n = 2)
+top_markers <- markers %>% group_by(group) %>% slice_max(order_by = auc, n = 2)
 
 FeaturePlot(seurat_data,
             features = top_markers$feature,

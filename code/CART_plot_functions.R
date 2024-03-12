@@ -202,7 +202,7 @@ create_dotplot_heatmap <- function(seurat_object, plot_features, group_var, grou
 
 
 
-create_dotplot_heatmap_horizontal <- function(seurat_object, plot_features, group_var, group_colors, column_title, km=5){
+create_dotplot_heatmap_horizontal <- function(seurat_object, plot_features, group_var, group_colors, column_title, km=5, col.order = NULL){
     p <- DotPlot(object = seurat_object, features = plot_features, group.by = group_var)
     
     # Reproducing the dotplot using ComplexHeatmap
@@ -243,7 +243,7 @@ create_dotplot_heatmap_horizontal <- function(seurat_object, plot_features, grou
         grid.rect(x = x, y = y, width = w, height = h, 
                   gp = gpar(col = NA, fill = NA))
         grid.points(x = x, y = y, 
-                    gp = gpar(col = col_fun(pindex(t(exp_mat), i, j))), # t(exp_mat)
+                    gp = gpar(col = col_fun(pindex(exp_mat, i, j))), # t(exp_mat)
                     size = pindex(t(percent_mat), i, j)/100 * unit(4, "mm"), # t(percent_mat)
                     pch = 16
         )
@@ -254,9 +254,33 @@ create_dotplot_heatmap_horizontal <- function(seurat_object, plot_features, grou
         Legend( labels = c(0,0.25,0.5,0.75,1), title = "pt", type = "points", pch = 16, size = c(0,0.25,0.5,0.75,1) * unit(4,"mm"),
                 legend_gp = gpar(col = "black")))
     
+    exp_mat <- t(exp_mat)
+    
+    # Row order
+    if (!is.null(col.order)){
+      # row.order
+      col.order <- intersect(col.order, colnames(exp_mat))
+      exp_mat[,col.order]
+      
+      exp_mat <- exp_mat[,match(col.order, colnames(exp_mat))]
+      
+      hp <- ComplexHeatmap::Heatmap(exp_mat, # t(exp_mat)
+                                    heatmap_legend_param=list(title="Scaled expression"),
+                                    column_title = column_title, 
+                                    col = col_fun,
+                                    rect_gp = gpar(type = "none"),
+                                    layer_fun = layer_fun,
+                                    row_names_gp = gpar(fontsize = 7),
+                                    column_names_gp = gpar(fontsize = 7),
+                                    cluster_columns = F,
+                                    row_km = km,
+                                    left_annotation = column_ha, # top_annotation / left_annotation
+                                    border = "black")
+    } else {
+    
     exp_mat <- exp_mat[complete.cases(exp_mat),]
     
-    hp <- ComplexHeatmap::Heatmap(t(exp_mat), # t(exp_mat)
+    hp <- ComplexHeatmap::Heatmap(exp_mat, # t(exp_mat)
                   heatmap_legend_param=list(title="Scaled expression"),
                   column_title = column_title, 
                   col = col_fun,
@@ -268,6 +292,7 @@ create_dotplot_heatmap_horizontal <- function(seurat_object, plot_features, grou
                   #column_km = 4,
                   left_annotation = column_ha, # top_annotation / left_annotation
                   border = "black")
+    }
     
     dotplot <- draw(hp, annotation_legend_list = lgd_list)
     
