@@ -425,6 +425,15 @@ table(DEG_ADJ_CTRL_df_sig$celltype) %>% as.data.frame() %>%
 # Top DEGs for each cluster
 DEG_ADJ_CTRL_df_sig %>% group_by(group) %>% slice_max(order_by = auc, n = 10)
 
+# Overlap of DEGs between NEO vs. CTRL and NEO vs. ADJ
+intersect(DEG_NEO_ADJ_df_sig$feature, DEG_NEO_CTRL_df_sig$feature)
+
+inner_join(DEG_NEO_ADJ_df_sig, DEG_NEO_CTRL_df_sig, by = c('feature','celltype'))
+
+write.table(inner_join(DEG_NEO_ADJ_df_sig, DEG_NEO_CTRL_df_sig, by = c('feature','celltype')),
+            "/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_CTRL_overlap.tsv",
+            sep = "\t", quote = F, row.names = F)
+
 ```
 
 ### Human T cell canonical markers
