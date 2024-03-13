@@ -290,6 +290,7 @@ sig_markers %>% group_by(group) %>% slice_max(order_by = auc, n = 10)
 ### DEGs between treatment groups
 
 ```{r}
+
 # For each cluster, top DEGs between NEO and CTRL
 DEG_NEO_CTRL <- lapply(unique(seurat_data$celltype), function(xx){
   data_subset <- subset(seurat_data, subset = celltype == xx)
@@ -314,12 +315,82 @@ DEG_NEO_CTRL_df <- as.data.frame(do.call(rbind, DEG_NEO_CTRL))
 DEG_NEO_CTRL_df_sig <- DEG_NEO_CTRL_df %>%
   filter(group=="NEO",
          padj < 0.01,
-         auc > 0.6,
+         abs(logFC) > 10,
          (pct_in > 50 | pct_out > 50))
 
 # Saving to a file
 write.table(DEG_NEO_CTRL_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_sig.tsv",
             sep = "\t", quote = F, row.names = F)
+
+# Comparing to the Seurat function
+DEG_NEO_CTRL_Seurat <- lapply(unique(seurat_data$celltype), function(xx){
+  data_subset <- subset(seurat_data, subset = celltype == xx)
+  Idents(data_subset) <- data_subset$Treatment
+  if (all((c("NEO", "CTRL") %in% data_subset$Treatment) == c(T, T))){
+    markers <- FindMarkers(data_subset,
+                           ident.1 = "NEO",
+                           ident.2 = "CTRL",
+                           assay = "RNA_human",
+                           verbose = F)
+    markers$feature <- rownames(markers)
+    markers$celltype <- xx
+    
+    return(markers)
+  } else {
+    return(NULL)
+  }
+})
+names(DEG_NEO_CTRL_Seurat) <- unique(seurat_data$celltype)
+DEG_NEO_CTRL_Seurat[sapply(DEG_NEO_CTRL_Seurat, is.null)] <- NULL
+
+DEG_NEO_CTRL_Seurat_df <- as.data.frame(do.call(rbind, DEG_NEO_CTRL_Seurat))
+
+# Distribution of log2FC
+hist(DEG_NEO_CTRL_Seurat_df$avg_log2FC, breaks = 100)
+
+DEG_NEO_CTRL_Seurat_df_sig <- DEG_NEO_CTRL_Seurat_df %>%
+  filter(p_val_adj < 0.01,
+         abs(avg_log2FC) > 100,
+         (pct.1 > 0.50 | pct.2 > 0.50))
+
+# Saving to a file
+write.table(DEG_NEO_CTRL_Seurat_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_Seurat_sig.tsv",
+            sep = "\t", quote = F, row.names = F)
+
+# DEGs shared between and unique to each method
+length(intersect(DEG_NEO_CTRL_Seurat_df_sig$feature, DEG_NEO_CTRL_df_sig$feature))
+length(setdiff(DEG_NEO_CTRL_Seurat_df_sig$feature, DEG_NEO_CTRL_df_sig$feature))
+length(setdiff(DEG_NEO_CTRL_df_sig$feature, DEG_NEO_CTRL_Seurat_df_sig$feature))
+
+hist(DEG_NEO_CTRL_Seurat_df_sig$avg_log2FC)
+hist(DEG_NEO_CTRL_df_sig$logFC)
+
+hist(DEG_NEO_CTRL_Seurat_df_sig$p_val_adj)
+hist(DEG_NEO_CTRL_df_sig$padj)
+
+# Comparing logFC values
+merge(DEG_NEO_CTRL_Seurat_df, DEG_NEO_CTRL_df, by = c("feature", "celltype")) %>%
+  ggplot(aes(x = avg_log2FC, y = logFC)) +
+    geom_point() +
+    theme_classic2()
+
+# Comparing logFC values for significant DEGs only
+merge(DEG_NEO_CTRL_Seurat_df_sig, DEG_NEO_CTRL_df_sig, by = c("feature", "celltype")) %>%
+  ggplot(aes(x = avg_log2FC, y = logFC)) +
+    geom_point() +
+    theme_classic2()
+
+# Comparing adjusted p-values
+merge(DEG_NEO_CTRL_Seurat_df, DEG_NEO_CTRL_df, by = c("feature", "celltype")) %>%
+  ggplot(aes(x = p_val_adj, y = padj)) +
+    geom_point() +
+    theme_classic2()
+
+# Comparing adjusted p-values for significant DEGs
+merge(DEG_NEO_CTRL_Seurat_df_sig, DEG_NEO_CTRL_df_sig, by = c("feature", "celltype")) %>%
+  ggplot(aes(x = p_val_adj, y = padj)) +
+    geom_point() +
+    theme_classic2()
 
 # Plotting numbers of DEGs
 table(DEG_NEO_CTRL_df_sig$celltype) %>% as.data.frame() %>%
@@ -332,8 +403,19 @@ table(DEG_NEO_CTRL_df_sig$celltype) %>% as.data.frame() %>%
     xlab("Cell type") +
     ylab("# DEGs, NEO vs. CTRL, all timepoints")
 
+table(DEG_NEO_CTRL_Seurat_df_sig$celltype) %>% as.data.frame() %>%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab("Cell type") +
+    ylab("# DEGs, NEO vs. CTRL, all timepoints, Seurat")
+
 # Top DEGs for each cluster
 DEG_NEO_CTRL_df_sig %>% group_by(group) %>% slice_max(order_by = auc, n = 10)
+DEG_NEO_CTRL_Seurat_df_sig %>% group_by(celltype) %>% slice_max(order_by = avg_log2FC, n = 10)
 
 # For each cluster, top DEGs between NEO and ADJ
 DEG_NEO_ADJ <- lapply(unique(seurat_data$celltype), function(xx){
@@ -366,6 +448,41 @@ DEG_NEO_ADJ_df_sig <- DEG_NEO_ADJ_df %>%
 write.table(DEG_NEO_ADJ_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_sig.tsv",
             sep = "\t", quote = F, row.names = F)
 
+# Calling DEGs with Seurat
+DEG_NEO_ADJ_Seurat <- lapply(unique(seurat_data$celltype), function(xx){
+  data_subset <- subset(seurat_data, subset = celltype == xx)
+  Idents(data_subset) <- data_subset$Treatment
+  if (all((c("NEO", "ADJ") %in% data_subset$Treatment) == c(T, T))){
+    markers <- FindMarkers(data_subset,
+                           ident.1 = "NEO",
+                           ident.2 = "ADJ",
+                           assay = "RNA_human",
+                           verbose = F)
+    markers$feature <- rownames(markers)
+    markers$celltype <- xx
+    
+    return(markers)
+  } else {
+    return(NULL)
+  }
+})
+names(DEG_NEO_ADJ_Seurat) <- unique(seurat_data$celltype)
+DEG_NEO_ADJ_Seurat[sapply(DEG_NEO_ADJ_Seurat, is.null)] <- NULL
+
+DEG_NEO_ADJ_Seurat_df <- as.data.frame(do.call(rbind, DEG_NEO_ADJ_Seurat))
+
+# Distribution of log2FC
+hist(DEG_NEO_ADJ_Seurat_df$avg_log2FC, breaks = 100)
+
+DEG_NEO_ADJ_Seurat_df_sig <- DEG_NEO_ADJ_Seurat_df %>%
+  filter(p_val_adj < 0.01,
+         abs(avg_log2FC) > 100,
+         (pct.1 > 0.50 | pct.2 > 0.50))
+
+# Saving to a file
+write.table(DEG_NEO_ADJ_Seurat_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_Seurat_sig.tsv",
+            sep = "\t", quote = F, row.names = F)
+
 # Plotting
 table(DEG_NEO_ADJ_df_sig$celltype) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
@@ -377,8 +494,19 @@ table(DEG_NEO_ADJ_df_sig$celltype) %>% as.data.frame() %>%
     xlab("Cell type") +
     ylab("# DEGs, NEO vs. ADJ, all timepoints")
 
+table(DEG_NEO_ADJ_Seurat_df_sig$celltype) %>% as.data.frame() %>%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab("Cell type") +
+    ylab("# DEGs, NEO vs. ADJ, all timepoints, Seurat")
+
 # Top DEGs for each cluster
 DEG_NEO_ADJ_df_sig %>% group_by(group) %>% slice_max(order_by = auc, n = 10)
+DEG_NEO_ADJ_Seurat_df_sig %>% group_by(celltype) %>% slice_max(order_by = avg_log2FC, n = 10)
 
 # For each cluster, top DEGs between ADJ and CTRL
 DEG_ADJ_CTRL <- lapply(unique(seurat_data$celltype), function(xx){
@@ -389,6 +517,11 @@ DEG_ADJ_CTRL <- lapply(unique(seurat_data$celltype), function(xx){
                                  groups_use = c("ADJ", "CTRL"),
                                  assay = "data",
                                  seurat_assay = "RNA_human")
+    #Idents(data_subset) <- data_subset$Treatment
+    #markers <- FindMarkers(data_subset,
+    #                       group.by = "celltype",
+    #                       ident.1 = "ADJ",
+    #                       ident.2 = "CTRL")
     markers$celltype <- xx
     
     return(markers)
@@ -411,6 +544,41 @@ DEG_ADJ_CTRL_df_sig <- DEG_ADJ_CTRL_df %>%
 write.table(DEG_ADJ_CTRL_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_sig.tsv",
             sep = "\t", quote = F, row.names = F)
 
+# Comparing to the Seurat function
+DEG_ADJ_CTRL_Seurat <- lapply(unique(seurat_data$celltype), function(xx){
+  data_subset <- subset(seurat_data, subset = celltype == xx)
+  Idents(data_subset) <- data_subset$Treatment
+  if (all((c("ADJ", "CTRL") %in% data_subset$Treatment) == c(T, T))){
+    markers <- FindMarkers(data_subset,
+                           ident.1 = "ADJ",
+                           ident.2 = "CTRL",
+                           assay = "RNA_human",
+                           verbose = F)
+    markers$feature <- rownames(markers)
+    markers$celltype <- xx
+    
+    return(markers)
+  } else {
+    return(NULL)
+  }
+})
+names(DEG_ADJ_CTRL_Seurat) <- unique(seurat_data$celltype)
+DEG_ADJ_CTRL_Seurat[sapply(DEG_ADJ_CTRL_Seurat, is.null)] <- NULL
+
+DEG_ADJ_CTRL_Seurat_df <- as.data.frame(do.call(rbind, DEG_ADJ_CTRL_Seurat))
+
+# Distribution of log2FC
+hist(DEG_ADJ_CTRL_Seurat_df$avg_log2FC, breaks = 100)
+
+DEG_ADJ_CTRL_Seurat_df_sig <- DEG_ADJ_CTRL_Seurat_df %>%
+  filter(p_val_adj < 0.01,
+         abs(avg_log2FC) > 100,
+         (pct.1 > 0.50 | pct.2 > 0.50))
+
+# Saving to a file
+write.table(DEG_ADJ_CTRL_Seurat_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_Seurat_sig.tsv",
+            sep = "\t", quote = F, row.names = F)
+
 # Plotting
 table(DEG_ADJ_CTRL_df_sig$celltype) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
@@ -420,10 +588,21 @@ table(DEG_ADJ_CTRL_df_sig$celltype) %>% as.data.frame() %>%
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     NoLegend() +
     xlab("Cell type") +
-    ylab("# DEGs, ADJ vs. CTRL, all timepoints")
+    ylab("# DEGs, ADJ vs. CTRL, all timepoints, Presto")
+
+table(DEG_ADJ_CTRL_Seurat_df_sig$celltype) %>% as.data.frame() %>%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab("Cell type") +
+    ylab("# DEGs, ADJ vs. CTRL, all timepoints, Seurat")
 
 # Top DEGs for each cluster
 DEG_ADJ_CTRL_df_sig %>% group_by(group) %>% slice_max(order_by = auc, n = 10)
+DEG_ADJ_CTRL_Seurat_df_sig %>% group_by(celltype) %>% slice_max(order_by = avg_log2FC, n = 10)
 
 # Overlap of DEGs between NEO vs. CTRL and NEO vs. ADJ
 intersect(DEG_NEO_ADJ_df_sig$feature, DEG_NEO_CTRL_df_sig$feature)
@@ -431,6 +610,17 @@ intersect(DEG_NEO_ADJ_df_sig$feature, DEG_NEO_CTRL_df_sig$feature)
 inner_join(DEG_NEO_ADJ_df_sig, DEG_NEO_CTRL_df_sig, by = c('feature','celltype'))
 
 write.table(inner_join(DEG_NEO_ADJ_df_sig, DEG_NEO_CTRL_df_sig, by = c('feature','celltype')),
+            "/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_CTRL_overlap.tsv",
+            sep = "\t", quote = F, row.names = F)
+
+# Overlap with Seurat
+intersect(DEG_NEO_ADJ_Seurat_df_sig$feature, DEG_NEO_CTRL_Seurat_df_sig$feature)
+
+inner_join(DEG_NEO_ADJ_Seurat_df_sig, DEG_NEO_CTRL_Seurat_df_sig,
+           by = c('feature','celltype'))
+
+write.table(inner_join(DEG_NEO_ADJ_Seurat_df_sig, DEG_NEO_CTRL_Seurat_df_sig,
+                       by = c('feature','celltype')),
             "/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_CTRL_overlap.tsv",
             sep = "\t", quote = F, row.names = F)
 
@@ -454,5 +644,9 @@ canonical_markers %>% filter(RNA %in% sig_markers$feature) %>% as.data.frame()
 # Overlapping with DEGs
 DEG_NEO_CTRL_df_sig %>% filter(feature %in% canonical_markers$RNA)
 DEG_NEO_ADJ_df_sig %>% filter(feature %in% canonical_markers$RNA)
+
+# Overlapping with DEGs from the Seurat analysis
+DEG_NEO_CTRL_Seurat_df_sig %>% filter(feature %in% canonical_markers$RNA)
+DEG_NEO_ADJ_Seurat_df_sig %>% filter(feature %in% canonical_markers$RNA)
 
 ```

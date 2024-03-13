@@ -391,7 +391,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-03-12
+<strong>Last updated:</strong> 2024-03-13
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -575,15 +575,15 @@ code/CART_plot_functions.R
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree4cf95d7d0e7cb20f08292c9ff173c5a71798ac4etargetblank4cf95d7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreed62a214b9dbb6224d63a2b2acac0545cef7139c5targetblankd62a214a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e" target="_blank">4cf95d7</a>
+<a href="https://github.com/heinin/PD1_mm/tree/d62a214b9dbb6224d63a2b2acac0545cef7139c5" target="_blank">d62a214</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree4cf95d7d0e7cb20f08292c9ff173c5a71798ac4etargetblank4cf95d7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreed62a214b9dbb6224d63a2b2acac0545cef7139c5targetblankd62a214a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -593,7 +593,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e" target="_blank">4cf95d7</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/d62a214b9dbb6224d63a2b2acac0545cef7139c5" target="_blank">d62a214</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -607,6 +607,9 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
+Ignored files:
+    Ignored:    analysis/figure/
+
 Unstaged changes:
     Modified:   analysis/comparative_analysis.Rmd
 
@@ -654,6 +657,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/d62a214b9dbb6224d63a2b2acac0545cef7139c5/analysis/comparative_analysis.Rmd" target="_blank">d62a214</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-12
+</td>
+<td>
+Saving DEG overlap tables
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/d62a214b9dbb6224d63a2b2acac0545cef7139c5/docs/comparative_analysis.html" target="_blank">d62a214</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-12
+</td>
+<td>
+Saving DEG overlap tables
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1949,23 +1986,38 @@ DEG_NEO_CTRL_df &lt;- as.data.frame(do.call(rbind, DEG_NEO_CTRL))
 DEG_NEO_CTRL_df_sig &lt;- DEG_NEO_CTRL_df %&gt;%
   filter(group==&quot;NEO&quot;,
          padj &lt; 0.01,
-         auc &gt; 0.6,
+         abs(logFC) &gt; 10,
          (pct_in &gt; 50 | pct_out &gt; 50))
 
 # Saving to a file
 write.table(DEG_NEO_CTRL_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_sig.tsv&quot;,
             sep = &quot;\t&quot;, quote = F, row.names = F)
 
-# Plotting numbers of DEGs
-table(DEG_NEO_CTRL_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
-  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
-    geom_bar(stat = &quot;identity&quot;) +
-    scale_fill_manual(values = plot_colors) +
-    theme_classic2() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
-    NoLegend() +
-    xlab(&quot;Cell type&quot;) +
-    ylab(&quot;# DEGs, NEO vs. CTRL, all timepoints&quot;)</code></pre>
+# Comparing to the Seurat function
+DEG_NEO_CTRL_Seurat &lt;- lapply(unique(seurat_data$celltype), function(xx){
+  data_subset &lt;- subset(seurat_data, subset = celltype == xx)
+  Idents(data_subset) &lt;- data_subset$Treatment
+  if (all((c(&quot;NEO&quot;, &quot;CTRL&quot;) %in% data_subset$Treatment) == c(T, T))){
+    markers &lt;- FindMarkers(data_subset,
+                           ident.1 = &quot;NEO&quot;,
+                           ident.2 = &quot;CTRL&quot;,
+                           assay = &quot;RNA_human&quot;,
+                           verbose = F)
+    markers$feature &lt;- rownames(markers)
+    markers$celltype &lt;- xx
+    
+    return(markers)
+  } else {
+    return(NULL)
+  }
+})
+names(DEG_NEO_CTRL_Seurat) &lt;- unique(seurat_data$celltype)
+DEG_NEO_CTRL_Seurat[sapply(DEG_NEO_CTRL_Seurat, is.null)] &lt;- NULL
+
+DEG_NEO_CTRL_Seurat_df &lt;- as.data.frame(do.call(rbind, DEG_NEO_CTRL_Seurat))
+
+# Distribution of log2FC
+hist(DEG_NEO_CTRL_Seurat_df$avg_log2FC, breaks = 100)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
@@ -2004,64 +2056,23 @@ heinin
 </table>
 </div>
 </div>
-<pre class="r"><code># Top DEGs for each cluster
-DEG_NEO_CTRL_df_sig %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 10)</code></pre>
-<pre><code># A tibble: 10 × 11
-# Groups:   group [1]
-   feature group avgExpr logFC statistic   auc      pval      padj pct_in
-   &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
- 1 CMSS1   NEO     58.8  35.9     61586  0.897 3.14e- 55 5.27e- 51  100  
- 2 CMSS1   NEO     44.1  25.8    982892  0.885 1.23e-205 2.06e-201   99.8
- 3 LARS2   NEO     15.7  10.2     60629  0.883 1.07e- 51 8.97e- 48  100  
- 4 CMSS1   NEO     20.8  11.6   2089805  0.881 2.91e-293 4.88e-289   99.1
- 5 GPHN    NEO     29.5  17.1     59892. 0.873 7.99e- 49 4.47e- 45  100  
- 6 LARS2   NEO      9.96  6.11   958116  0.863 1.34e-183 1.12e-179   99.5
- 7 GPHN    NEO     18.6   9.57   931094. 0.838 1.67e-159 9.32e-156   99.5
- 8 CMSS1   NEO     28.6  14.2    496041  0.831 1.30e-112 2.18e-108   99.9
- 9 CMSS1   NEO     30.5  16.2    959240. 0.829 3.80e-153 6.38e-149   99.9
-10 CAMK1D  NEO     23.7  13.4     56616  0.825 1.48e- 37 6.20e- 34  100  
-# ℹ 2 more variables: pct_out &lt;dbl&gt;, celltype &lt;fct&gt;</code></pre>
-<pre class="r"><code># For each cluster, top DEGs between NEO and ADJ
-DEG_NEO_ADJ &lt;- lapply(unique(seurat_data$celltype), function(xx){
-  data_subset &lt;- subset(seurat_data, subset = celltype == xx)
-  if (all((c(&quot;NEO&quot;, &quot;ADJ&quot;) %in% data_subset$Treatment) == c(T, T))){
-    markers &lt;- presto::wilcoxauc(data_subset,
-                                 group_by = &quot;Treatment&quot;,
-                                 groups_use = c(&quot;NEO&quot;, &quot;ADJ&quot;),
-                                 assay = &quot;data&quot;,
-                                 seurat_assay = &quot;RNA_human&quot;)
-    markers$celltype &lt;- xx
-    
-    return(markers)
-  } else {
-    return(NULL)
-  }
-})
-names(DEG_NEO_ADJ) &lt;- unique(seurat_data$celltype)
-DEG_NEO_ADJ[sapply(DEG_NEO_ADJ, is.null)] &lt;- NULL
-
-DEG_NEO_ADJ_df &lt;- as.data.frame(do.call(rbind, DEG_NEO_ADJ))
-
-DEG_NEO_ADJ_df_sig &lt;- DEG_NEO_ADJ_df %&gt;%
-  filter(group == &quot;NEO&quot;,
-         padj &lt; 0.01,
-         auc &gt; 0.6,
-         (pct_in &gt; 50 | pct_out &gt; 50))
+<pre class="r"><code>DEG_NEO_CTRL_Seurat_df_sig &lt;- DEG_NEO_CTRL_Seurat_df %&gt;%
+  filter(p_val_adj &lt; 0.01,
+         abs(avg_log2FC) &gt; 100,
+         (pct.1 &gt; 0.50 | pct.2 &gt; 0.50))
 
 # Saving to a file
-write.table(DEG_NEO_ADJ_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_sig.tsv&quot;,
+write.table(DEG_NEO_CTRL_Seurat_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_Seurat_sig.tsv&quot;,
             sep = &quot;\t&quot;, quote = F, row.names = F)
 
-# Plotting
-table(DEG_NEO_ADJ_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
-  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
-    geom_bar(stat = &quot;identity&quot;) +
-    scale_fill_manual(values = plot_colors) +
-    theme_classic2() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
-    NoLegend() +
-    xlab(&quot;Cell type&quot;) +
-    ylab(&quot;# DEGs, NEO vs. ADJ, all timepoints&quot;)</code></pre>
+# DEGs shared between and unique to each method
+length(intersect(DEG_NEO_CTRL_Seurat_df_sig$feature, DEG_NEO_CTRL_df_sig$feature))</code></pre>
+<pre><code>[1] 21</code></pre>
+<pre class="r"><code>length(setdiff(DEG_NEO_CTRL_Seurat_df_sig$feature, DEG_NEO_CTRL_df_sig$feature))</code></pre>
+<pre><code>[1] 36</code></pre>
+<pre class="r"><code>length(setdiff(DEG_NEO_CTRL_df_sig$feature, DEG_NEO_CTRL_Seurat_df_sig$feature))</code></pre>
+<pre><code>[1] 8</code></pre>
+<pre class="r"><code>hist(DEG_NEO_CTRL_Seurat_df_sig$avg_log2FC)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-2.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-2">
@@ -2100,64 +2111,7 @@ heinin
 </table>
 </div>
 </div>
-<pre class="r"><code># Top DEGs for each cluster
-DEG_NEO_ADJ_df_sig %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 10)</code></pre>
-<pre><code># A tibble: 10 × 11
-# Groups:   group [1]
-   feature group avgExpr logFC statistic   auc      pval      padj pct_in
-   &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
- 1 LARS2   NEO     15.7   8.61    50174  0.829 1.65e- 36 2.77e- 32  100  
- 2 GPHN    NEO     16.1   7.16   566186  0.815 1.84e- 99 3.09e- 95   99.8
- 3 GPHN    NEO     29.5  13.7     48887  0.808 4.29e- 32 3.60e- 28  100  
- 4 LARS2   NEO      9.96  4.93   945333  0.796 2.68e-127 4.50e-123   99.5
- 5 LARS2   NEO      8.53  4.15   551043  0.793 1.06e- 86 8.90e- 83   99.5
- 6 LARS2   NEO      9.55  4.33   428586  0.771 1.55e- 68 2.60e- 64   98.6
- 7 LARS2   NEO      6.01  3.39   364471  0.770 1.68e- 62 2.82e- 58   96.4
- 8 LARS2   NEO      6.97  3.45   132052  0.768 1.99e- 39 3.35e- 35   99.3
- 9 GPHN    NEO     18.6   7.56   910148. 0.767 4.19e-103 3.52e- 99   99.5
-10 LARS2   NEO      7.71  3.53   513471  0.760 1.28e- 70 2.16e- 66   99.5
-# ℹ 2 more variables: pct_out &lt;dbl&gt;, celltype &lt;fct&gt;</code></pre>
-<pre class="r"><code># For each cluster, top DEGs between ADJ and CTRL
-DEG_ADJ_CTRL &lt;- lapply(unique(seurat_data$celltype), function(xx){
-  data_subset &lt;- subset(seurat_data, subset = celltype == xx)
-  if (all((c(&quot;ADJ&quot;, &quot;CTRL&quot;) %in% data_subset$Treatment) == c(T, T))){
-    markers &lt;- presto::wilcoxauc(data_subset,
-                                 group_by = &quot;Treatment&quot;,
-                                 groups_use = c(&quot;ADJ&quot;, &quot;CTRL&quot;),
-                                 assay = &quot;data&quot;,
-                                 seurat_assay = &quot;RNA_human&quot;)
-    markers$celltype &lt;- xx
-    
-    return(markers)
-  } else {
-    return(NULL)
-  }
-})
-names(DEG_ADJ_CTRL) &lt;- unique(seurat_data$celltype)
-DEG_ADJ_CTRL[sapply(DEG_ADJ_CTRL, is.null)] &lt;- NULL
-
-DEG_ADJ_CTRL_df &lt;- as.data.frame(do.call(rbind, DEG_ADJ_CTRL))
-
-DEG_ADJ_CTRL_df_sig &lt;- DEG_ADJ_CTRL_df %&gt;%
-  filter(group == &quot;NEO&quot;,
-         padj &lt; 0.01,
-         auc &gt; 0.6,
-         (pct_in &gt; 50 | pct_out &gt; 50))
-
-# Saving to a file
-write.table(DEG_ADJ_CTRL_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_sig.tsv&quot;,
-            sep = &quot;\t&quot;, quote = F, row.names = F)
-
-# Plotting
-table(DEG_ADJ_CTRL_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
-  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
-    geom_bar(stat = &quot;identity&quot;) +
-    scale_fill_manual(values = plot_colors) +
-    theme_classic2() +
-    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
-    NoLegend() +
-    xlab(&quot;Cell type&quot;) +
-    ylab(&quot;# DEGs, ADJ vs. CTRL, all timepoints&quot;)</code></pre>
+<pre class="r"><code>hist(DEG_NEO_CTRL_df_sig$logFC)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-3.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-3">
@@ -2196,6 +2150,300 @@ heinin
 </table>
 </div>
 </div>
+<pre class="r"><code>hist(DEG_NEO_CTRL_Seurat_df_sig$p_val_adj)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>hist(DEG_NEO_CTRL_df_sig$padj)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-5.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Comparing logFC values
+merge(DEG_NEO_CTRL_Seurat_df, DEG_NEO_CTRL_df, by = c(&quot;feature&quot;, &quot;celltype&quot;)) %&gt;%
+  ggplot(aes(x = avg_log2FC, y = logFC)) +
+    geom_point() +
+    theme_classic2()</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-6.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Comparing logFC values for significant DEGs only
+merge(DEG_NEO_CTRL_Seurat_df_sig, DEG_NEO_CTRL_df_sig, by = c(&quot;feature&quot;, &quot;celltype&quot;)) %&gt;%
+  ggplot(aes(x = avg_log2FC, y = logFC)) +
+    geom_point() +
+    theme_classic2()</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-7.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Comparing adjusted p-values
+merge(DEG_NEO_CTRL_Seurat_df, DEG_NEO_CTRL_df, by = c(&quot;feature&quot;, &quot;celltype&quot;)) %&gt;%
+  ggplot(aes(x = p_val_adj, y = padj)) +
+    geom_point() +
+    theme_classic2()</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-8.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Comparing adjusted p-values for significant DEGs
+merge(DEG_NEO_CTRL_Seurat_df_sig, DEG_NEO_CTRL_df_sig, by = c(&quot;feature&quot;, &quot;celltype&quot;)) %&gt;%
+  ggplot(aes(x = p_val_adj, y = padj)) +
+    geom_point() +
+    theme_classic2()</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-9.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Plotting numbers of DEGs
+table(DEG_NEO_CTRL_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab(&quot;Cell type&quot;) +
+    ylab(&quot;# DEGs, NEO vs. CTRL, all timepoints&quot;)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-10.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>table(DEG_NEO_CTRL_Seurat_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab(&quot;Cell type&quot;) +
+    ylab(&quot;# DEGs, NEO vs. CTRL, all timepoints, Seurat&quot;)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-11.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Top DEGs for each cluster
+DEG_NEO_CTRL_df_sig %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 10)</code></pre>
+<pre><code># A tibble: 10 × 11
+# Groups:   group [1]
+   feature group avgExpr logFC statistic   auc      pval      padj pct_in
+   &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+ 1 CMSS1   NEO      58.8  35.9    61586  0.897 3.14e- 55 5.27e- 51  100  
+ 2 CMSS1   NEO      44.1  25.8   982892  0.885 1.23e-205 2.06e-201   99.8
+ 3 LARS2   NEO      15.7  10.2    60629  0.883 1.07e- 51 8.97e- 48  100  
+ 4 CMSS1   NEO      20.8  11.6  2089805  0.881 2.91e-293 4.88e-289   99.1
+ 5 GPHN    NEO      29.5  17.1    59892. 0.873 7.99e- 49 4.47e- 45  100  
+ 6 CMSS1   NEO      28.6  14.2   496041  0.831 1.30e-112 2.18e-108   99.9
+ 7 CMSS1   NEO      30.5  16.2   959240. 0.829 3.80e-153 6.38e-149   99.9
+ 8 CAMK1D  NEO      23.7  13.4    56616  0.825 1.48e- 37 6.20e- 34  100  
+ 9 CMSS1   NEO      33.9  15.9   840013  0.824 1.13e-139 1.89e-135   99.4
+10 CMSS1   NEO      26.3  14.6   652640  0.809 2.86e- 97 4.80e- 93   99.6
+# ℹ 2 more variables: pct_out &lt;dbl&gt;, celltype &lt;fct&gt;</code></pre>
+<pre class="r"><code>DEG_NEO_CTRL_Seurat_df_sig %&gt;% group_by(celltype) %&gt;% slice_max(order_by = avg_log2FC, n = 10)</code></pre>
+<pre><code># A tibble: 59 × 7
+# Groups:   celltype [14]
+      p_val avg_log2FC pct.1 pct.2 p_val_adj feature celltype
+      &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;fct&gt;   
+ 1 7.76e-17       Inf  0.996 0.997  1.30e-12 CTSD    M1      
+ 2 2.58e-10       114. 0.991 0.989  4.34e- 6 FCER1G  M1      
+ 3 1.05e- 8      -151. 0.997 0.998  1.77e- 4 C1QB    M1      
+ 4 4.33e- 7       Inf  0.552 0.467  7.26e- 3 GPNMB   Mono1   
+ 5 3.56e-13      -207. 0.555 0.453  5.97e- 9 ARG1    Mono1   
+ 6 5.55e- 8      -313. 0.986 0.983  9.32e- 4 CSTB    Mono1   
+ 7 1.82e- 8       162. 1     1      3.06e- 4 PLXDC2  M2      
+ 8 3.96e-13       137. 1     1      6.64e- 9 ZFHX3   M2      
+ 9 1.11e-14       109. 0.956 0.936  1.86e-10 GLUL    M2      
+10 1.76e-18      -105. 0.943 0.955  2.96e-14 CSMD3   M2      
+# ℹ 49 more rows</code></pre>
+<pre class="r"><code># For each cluster, top DEGs between NEO and ADJ
+DEG_NEO_ADJ &lt;- lapply(unique(seurat_data$celltype), function(xx){
+  data_subset &lt;- subset(seurat_data, subset = celltype == xx)
+  if (all((c(&quot;NEO&quot;, &quot;ADJ&quot;) %in% data_subset$Treatment) == c(T, T))){
+    markers &lt;- presto::wilcoxauc(data_subset,
+                                 group_by = &quot;Treatment&quot;,
+                                 groups_use = c(&quot;NEO&quot;, &quot;ADJ&quot;),
+                                 assay = &quot;data&quot;,
+                                 seurat_assay = &quot;RNA_human&quot;)
+    markers$celltype &lt;- xx
+    
+    return(markers)
+  } else {
+    return(NULL)
+  }
+})
+names(DEG_NEO_ADJ) &lt;- unique(seurat_data$celltype)
+DEG_NEO_ADJ[sapply(DEG_NEO_ADJ, is.null)] &lt;- NULL
+
+DEG_NEO_ADJ_df &lt;- as.data.frame(do.call(rbind, DEG_NEO_ADJ))
+
+DEG_NEO_ADJ_df_sig &lt;- DEG_NEO_ADJ_df %&gt;%
+  filter(group == &quot;NEO&quot;,
+         padj &lt; 0.01,
+         auc &gt; 0.6,
+         (pct_in &gt; 50 | pct_out &gt; 50))
+
+# Saving to a file
+write.table(DEG_NEO_ADJ_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_sig.tsv&quot;,
+            sep = &quot;\t&quot;, quote = F, row.names = F)
+
+# Calling DEGs with Seurat
+DEG_NEO_ADJ_Seurat &lt;- lapply(unique(seurat_data$celltype), function(xx){
+  data_subset &lt;- subset(seurat_data, subset = celltype == xx)
+  Idents(data_subset) &lt;- data_subset$Treatment
+  if (all((c(&quot;NEO&quot;, &quot;ADJ&quot;) %in% data_subset$Treatment) == c(T, T))){
+    markers &lt;- FindMarkers(data_subset,
+                           ident.1 = &quot;NEO&quot;,
+                           ident.2 = &quot;ADJ&quot;,
+                           assay = &quot;RNA_human&quot;,
+                           verbose = F)
+    markers$feature &lt;- rownames(markers)
+    markers$celltype &lt;- xx
+    
+    return(markers)
+  } else {
+    return(NULL)
+  }
+})
+names(DEG_NEO_ADJ_Seurat) &lt;- unique(seurat_data$celltype)
+DEG_NEO_ADJ_Seurat[sapply(DEG_NEO_ADJ_Seurat, is.null)] &lt;- NULL
+
+DEG_NEO_ADJ_Seurat_df &lt;- as.data.frame(do.call(rbind, DEG_NEO_ADJ_Seurat))
+
+# Distribution of log2FC
+hist(DEG_NEO_ADJ_Seurat_df$avg_log2FC, breaks = 100)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-12.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DEG_NEO_ADJ_Seurat_df_sig &lt;- DEG_NEO_ADJ_Seurat_df %&gt;%
+  filter(p_val_adj &lt; 0.01,
+         abs(avg_log2FC) &gt; 100,
+         (pct.1 &gt; 0.50 | pct.2 &gt; 0.50))
+
+# Saving to a file
+write.table(DEG_NEO_ADJ_Seurat_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_Seurat_sig.tsv&quot;,
+            sep = &quot;\t&quot;, quote = F, row.names = F)
+
+# Plotting
+table(DEG_NEO_ADJ_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab(&quot;Cell type&quot;) +
+    ylab(&quot;# DEGs, NEO vs. ADJ, all timepoints&quot;)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-13.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>table(DEG_NEO_ADJ_Seurat_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab(&quot;Cell type&quot;) +
+    ylab(&quot;# DEGs, NEO vs. ADJ, all timepoints, Seurat&quot;)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-14.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Top DEGs for each cluster
+DEG_NEO_ADJ_df_sig %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 10)</code></pre>
+<pre><code># A tibble: 10 × 11
+# Groups:   group [1]
+   feature group avgExpr logFC statistic   auc      pval      padj pct_in
+   &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+ 1 LARS2   NEO     15.7   8.61    50174  0.829 1.65e- 36 2.77e- 32  100  
+ 2 GPHN    NEO     16.1   7.16   566186  0.815 1.84e- 99 3.09e- 95   99.8
+ 3 GPHN    NEO     29.5  13.7     48887  0.808 4.29e- 32 3.60e- 28  100  
+ 4 LARS2   NEO      9.96  4.93   945333  0.796 2.68e-127 4.50e-123   99.5
+ 5 LARS2   NEO      8.53  4.15   551043  0.793 1.06e- 86 8.90e- 83   99.5
+ 6 LARS2   NEO      9.55  4.33   428586  0.771 1.55e- 68 2.60e- 64   98.6
+ 7 LARS2   NEO      6.01  3.39   364471  0.770 1.68e- 62 2.82e- 58   96.4
+ 8 LARS2   NEO      6.97  3.45   132052  0.768 1.99e- 39 3.35e- 35   99.3
+ 9 GPHN    NEO     18.6   7.56   910148. 0.767 4.19e-103 3.52e- 99   99.5
+10 LARS2   NEO      7.71  3.53   513471  0.760 1.28e- 70 2.16e- 66   99.5
+# ℹ 2 more variables: pct_out &lt;dbl&gt;, celltype &lt;fct&gt;</code></pre>
+<pre class="r"><code>DEG_NEO_ADJ_Seurat_df_sig %&gt;% group_by(celltype) %&gt;% slice_max(order_by = avg_log2FC, n = 10)</code></pre>
+<pre><code># A tibble: 112 × 7
+# Groups:   celltype [17]
+      p_val avg_log2FC pct.1 pct.2 p_val_adj feature celltype
+      &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;fct&gt;   
+ 1 8.83e-17       Inf  0.998 0.996  1.48e-12 FTH1    M1      
+ 2 1.11e-16       Inf  0.946 0.971  1.87e-12 LYZ     M1      
+ 3 3.68e-10       190. 0.991 0.994  6.18e- 6 FCER1G  M1      
+ 4 2.16e- 9       112. 0.981 0.994  3.63e- 5 CYBA    M1      
+ 5 1.53e-12       106. 0.985 0.992  2.56e- 8 FTL     M1      
+ 6 3.25e-38      -133. 0.997 0.999  5.45e-34 C1QB    M1      
+ 7 6.13e-32      -136. 0.999 1      1.03e-27 LY86    M1      
+ 8 7.38e-31      -155. 0.996 0.997  1.24e-26 C1QC    M1      
+ 9 5.06e- 9      -194. 0.999 0.997  8.49e- 5 PLXDC2  M1      
+10 1.75e-37       Inf  0.997 0.998  2.94e-33 ATP6    Mono1   
+# ℹ 102 more rows</code></pre>
+<pre class="r"><code># For each cluster, top DEGs between ADJ and CTRL
+DEG_ADJ_CTRL &lt;- lapply(unique(seurat_data$celltype), function(xx){
+  data_subset &lt;- subset(seurat_data, subset = celltype == xx)
+  if (all((c(&quot;ADJ&quot;, &quot;CTRL&quot;) %in% data_subset$Treatment) == c(T, T))){
+    markers &lt;- presto::wilcoxauc(data_subset,
+                                 group_by = &quot;Treatment&quot;,
+                                 groups_use = c(&quot;ADJ&quot;, &quot;CTRL&quot;),
+                                 assay = &quot;data&quot;,
+                                 seurat_assay = &quot;RNA_human&quot;)
+    #Idents(data_subset) &lt;- data_subset$Treatment
+    #markers &lt;- FindMarkers(data_subset,
+    #                       group.by = &quot;celltype&quot;,
+    #                       ident.1 = &quot;ADJ&quot;,
+    #                       ident.2 = &quot;CTRL&quot;)
+    markers$celltype &lt;- xx
+    
+    return(markers)
+  } else {
+    return(NULL)
+  }
+})
+names(DEG_ADJ_CTRL) &lt;- unique(seurat_data$celltype)
+DEG_ADJ_CTRL[sapply(DEG_ADJ_CTRL, is.null)] &lt;- NULL
+
+DEG_ADJ_CTRL_df &lt;- as.data.frame(do.call(rbind, DEG_ADJ_CTRL))
+
+DEG_ADJ_CTRL_df_sig &lt;- DEG_ADJ_CTRL_df %&gt;%
+  filter(group == &quot;NEO&quot;,
+         padj &lt; 0.01,
+         auc &gt; 0.6,
+         (pct_in &gt; 50 | pct_out &gt; 50))
+
+# Saving to a file
+write.table(DEG_ADJ_CTRL_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_sig.tsv&quot;,
+            sep = &quot;\t&quot;, quote = F, row.names = F)
+
+# Comparing to the Seurat function
+DEG_ADJ_CTRL_Seurat &lt;- lapply(unique(seurat_data$celltype), function(xx){
+  data_subset &lt;- subset(seurat_data, subset = celltype == xx)
+  Idents(data_subset) &lt;- data_subset$Treatment
+  if (all((c(&quot;ADJ&quot;, &quot;CTRL&quot;) %in% data_subset$Treatment) == c(T, T))){
+    markers &lt;- FindMarkers(data_subset,
+                           ident.1 = &quot;ADJ&quot;,
+                           ident.2 = &quot;CTRL&quot;,
+                           assay = &quot;RNA_human&quot;,
+                           verbose = F)
+    markers$feature &lt;- rownames(markers)
+    markers$celltype &lt;- xx
+    
+    return(markers)
+  } else {
+    return(NULL)
+  }
+})
+names(DEG_ADJ_CTRL_Seurat) &lt;- unique(seurat_data$celltype)
+DEG_ADJ_CTRL_Seurat[sapply(DEG_ADJ_CTRL_Seurat, is.null)] &lt;- NULL
+
+DEG_ADJ_CTRL_Seurat_df &lt;- as.data.frame(do.call(rbind, DEG_ADJ_CTRL_Seurat))
+
+# Distribution of log2FC
+hist(DEG_ADJ_CTRL_Seurat_df$avg_log2FC, breaks = 100)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-15.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>DEG_ADJ_CTRL_Seurat_df_sig &lt;- DEG_ADJ_CTRL_Seurat_df %&gt;%
+  filter(p_val_adj &lt; 0.01,
+         abs(avg_log2FC) &gt; 100,
+         (pct.1 &gt; 0.50 | pct.2 &gt; 0.50))
+
+# Saving to a file
+write.table(DEG_ADJ_CTRL_Seurat_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_Seurat_sig.tsv&quot;,
+            sep = &quot;\t&quot;, quote = F, row.names = F)
+
+# Plotting
+table(DEG_ADJ_CTRL_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab(&quot;Cell type&quot;) +
+    ylab(&quot;# DEGs, ADJ vs. CTRL, all timepoints, Presto&quot;)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-16.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>table(DEG_ADJ_CTRL_Seurat_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab(&quot;Cell type&quot;) +
+    ylab(&quot;# DEGs, ADJ vs. CTRL, all timepoints, Seurat&quot;)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-17.png" width="672" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Top DEGs for each cluster
 DEG_ADJ_CTRL_df_sig %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 10)</code></pre>
 <pre><code># A tibble: 0 × 11
@@ -2203,222 +2451,139 @@ DEG_ADJ_CTRL_df_sig %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 
 # ℹ 11 variables: feature &lt;chr&gt;, group &lt;chr&gt;, avgExpr &lt;dbl&gt;, logFC &lt;dbl&gt;,
 #   statistic &lt;dbl&gt;, auc &lt;dbl&gt;, pval &lt;dbl&gt;, padj &lt;dbl&gt;, pct_in &lt;dbl&gt;,
 #   pct_out &lt;dbl&gt;, celltype &lt;fct&gt;</code></pre>
+<pre class="r"><code>DEG_ADJ_CTRL_Seurat_df_sig %&gt;% group_by(celltype) %&gt;% slice_max(order_by = avg_log2FC, n = 10)</code></pre>
+<pre><code># A tibble: 104 × 7
+# Groups:   celltype [18]
+      p_val avg_log2FC pct.1 pct.2 p_val_adj feature celltype
+      &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;fct&gt;   
+ 1 7.63e-13       Inf  1     0.997  1.28e- 8 CTSD    M1      
+ 2 1.21e-28       190. 0.994 0.991  2.03e-24 EEF1A1  M1      
+ 3 1.68e- 9       152. 1     0.999  2.82e- 5 COX3    M1      
+ 4 3.81e-22       113. 1     0.999  6.39e-18 CTSS    M1      
+ 5 1.76e- 7      -108. 0.985 0.977  2.95e- 3 SSH2    M1      
+ 6 1.67e- 7      -109. 0.965 0.945  2.80e- 3 NPM1    M1      
+ 7 9.51e- 8      -132. 0.989 0.992  1.60e- 3 ZFHX3   M1      
+ 8 1.38e-16      -148. 1     1      2.32e-12 HEXB    M1      
+ 9 5.61e-22      -191. 1     0.999  9.42e-18 LY86    M1      
+10 1.07e- 8      -Inf  0.996 0.994  1.80e- 4 FTH1    M1      
+# ℹ 94 more rows</code></pre>
 <pre class="r"><code># Overlap of DEGs between NEO vs. CTRL and NEO vs. ADJ
 intersect(DEG_NEO_ADJ_df_sig$feature, DEG_NEO_CTRL_df_sig$feature)</code></pre>
-<pre><code> [1] &quot;CAMK1D&quot;  &quot;CDK8&quot;    &quot;LARS2&quot;   &quot;GPHN&quot;    &quot;CMSS1&quot;   &quot;DDX5&quot;    &quot;LYZ&quot;    
- [8] &quot;ZFP36L2&quot; &quot;ATP8&quot;    &quot;TMSB10&quot;  &quot;LGALS1&quot;  &quot;FAU&quot;    </code></pre>
+<pre><code>[1] &quot;CAMK1D&quot; &quot;LARS2&quot;  &quot;GPHN&quot;   &quot;CMSS1&quot;  &quot;MALAT1&quot; &quot;FAU&quot;   </code></pre>
 <pre class="r"><code>inner_join(DEG_NEO_ADJ_df_sig, DEG_NEO_CTRL_df_sig, by = c(&#39;feature&#39;,&#39;celltype&#39;))</code></pre>
-<pre><code>   feature group.x avgExpr.x    logFC.x statistic.x     auc.x        pval.x
-1   CAMK1D     NEO 11.062088  3.0137447    757348.5 0.6378364  6.062531e-29
-2     CDK8     NEO  4.822201  1.7407331    822949.0 0.6930850  9.717124e-56
-3    LARS2     NEO  9.962371  4.9265604    945333.0 0.7961564 2.683037e-127
-4     GPHN     NEO 18.617121  7.5553487    910147.5 0.7665233 4.191093e-103
-5    CMSS1     NEO 44.070555 12.2639301    820416.0 0.6909517  9.241756e-54
-6     CDK8     NEO  3.570937  1.0731344    832763.5 0.6302512  4.010327e-27
-7    LARS2     NEO  5.017906  2.1563679    962711.5 0.7285983  2.745044e-79
-8     DDX5     NEO 16.255510  3.4423228    834645.0 0.6316751  3.529407e-27
-9     GPHN     NEO 11.600551  3.3104411    929246.0 0.7032710  1.859516e-62
-10   CMSS1     NEO 20.842287  6.8818469    975180.5 0.7380351  8.505467e-85
-11  CAMK1D     NEO 23.737778 10.8121272     45402.0 0.7501363  9.010737e-22
-12    CDK8     NEO  7.213333  2.5479058     41600.0 0.6873193  5.775778e-13
-13   LARS2     NEO 15.742222  8.6083932     50174.0 0.8289798  1.652220e-36
-14    GPHN     NEO 29.484444 13.6926229     48887.0 0.8077158  4.291708e-32
-15   CMSS1     NEO 58.764444 18.5228088     43418.5 0.7173647  8.288666e-17
-16 ZFP36L2     NEO  5.302222  1.7631888     36891.0 0.6095167  2.422135e-05
-17    ATP8     NEO  2.297778  1.1007518     38038.0 0.6284676  3.940878e-07
-18    CDK8     NEO  3.466441  1.0601359    512968.0 0.6090629  1.024617e-14
-19   LARS2     NEO  7.044746  3.2461468    586130.0 0.6959304  2.274650e-43
-20    GPHN     NEO 13.610847  4.7807249    557291.5 0.6616896  5.786252e-30
-21    CDK8     NEO  2.781981  1.1232506    226347.5 0.6177472  1.362336e-09
-22    CDK8     NEO  5.878049  1.6330289    353787.0 0.6366350  9.703446e-19
-23   LARS2     NEO  9.551942  4.3348107    428586.0 0.7712348  1.550526e-68
-24    GPHN     NEO 20.196929  6.2805940    395245.0 0.7112382  3.821126e-42
-25   CMSS1     NEO 33.936766  9.0801923    386584.5 0.6956537  2.241076e-36
-26    CDK8     NEO  3.267631  0.8464092    104700.0 0.6087811  7.700787e-08
-27   LARS2     NEO  6.971067  3.4501666    132052.0 0.7678201  1.994846e-39
-28    GPHN     NEO 13.737794  5.2297553    123615.0 0.7187629  1.036320e-26
-29   CMSS1     NEO 28.529837  7.5105446    113774.5 0.6615450  2.933183e-15
-30   LARS2     NEO  7.269430  3.2958153    218405.0 0.7464592  1.862468e-42
-31    GPHN     NEO 14.725389  5.8045443    219718.5 0.7509484  9.626371e-44
-32   CMSS1     NEO 28.637306  8.0673849    203700.0 0.6962008  2.334658e-27
-33  CAMK1D     NEO  8.491461  4.4513720    328364.0 0.6938548  5.135574e-33
-34    CDK8     NEO  2.437381  1.0253547    306052.5 0.6467091  3.208599e-20
-35   LARS2     NEO  6.007590  3.3906636    364471.0 0.7701513  1.679593e-62
-36    GPHN     NEO 10.442125  4.8719693    355331.0 0.7508378  8.632324e-54
-37   CMSS1     NEO 20.090133  6.0389079    319232.5 0.6745593  7.146759e-27
-38   LARS2     NEO  6.119152  2.6907112   1237816.5 0.7084289  3.489257e-76
-39    GPHN     NEO 12.467873  4.0733773   1185100.5 0.6782584  7.151164e-56
-40   CMSS1     NEO 21.711790  6.0934418   1172275.5 0.6709183  1.980533e-51
-41  CAMK1D     NEO  7.564696  1.6994108    412881.5 0.6110490  3.182918e-14
-42    CDK8     NEO  3.492716  1.0833899    421943.0 0.6244596  1.059626e-17
-43   LARS2     NEO  7.706084  3.5316453    513471.0 0.7599176  1.284174e-70
-44    GPHN     NEO 13.816624  4.9064338    485582.0 0.7186429  2.684392e-50
-45  CAMK1D     NEO  7.130019  2.4614798     60768.0 0.6527596  9.313598e-10
-46   LARS2     NEO  5.032505  2.2740778     64652.0 0.6944808  5.912297e-15
-47    GPHN     NEO 11.508604  2.7838851     57837.5 0.6212806  1.269981e-06
-48   CMSS1     NEO 19.263862  4.3593680     57340.5 0.6159420  3.704360e-06
-49   LARS2     NEO  4.844380  1.7566611     39813.5 0.6709726  1.853208e-10
-50    GPHN     NEO 11.746398  2.6352866     36822.0 0.6205572  7.802859e-06
-51   CMSS1     NEO 19.994236  4.9240609     38064.5 0.6414969  1.577997e-07
-52   LARS2     NEO  9.563071  4.5286676    900825.5 0.7554346  3.162214e-66
-53    GPHN     NEO 16.444973  6.4747891    889242.0 0.7457206  2.748041e-61
-54   CMSS1     NEO 32.620841  6.4579969    744954.0 0.6247203  5.337960e-17
-55  CAMK1D     NEO 14.564724  2.6559784    427605.5 0.6153961  8.513314e-15
-56    CDK8     NEO  3.319455  1.1160329    446755.0 0.6429554  2.528697e-22
-57   LARS2     NEO  8.533687  4.1534585    551043.0 0.7930434  1.060863e-86
-58    GPHN     NEO 16.146101  7.1575083    566186.0 0.8148367  1.840011e-99
-59   CMSS1     NEO 30.891749  8.9811023    501512.0 0.7217599  3.238796e-50
-60  CAMK1D     NEO 14.536145  5.6158259     80131.5 0.6410623  2.649438e-10
-61    CDK8     NEO  3.441767  1.5214483     83544.5 0.6683667  2.498811e-14
-62  TMSB10     NEO 19.967871  7.7288277     80910.0 0.6472904  3.170884e-11
-63   LARS2     NEO  8.594378  3.6860110     89463.5 0.7157195  3.954768e-22
-64    GPHN     NEO 15.508032  6.6554425     87893.5 0.7031593  9.667077e-20
-65   CMSS1     NEO 26.307229  9.7215715     88103.0 0.7048353  5.031976e-20
-66    CDK8     NEO  5.136585  1.2615854     60141.0 0.6111890  1.296738e-05
-67   LARS2     NEO 10.097561  3.9850610     71357.0 0.7251728  1.354335e-18
-68    GPHN     NEO 20.258537  5.1897866     67236.0 0.6832927  8.353056e-13
-69   CMSS1     NEO 32.042276  6.9297764     63913.5 0.6495274  5.389344e-09
-          padj.x  pct_in.x pct_out.x celltype group.y avgExpr.y    logFC.y
-1   2.482237e-26  99.81185  99.28380       L2     NEO 11.062088  4.7864903
-2   4.078034e-52  96.89558  90.51030       L2     NEO  4.822201  2.6212444
-3  4.504015e-123  99.52963  97.58281       L2     NEO  9.962371  6.1068683
-4   3.517794e-99  99.52963  99.73142       L2     NEO 18.617121  9.5740592
-5   3.102827e-50  99.81185  99.82095       L2     NEO 44.070555 25.8456747
-6   9.617338e-24  93.66391  86.26374       M2     NEO  3.570937  1.4809734
-7   2.304053e-75  97.17631  89.12088       M2     NEO  5.017906  2.5307582
-8   9.617338e-24  99.93113  99.89011       M2     NEO 16.255510  3.2218499
-9   1.040523e-58  99.38017  99.56044       M2     NEO 11.600551  4.7260100
-10  1.427813e-80  99.10468  99.67033       M2     NEO 20.842287 11.6305362
-11  5.042108e-18 100.00000  99.62825       L3     NEO 23.737778 13.3738434
-12  1.939160e-09  98.66667  96.28253       L3     NEO  7.213333  4.0198907
-13  2.773581e-32 100.00000  98.51301       L3     NEO 15.742222 10.2143534
-14  3.602245e-28 100.00000  98.88476       L3     NEO 29.484444 17.0811658
-15  3.478546e-13 100.00000 100.00000       L3     NEO 58.764444 35.8791985
-16  3.872418e-03  92.44444  86.98885       L3     NEO  5.302222  2.1087796
-17  2.788012e-04  73.77778  62.45353       L3     NEO  2.297778  1.0420401
-18  1.421507e-12  87.45763  83.01226       L1     NEO  3.466441  1.9798210
-19  3.818455e-39  94.37288  92.46935       L1     NEO  7.044746  4.2686894
-20  1.079265e-26  97.55932  98.94921       L1     NEO 13.610847  7.3080306
-21  3.792625e-08  79.57359  70.63492       M5     NEO  2.781981  0.9037853
-22  2.327025e-15  97.47064  95.41833       M4     NEO  5.878049  1.7846720
-23  2.602867e-64  98.55465  97.80876       M4     NEO  9.551942  3.5932017
-24  3.207262e-38  99.36766  99.60159       M4     NEO 20.196929  6.5389482
-25  1.254031e-32  99.36766  99.20319       M4     NEO 33.936766 15.8911634
-26  2.585462e-05  90.41591  82.63666       B1     NEO  3.267631  1.3098846
-27  3.348749e-35  99.27667  91.96141       B1     NEO  6.971067  3.2245880
-28  8.698352e-23  99.81917  99.35691       B1     NEO 13.737794  5.3803995
-29  1.230984e-11  99.63834 100.00000       B1     NEO 28.529837 13.5879358
-30  1.563263e-38  99.09326  93.66755       DC     NEO  7.269430  3.1879294
-31  1.615979e-39  99.22280  98.94459       DC     NEO 14.725389  6.2027495
-32  1.306397e-23  99.87047  99.73615       DC     NEO 28.637306 14.1573574
-33  2.155272e-29  95.73055  83.96437       M3     NEO  8.491461  3.0778532
-34  3.366422e-17  80.92979  65.03341       M3     NEO  2.437381  1.1777574
-35  2.819533e-58  96.39469  86.63697       M3     NEO  6.007590  3.2752714
-36  7.245541e-50  98.86148  94.20935       M3     NEO 10.442125  5.2290545
-37  1.333029e-23  99.43074  98.44098       M3     NEO 20.090133 10.5834184
-38  5.857415e-72  94.94697  91.28440       M1     NEO  6.119152  2.9314493
-39  6.002329e-52  98.00374  98.53211       M1     NEO 12.467873  4.9981548
-40  1.108240e-47  97.87898  99.26606       M1     NEO 21.711790 11.2351376
-41  2.323115e-12  98.97172  98.61831       NK     NEO  7.564696  3.1352603
-42  1.400625e-15  91.51671  84.45596       NK     NEO  3.492716  1.8435228
-43  2.155743e-66  99.48586  95.50950       NK     NEO  7.706084  4.3058824
-44  9.012579e-47  99.74293  99.13644       NK     NEO 13.816624  6.3771077
-45  3.908684e-06  95.21989  86.51685     Treg     NEO  7.130019  0.9419193
-46  4.962486e-11  94.07266  87.64045     Treg     NEO  5.032505  1.9346161
-47  1.254069e-03  98.66157  96.06742     Treg     NEO 11.508604  3.0268384
-48  2.591046e-03  99.61759  99.43820     Treg     NEO 19.263862  8.4193326
-49  3.888726e-07  92.50720  87.13450       B2     NEO  4.844380  1.9756304
-50  4.920942e-04  97.98271  98.24561       B2     NEO 11.746398  4.0088977
-51  4.647341e-05  98.84726 100.00000       B2     NEO 19.994236  9.4848613
-52  5.308408e-62  99.19561  93.11927    Mono1     NEO  9.563071  4.1136253
-53  2.306568e-57  99.67093  99.08257    Mono1     NEO 16.444973  6.5904019
-54  1.066766e-14  99.74406  99.54128    Mono1     NEO 32.620841 14.6797052
-55  1.190942e-12  99.69720  99.42966    Neut1     NEO 14.564724  3.6608519
-56  1.212835e-19  91.44587  85.36122    Neut1     NEO  3.319455  1.2567046
-57  8.904350e-83  99.47010  95.62738    Neut1     NEO  8.533687  3.4348882
-58  3.088826e-95  99.84860  99.23954    Neut1     NEO 16.146101  6.4137917
-59  1.359242e-46 100.00000  99.80989    Neut1     NEO 30.891749 12.6046993
-60  4.941791e-07  97.38956  96.01594     NOS1     NEO 14.536145  5.9079790
-61  1.048689e-10  88.15261  70.91633     NOS1     NEO  3.441767  1.7493644
-62  7.604232e-08  86.14458  57.76892     NOS1     NEO 19.967871  4.8146905
-63  6.638868e-18  98.79518  94.42231     NOS1     NEO  8.594378  4.5079044
-64  5.409374e-16  99.19679  96.01594     NOS1     NEO 15.508032  7.9669574
-65  4.223589e-16  99.59839  99.60159     NOS1     NEO 26.307229 14.6364445
-66  4.154265e-04  96.74797  94.37500       M7     NEO  5.136585  1.5236821
-67  1.647483e-14  99.51220  96.87500       M7     NEO 10.097561  2.9759729
-68  7.790153e-10  99.83740 100.00000       M7     NEO 20.258537  6.2932760
-69  1.159884e-06  99.67480 100.00000       M7     NEO 32.042276 12.9281325
+<pre><code>   feature group.x avgExpr.x   logFC.x statistic.x     auc.x       pval.x
+1    CMSS1     NEO  44.07056 12.263930    820416.0 0.6909517 9.241756e-54
+2    CMSS1     NEO  20.84229  6.881847    975180.5 0.7380351 8.505467e-85
+3   CAMK1D     NEO  23.73778 10.812127     45402.0 0.7501363 9.010737e-22
+4    LARS2     NEO  15.74222  8.608393     50174.0 0.8289798 1.652220e-36
+5     GPHN     NEO  29.48444 13.692623     48887.0 0.8077158 4.291708e-32
+6    CMSS1     NEO  58.76444 18.522809     43418.5 0.7173647 8.288666e-17
+7    CMSS1     NEO  33.93677  9.080192    386584.5 0.6956537 2.241076e-36
+8    CMSS1     NEO  28.52984  7.510545    113774.5 0.6615450 2.933183e-15
+9    CMSS1     NEO  28.63731  8.067385    203700.0 0.6962008 2.334658e-27
+10   CMSS1     NEO  20.09013  6.038908    319232.5 0.6745593 7.146759e-27
+11  MALAT1     NEO  75.67647 42.574021    328727.5 0.6946229 5.706574e-34
+12   CMSS1     NEO  21.71179  6.093442   1172275.5 0.6709183 1.980533e-51
+13   CMSS1     NEO  32.62084  6.457997    744954.0 0.6247203 5.337960e-17
+14   CMSS1     NEO  30.89175  8.981102    501512.0 0.7217599 3.238796e-50
+15   CMSS1     NEO  26.30723  9.721572     88103.0 0.7048353 5.031976e-20
+16     FAU     NEO  46.76305 12.639546     75466.5 0.6037417 3.482375e-06
+17   CMSS1     NEO  32.04228  6.929776     63913.5 0.6495274 5.389344e-09
+         padj.x  pct_in.x pct_out.x celltype group.y avgExpr.y  logFC.y
+1  3.102827e-50  99.81185  99.82095       L2     NEO  44.07056 25.84567
+2  1.427813e-80  99.10468  99.67033       M2     NEO  20.84229 11.63054
+3  5.042108e-18 100.00000  99.62825       L3     NEO  23.73778 13.37384
+4  2.773581e-32 100.00000  98.51301       L3     NEO  15.74222 10.21435
+5  3.602245e-28 100.00000  98.88476       L3     NEO  29.48444 17.08117
+6  3.478546e-13 100.00000 100.00000       L3     NEO  58.76444 35.87920
+7  1.254031e-32  99.36766  99.20319       M4     NEO  33.93677 15.89116
+8  1.230984e-11  99.63834 100.00000       B1     NEO  28.52984 13.58794
+9  1.306397e-23  99.87047  99.73615       DC     NEO  28.63731 14.15736
+10 1.333029e-23  99.43074  98.44098       M3     NEO  20.09013 10.58342
+11 3.193208e-30  81.59393  53.22940       M3     NEO  75.67647 17.17781
+12 1.108240e-47  97.87898  99.26606       M1     NEO  21.71179 11.23514
+13 1.066766e-14  99.74406  99.54128    Mono1     NEO  32.62084 14.67971
+14 1.359242e-46 100.00000  99.80989    Neut1     NEO  30.89175 12.60470
+15 4.223589e-16  99.59839  99.60159     NOS1     NEO  26.30723 14.63644
+16 2.435776e-03  99.59839  98.00797     NOS1     NEO  46.76305 10.81802
+17 1.159884e-06  99.67480 100.00000       M7     NEO  32.04228 12.92813
    statistic.y     auc.y        pval.y        padj.y  pct_in.y pct_out.y
-1     831756.5 0.7487669  2.081192e-87  6.987393e-84  99.81185  97.03349
-2     872384.0 0.7853408 1.054714e-115 4.426372e-112  96.89558  80.66986
-3     958116.0 0.8625187 1.338407e-183 1.123392e-179  99.52963  93.58852
-4     931093.5 0.8381924 1.666204e-159 9.323520e-156  99.52963  99.61722
-5     982892.0 0.8848227 1.226684e-205 2.059235e-201  99.81185  99.90431
-6    1637025.0 0.6899802  3.611639e-76  1.010476e-72  93.66391  78.76377
-7    1817044.0 0.7658554 4.879355e-146 4.095487e-142  97.17631  85.31212
-8    1476188.5 0.6221902  7.252338e-32  1.217450e-28  99.93113  99.81640
-9    1788020.0 0.7536222 1.692994e-131 9.473432e-128  99.38017  98.22521
-10   2089805.0 0.8808199 2.906263e-293 4.878744e-289  99.10468  99.26561
-11     56616.0 0.8250055  1.476869e-37  6.198049e-34 100.00000  99.34426
-12     55537.0 0.8092823  1.785059e-34  5.993158e-31  98.66667  90.49180
-13     60629.0 0.8834827  1.068388e-51  8.967513e-48 100.00000  96.72131
-14     59891.5 0.8727359  7.992881e-49  4.472550e-45 100.00000  99.67213
-15     61586.0 0.8974281  3.141033e-55  5.272852e-51 100.00000 100.00000
-16     44266.0 0.6450419  8.489850e-09  2.035987e-05  92.44444  87.21311
-17     43367.0 0.6319417  7.927462e-08  1.330783e-04  73.77778  59.01639
-18   1521989.5 0.7266601 6.194616e-102  2.599726e-98  87.45763  71.33803
-19   1619946.0 0.7734285 1.744941e-144 1.464616e-140  94.37288  85.14085
-20   1595400.0 0.7617092 1.199379e-131 6.711324e-128  97.55932  96.83099
-21    587427.5 0.6075307  6.461606e-16  3.615699e-12  79.57359  68.87218
-22    667363.0 0.6545682  1.663502e-33  6.981301e-30  97.47064  91.53094
-23    737042.0 0.7229113  2.041122e-67  1.713215e-63  98.55465  95.76547
-24    731175.5 0.7171572  7.062540e-64  3.951962e-60  99.36766  99.34853
-25    840013.0 0.8239081 1.128347e-139 1.894157e-135  99.36766  99.56569
-26    210377.0 0.6697686  1.947393e-23  8.172721e-20  90.41591  75.70423
-27    234467.0 0.7464630  1.168909e-46  9.811239e-43  99.27667  89.26056
-28    225749.0 0.7187078  6.582373e-37  3.683276e-33  99.81917  98.41549
-29    248815.5 0.7921437  2.317253e-64  3.889973e-60  99.63834  99.47183
-30    442666.0 0.7417873  2.516746e-61  1.408287e-57  99.09326  93.66106
-31    460826.0 0.7722185  8.219998e-77  6.899456e-73  99.22280  99.09444
-32    496041.0 0.8312292 1.297642e-112 2.178352e-108  99.87047  99.87063
-33    810976.0 0.6888334  5.301554e-53  1.779944e-49  95.73055  81.37869
-34    800581.0 0.6800040  1.477710e-50  4.134386e-47  80.92979  55.05819
-35    901714.0 0.7659052 2.992672e-103  1.674600e-99  96.39469  79.40913
-36    904114.5 0.7679442 5.396994e-104 4.529967e-100  98.86148  91.94270
-37    950305.0 0.8071778 1.119818e-135 1.879838e-131  99.43074  97.67234
-38   2546302.0 0.7343784 1.920099e-135 1.611635e-131  94.94697  86.87009
-39   2491258.5 0.7185033 4.993611e-117 2.095694e-113  98.00374  96.76375
-40   2802830.5 0.8083637 1.160786e-230 1.948611e-226  97.87898  98.01202
-41    834276.0 0.7206547  1.391072e-70  4.670384e-67  98.97172  94.25403
-42    845298.0 0.7301756  4.484212e-78  1.881912e-74  91.51671  74.59677
-43    949812.5 0.8204561 9.503126e-147 7.976449e-143  99.48586  92.54032
-44    910541.5 0.7865335 3.776116e-117 2.112989e-113  99.74293  98.28629
-45    165106.5 0.6059332  2.617708e-09  6.277639e-06  95.21989  87.90787
-46    182473.5 0.6696693  1.222003e-21  1.025688e-17  94.07266  84.45298
-47    172871.5 0.6344304  5.052816e-14  2.120541e-10  98.66157  96.92898
-48    197674.0 0.7254544  1.640660e-36  2.754175e-32  99.61759  97.69674
-49     75587.5 0.6807232  4.288293e-16  1.799689e-12  92.50720  84.37500
-50     75936.0 0.6838617  1.979468e-16  1.107644e-12  97.98271  97.81250
-51     83371.0 0.7508195  3.726488e-29  6.255655e-25  98.84726  98.12500
-52   2886492.5 0.7308797 5.169575e-134 2.892722e-130  99.19561  94.11357
-53   2962184.0 0.7500453 1.926773e-156 1.617237e-152  99.67093  98.82271
-54   3113471.0 0.7883522 4.053702e-207 6.804950e-203  99.74406  99.51524
-55   1286096.5 0.6499185  3.715938e-43  8.911350e-40  99.69720  98.99866
-56   1316577.0 0.6653216  2.207515e-53  9.264387e-50  91.44587  81.17490
-57   1459080.0 0.7373344 9.204010e-106 5.150257e-102  99.47010  95.19359
-58   1538549.5 0.7774936 2.413804e-143 2.026026e-139  99.84860  99.59947
-59   1575695.0 0.7962648 7.367929e-163 1.236854e-158 100.00000  99.73298
-60    544000.5 0.6747193  2.448072e-32  8.219157e-29  97.38956  89.93206
-61    568692.5 0.7053445  4.676288e-46  1.962521e-42  88.15261  60.90179
-62    484123.5 0.6004543  6.064317e-12  2.908620e-09  86.14458  67.57258
-63    608845.0 0.7551453  2.780395e-67  2.333724e-63  98.79518  88.88203
-64    602634.5 0.7474425  5.483430e-63  3.068344e-59  99.19679  94.99691
-65    652640.0 0.8094639  2.858738e-97  4.798963e-93  99.59839  97.89994
-66    158844.0 0.6409006  1.872257e-14  7.857396e-11  96.74797  90.07444
-67    167065.0 0.6740705  4.265138e-21  2.386629e-17  99.51220  99.00744
-68    177326.0 0.7154714  2.311825e-31  1.940430e-27  99.83740  99.75186
-69    194134.5 0.7832900  6.583250e-53  1.105130e-48  99.67480  99.75186</code></pre>
+1     982892.0 0.8848227 1.226684e-205 2.059235e-201  99.81185  99.90431
+2    2089805.0 0.8808199 2.906263e-293 4.878744e-289  99.10468  99.26561
+3      56616.0 0.8250055  1.476869e-37  6.198049e-34 100.00000  99.34426
+4      60629.0 0.8834827  1.068388e-51  8.967513e-48 100.00000  96.72131
+5      59891.5 0.8727359  7.992881e-49  4.472550e-45 100.00000  99.67213
+6      61586.0 0.8974281  3.141033e-55  5.272852e-51 100.00000 100.00000
+7     840013.0 0.8239081 1.128347e-139 1.894157e-135  99.36766  99.56569
+8     248815.5 0.7921437  2.317253e-64  3.889973e-60  99.63834  99.47183
+9     496041.0 0.8312292 1.297642e-112 2.178352e-108  99.87047  99.87063
+10    950305.0 0.8071778 1.119818e-135 1.879838e-131  99.43074  97.67234
+11    695588.5 0.5908247  1.072953e-13  1.500972e-10  81.59393  67.94987
+12   2802830.5 0.8083637 1.160786e-230 1.948611e-226  97.87898  98.01202
+13   3113471.0 0.7883522 4.053702e-207 6.804950e-203  99.74406  99.51524
+14   1575695.0 0.7962648 7.367929e-163 1.236854e-158 100.00000  99.73298
+15    652640.0 0.8094639  2.858738e-97  4.798963e-93  99.59839  97.89994
+16    474496.0 0.5885134  2.183414e-09  4.822760e-07  99.59839  99.19704
+17    194134.5 0.7832900  6.583250e-53  1.105130e-48  99.67480  99.75186</code></pre>
 <pre class="r"><code>write.table(inner_join(DEG_NEO_ADJ_df_sig, DEG_NEO_CTRL_df_sig, by = c(&#39;feature&#39;,&#39;celltype&#39;)),
+            &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_CTRL_overlap.tsv&quot;,
+            sep = &quot;\t&quot;, quote = F, row.names = F)
+
+# Overlap with Seurat
+intersect(DEG_NEO_ADJ_Seurat_df_sig$feature, DEG_NEO_CTRL_Seurat_df_sig$feature)</code></pre>
+<pre><code> [1] &quot;EEF1A1&quot; &quot;COX3&quot;   &quot;ATP6&quot;   &quot;COX1&quot;   &quot;ACTG1&quot;  &quot;ND4&quot;    &quot;TMSB10&quot; &quot;FAU&quot;   
+ [9] &quot;GPHN&quot;   &quot;HEXB&quot;   &quot;NAV3&quot;   &quot;LY86&quot;   &quot;C1QA&quot;   &quot;CST3&quot;   &quot;ACTB&quot;   &quot;PLXDC2&quot;
+[17] &quot;LARS2&quot;  &quot;CMSS1&quot;  &quot;PLAC8&quot;  &quot;FCER1G&quot; &quot;ITM2B&quot;  &quot;IFITM3&quot; &quot;UBB&quot;    &quot;PTMA&quot;  
+[25] &quot;CTSD&quot;   &quot;CD74&quot;   &quot;LYZ&quot;    &quot;C1QB&quot;   &quot;C1QC&quot;   &quot;GPNMB&quot;  &quot;CSTB&quot;   &quot;CAMK1D&quot;
+[33] &quot;CSMD3&quot; </code></pre>
+<pre class="r"><code>inner_join(DEG_NEO_ADJ_Seurat_df_sig, DEG_NEO_CTRL_Seurat_df_sig,
+           by = c(&#39;feature&#39;,&#39;celltype&#39;))</code></pre>
+<pre><code>        p_val.x avg_log2FC.x pct.1.x pct.2.x  p_val_adj.x feature celltype
+1  3.966681e-27    -259.6136   0.984   1.000 6.658868e-23   ACTG1       L2
+2  1.228817e-27     106.0853   1.000   1.000 2.062816e-23    HEXB       M2
+3  2.364794e-22    -152.1571   0.925   0.947 3.969779e-18    NAV3       M2
+4  1.166178e-19    -229.9925   1.000   1.000 1.957663e-15    LY86       M2
+5  2.125357e-17    -100.2201   0.999   0.996 3.567837e-13    C1QA       M2
+6  1.229275e-14     113.2988   0.999   0.998 2.063584e-10    ACTB       M2
+7  1.129624e-11     359.9997   1.000   1.000 1.896300e-07  PLXDC2       M2
+8  2.274650e-43     129.0535   0.944   0.925 3.818455e-39   LARS2       L1
+9  5.786252e-30     103.9476   0.976   0.989 9.713381e-26    GPHN       L1
+10 5.634798e-08     124.1453   0.991   0.989 9.459136e-04   CMSS1       L1
+11 1.094706e-16     374.0149   0.852   0.937 1.837682e-12   ITM2B       M5
+12 2.419081e-16     271.5835   0.781   0.897 4.060912e-12    CST3       M5
+13 5.159923e-15     335.0621   0.927   0.937 8.661963e-11     FAU       M5
+14 3.735451e-10    -117.6887   0.993   0.994 6.270701e-06    CD74       B1
+15 3.224185e-30     249.7978   0.551   0.247 5.412439e-26   PLAC8       M3
+16 7.146759e-27     129.0493   0.994   0.984 1.199726e-22   CMSS1       M3
+17 3.247347e-38    -133.2941   0.997   0.999 5.451321e-34    C1QB       M1
+18 3.680739e-10     189.8788   0.991   0.994 6.178857e-06  FCER1G       M1
+19 3.085565e-12          Inf   0.552   0.372 5.179738e-08   GPNMB    Mono1
+20 1.340781e-08     132.9642   0.986   0.968 2.250769e-04    CSTB    Mono1
+21 3.238796e-50     425.2534   1.000   0.998 5.436966e-46   CMSS1    Neut1
+         p_val.y avg_log2FC.y pct.1.y pct.2.y   p_val_adj.y
+1   8.473544e-08     198.8842   0.984   0.994  1.422454e-03
+2   1.686818e-14    -262.4001   1.000   1.000  2.831661e-10
+3   4.565600e-29    -115.2452   0.925   0.965  7.664273e-25
+4   4.264387e-12    -478.7343   1.000   1.000  7.158626e-08
+5   1.160230e-12    -239.3170   0.999   0.998  1.947679e-08
+6   8.332439e-16         -Inf   0.999   0.999  1.398766e-11
+7   1.824855e-08     161.7522   1.000   1.000  3.063384e-04
+8  1.744941e-144     126.8739   0.944   0.851 2.929233e-140
+9  1.199379e-131     125.8426   0.976   0.968 2.013397e-127
+10 3.754804e-158     195.3417   0.991   0.988 6.303189e-154
+11  1.150034e-07     257.1138   0.852   0.875  1.930563e-03
+12  1.645691e-08    -328.6204   0.781   0.821  2.762622e-04
+13  3.660547e-07     154.6825   0.927   0.919  6.144961e-03
+14  2.630351e-08         -Inf   0.993   0.995  4.415570e-04
+15  1.181236e-11     196.2202   0.551   0.389  1.982941e-07
+16 1.119818e-135     138.5528   0.994   0.977 1.879838e-131
+17  1.052123e-08    -151.0507   0.997   0.998  1.766199e-04
+18  2.582953e-10     114.3955   0.991   0.989  4.336003e-06
+19  4.325826e-07          Inf   0.552   0.467  7.261764e-03
+20  5.554667e-08    -312.5436   0.986   0.983  9.324619e-04
+21 7.367929e-163     386.8237   1.000   0.997 1.236854e-158</code></pre>
+<pre class="r"><code>write.table(inner_join(DEG_NEO_ADJ_Seurat_df_sig, DEG_NEO_CTRL_Seurat_df_sig,
+                       by = c(&#39;feature&#39;,&#39;celltype&#39;)),
             &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_CTRL_overlap.tsv&quot;,
             sep = &quot;\t&quot;, quote = F, row.names = F)</code></pre>
 </div>
@@ -2580,6 +2745,14 @@ M7.31609       TNF   NEO 1.978862 1.285112   63298.0 0.6432724 2.170169e-09
                    padj   pct_in  pct_out celltype
 NOS1.22600 5.249994e-04 66.86747 49.40239     NOS1
 M7.31609   5.692287e-07 55.93496 31.87500       M7</code></pre>
+<pre class="r"><code># Overlapping with DEGs from the Seurat analysis
+DEG_NEO_CTRL_Seurat_df_sig %&gt;% filter(feature %in% canonical_markers$RNA)</code></pre>
+<pre><code>[1] p_val      avg_log2FC pct.1      pct.2      p_val_adj  feature    celltype  
+&lt;0 rows&gt; (or 0-length row.names)</code></pre>
+<pre class="r"><code>DEG_NEO_ADJ_Seurat_df_sig %&gt;% filter(feature %in% canonical_markers$RNA)</code></pre>
+<pre><code>                p_val avg_log2FC pct.1 pct.2    p_val_adj feature celltype
+L2.FOXP1 2.494498e-10   190.5059 0.937 0.965 4.187514e-06   FOXP1       L2
+L2.PTPRC 2.728027e-10   101.0505 0.999 0.999 4.579539e-06   PTPRC       L2</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2633,50 +2806,50 @@ loaded via a namespace (and not attached):
   [7] lifecycle_1.0.3        rstatix_0.7.2          doParallel_1.0.17     
  [10] rprojroot_2.0.3        globals_0.16.2         processx_3.8.1        
  [13] lattice_0.21-8         hdf5r_1.3.8            MASS_7.3-60           
- [16] backports_1.4.1        magrittr_2.0.3         plotly_4.10.2         
- [19] sass_0.4.6             rmarkdown_2.22         jquerylib_0.1.4       
- [22] yaml_2.3.7             httpuv_1.6.11          sctransform_0.4.1     
- [25] spam_2.9-1             spatstat.sparse_3.0-1  reticulate_1.29       
- [28] cowplot_1.1.1          pbapply_1.7-0          abind_1.4-5           
- [31] Rtsne_0.16             presto_1.0.0           BiocGenerics_0.48.1   
- [34] git2r_0.32.0           S4Vectors_0.40.2       IRanges_2.36.0        
- [37] irlba_2.3.5.1          listenv_0.9.0          spatstat.utils_3.0-3  
- [40] goftest_1.2-3          RSpectra_0.16-1        spatstat.random_3.1-5 
- [43] fitdistrplus_1.1-11    parallelly_1.36.0      leiden_0.4.3          
- [46] codetools_0.2-19       tidyselect_1.2.0       shape_1.4.6           
- [49] farver_2.1.1           stats4_4.3.0           matrixStats_1.0.0     
- [52] spatstat.explore_3.2-1 googledrive_2.1.0      jsonlite_1.8.5        
- [55] GetoptLong_1.0.5       ellipsis_0.3.2         progressr_0.13.0      
- [58] iterators_1.0.14       ggridges_0.5.4         survival_3.5-5        
- [61] foreach_1.5.2          tools_4.3.0            ica_1.0-3             
- [64] Rcpp_1.0.10            glue_1.6.2             gridExtra_2.3         
- [67] xfun_0.39              withr_2.5.0            fastmap_1.1.1         
- [70] fansi_1.0.4            callr_3.7.3            digest_0.6.31         
- [73] timechange_0.2.0       R6_2.5.1               mime_0.12             
- [76] colorspace_2.1-0       scattermore_1.2        tensor_1.5            
- [79] spatstat.data_3.0-1    utf8_1.2.3             generics_0.1.3        
- [82] data.table_1.14.8      httr_1.4.6             htmlwidgets_1.6.2     
- [85] whisker_0.4.1          uwot_0.1.14            pkgconfig_2.0.3       
- [88] gtable_0.3.3           lmtest_0.9-40          htmltools_0.5.5       
- [91] carData_3.0-5          dotCall64_1.0-2        clue_0.3-64           
- [94] scales_1.2.1           png_0.1-8              knitr_1.43            
- [97] rstudioapi_0.14        rjson_0.2.21           tzdb_0.4.0            
-[100] reshape2_1.4.4         curl_5.0.1             nlme_3.1-162          
-[103] cachem_1.0.8           zoo_1.8-12             GlobalOptions_0.1.2   
-[106] KernSmooth_2.23-21     parallel_4.3.0         miniUI_0.1.1.1        
-[109] pillar_1.9.0           vctrs_0.6.5            RANN_2.6.1            
-[112] promises_1.2.0.1       car_3.1-2              xtable_1.8-4          
-[115] cluster_2.1.4          evaluate_0.21          cli_3.6.1             
-[118] compiler_4.3.0         rlang_1.1.1            crayon_1.5.2          
-[121] future.apply_1.11.0    ggsignif_0.6.4         labeling_0.4.2        
-[124] ps_1.7.5               getPass_0.2-4          fs_1.6.2              
-[127] stringi_1.7.12         deldir_1.0-9           munsell_0.5.0         
-[130] lazyeval_0.2.2         spatstat.geom_3.2-1    Matrix_1.6-5          
-[133] RcppHNSW_0.5.0         hms_1.1.3              patchwork_1.1.2       
-[136] bit64_4.0.5            future_1.32.0          shiny_1.7.4           
-[139] highr_0.10             ROCR_1.0-11            gargle_1.4.0          
-[142] igraph_1.4.3           broom_1.0.4            bslib_0.4.2           
-[145] bit_4.0.5             </code></pre>
+ [16] backports_1.4.1        magrittr_2.0.3         limma_3.58.1          
+ [19] plotly_4.10.2          sass_0.4.6             rmarkdown_2.22        
+ [22] jquerylib_0.1.4        yaml_2.3.7             httpuv_1.6.11         
+ [25] sctransform_0.4.1      spam_2.9-1             spatstat.sparse_3.0-1 
+ [28] reticulate_1.29        cowplot_1.1.1          pbapply_1.7-0         
+ [31] abind_1.4-5            Rtsne_0.16             presto_1.0.0          
+ [34] BiocGenerics_0.48.1    git2r_0.32.0           S4Vectors_0.40.2      
+ [37] IRanges_2.36.0         irlba_2.3.5.1          listenv_0.9.0         
+ [40] spatstat.utils_3.0-3   goftest_1.2-3          RSpectra_0.16-1       
+ [43] spatstat.random_3.1-5  fitdistrplus_1.1-11    parallelly_1.36.0     
+ [46] leiden_0.4.3           codetools_0.2-19       tidyselect_1.2.0      
+ [49] shape_1.4.6            farver_2.1.1           stats4_4.3.0          
+ [52] matrixStats_1.0.0      spatstat.explore_3.2-1 googledrive_2.1.0     
+ [55] jsonlite_1.8.5         GetoptLong_1.0.5       ellipsis_0.3.2        
+ [58] progressr_0.13.0       iterators_1.0.14       ggridges_0.5.4        
+ [61] survival_3.5-5         foreach_1.5.2          tools_4.3.0           
+ [64] ica_1.0-3              Rcpp_1.0.10            glue_1.6.2            
+ [67] gridExtra_2.3          xfun_0.39              withr_2.5.0           
+ [70] fastmap_1.1.1          fansi_1.0.4            callr_3.7.3           
+ [73] digest_0.6.31          timechange_0.2.0       R6_2.5.1              
+ [76] mime_0.12              colorspace_2.1-0       scattermore_1.2       
+ [79] tensor_1.5             spatstat.data_3.0-1    utf8_1.2.3            
+ [82] generics_0.1.3         data.table_1.14.8      httr_1.4.6            
+ [85] htmlwidgets_1.6.2      whisker_0.4.1          uwot_0.1.14           
+ [88] pkgconfig_2.0.3        gtable_0.3.3           lmtest_0.9-40         
+ [91] htmltools_0.5.5        carData_3.0-5          dotCall64_1.0-2       
+ [94] clue_0.3-64            scales_1.2.1           png_0.1-8             
+ [97] knitr_1.43             rstudioapi_0.14        rjson_0.2.21          
+[100] tzdb_0.4.0             reshape2_1.4.4         curl_5.0.1            
+[103] nlme_3.1-162           cachem_1.0.8           zoo_1.8-12            
+[106] GlobalOptions_0.1.2    KernSmooth_2.23-21     parallel_4.3.0        
+[109] miniUI_0.1.1.1         pillar_1.9.0           vctrs_0.6.5           
+[112] RANN_2.6.1             promises_1.2.0.1       car_3.1-2             
+[115] xtable_1.8-4           cluster_2.1.4          evaluate_0.21         
+[118] cli_3.6.1              compiler_4.3.0         rlang_1.1.1           
+[121] crayon_1.5.2           future.apply_1.11.0    ggsignif_0.6.4        
+[124] labeling_0.4.2         ps_1.7.5               getPass_0.2-4         
+[127] fs_1.6.2               stringi_1.7.12         deldir_1.0-9          
+[130] munsell_0.5.0          lazyeval_0.2.2         spatstat.geom_3.2-1   
+[133] Matrix_1.6-5           RcppHNSW_0.5.0         hms_1.1.3             
+[136] patchwork_1.1.2        bit64_4.0.5            future_1.32.0         
+[139] statmod_1.5.0          shiny_1.7.4            highr_0.10            
+[142] ROCR_1.0-11            gargle_1.4.0           igraph_1.4.3          
+[145] broom_1.0.4            bslib_0.4.2            bit_4.0.5             </code></pre>
 </div>
 </div>
 </div>
