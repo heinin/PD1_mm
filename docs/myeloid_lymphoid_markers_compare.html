@@ -429,10 +429,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -575,15 +575,15 @@ code/CART_plot_functions.R
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreef1e402aa0baad38630d0bb71f245b4637dbf3e19targetblankf1e402aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreec63a16f66d0c30c8324a33a211f9550680e75fc6targetblankc63a16fa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/f1e402aa0baad38630d0bb71f245b4637dbf3e19" target="_blank">f1e402a</a>
+<a href="https://github.com/heinin/PD1_mm/tree/c63a16f66d0c30c8324a33a211f9550680e75fc6" target="_blank">c63a16f</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreef1e402aa0baad38630d0bb71f245b4637dbf3e19targetblankf1e402aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreec63a16f66d0c30c8324a33a211f9550680e75fc6targetblankc63a16fa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -593,7 +593,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/f1e402aa0baad38630d0bb71f245b4637dbf3e19" target="_blank">f1e402a</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/c63a16f66d0c30c8324a33a211f9550680e75fc6" target="_blank">c63a16f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -607,13 +607,8 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Untracked files:
-    Untracked:  analysis/myeloid_lymphoid_markers_compare.Rmd
-
 Unstaged changes:
-    Modified:   analysis/annotate.Rmd
-    Modified:   analysis/comparative_analysis.Rmd
-    Modified:   analysis/index.Rmd
+    Modified:   analysis/myeloid_lymphoid_markers_compare.Rmd
 
 </code></pre>
 <p>
@@ -628,10 +623,77 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown
+(<code>analysis/myeloid_lymphoid_markers_compare.Rmd</code>) and HTML
+(<code>docs/myeloid_lymphoid_markers_compare.html</code>) files. If
+you’ve configured a remote Git repository (see
+<code>?wflow_git_remote</code>), click on the hyperlinks in the table
+below to view the files as they were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/analysis/myeloid_lymphoid_markers_compare.Rmd" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+<td>
+Changed Mono1 to M2, added an analysis file to look at exhaustion
+markers
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/myeloid_lymphoid_markers_compare.html" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+<td>
+Changed Mono1 to M2, added an analysis file to look at exhaustion
+markers
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -697,6 +759,52 @@ This message will be shown once per session.</code></pre>
 &quot;splitViolin&quot;, : Split violin is only supported for &lt;3 groups, using
 multi-violin.</code></pre>
 <p><img src="figure/myeloid_lymphoid_markers_compare.Rmd/unnamed-chunk-3-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/myeloid_lymphoid_markers_compare.Rmd/unnamed-chunk-3-1.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>DotPlot(seurat_data,
+        features = c(&quot;ENTPD1&quot;, &quot;TIGIT&quot;, &quot;PDCD1&quot;, &quot;LAG3&quot;, &quot;CD244&quot;, &quot;CD160&quot;, &quot;CD8A&quot;),
+        assay = &quot;RNA_human&quot;,
+        group.by = &quot;celltype&quot;,
+        split.by = &quot;Treatment&quot;,
+        cols = rep(&quot;tomato2&quot;, 3)) &amp;
+    theme_classic2() &amp;
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))</code></pre>
+<p><img src="figure/myeloid_lymphoid_markers_compare.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

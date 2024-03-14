@@ -71,3 +71,16 @@ VlnPlot(seurat_data,
 
 ```
 
+```{r, fig.height = 12}
+
+DotPlot(seurat_data,
+        features = c("ENTPD1", "TIGIT", "PDCD1", "LAG3", "CD244", "CD160", "CD8A"),
+        assay = "RNA_human",
+        group.by = "celltype",
+        split.by = "Treatment",
+        cols = rep("tomato2", 3)) &
+    theme_classic2() &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+```
+
