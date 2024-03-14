@@ -395,9 +395,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 2
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>PD1_mm/</code> <span
@@ -420,21 +420,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -575,15 +572,15 @@ code/CART_plot_functions.R
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreec63a16f66d0c30c8324a33a211f9550680e75fc6targetblankc63a16fa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreea138c315b6c795c29d63ffda2948f378204e0d6atargetblanka138c31a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/c63a16f66d0c30c8324a33a211f9550680e75fc6" target="_blank">c63a16f</a>
+<a href="https://github.com/heinin/PD1_mm/tree/a138c315b6c795c29d63ffda2948f378204e0d6a" target="_blank">a138c31</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreec63a16f66d0c30c8324a33a211f9550680e75fc6targetblankc63a16fa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreea138c315b6c795c29d63ffda2948f378204e0d6atargetblanka138c31a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -593,7 +590,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/c63a16f66d0c30c8324a33a211f9550680e75fc6" target="_blank">c63a16f</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/a138c315b6c795c29d63ffda2948f378204e0d6a" target="_blank">a138c31</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -607,9 +604,7 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Unstaged changes:
-    Modified:   analysis/myeloid_lymphoid_markers_compare.Rmd
-
+working directory clean
 </code></pre>
 <p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not
@@ -655,6 +650,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/a138c315b6c795c29d63ffda2948f378204e0d6a/analysis/myeloid_lymphoid_markers_compare.Rmd" target="_blank">a138c31</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+<td>
+added a dotplot of exhaustion markers
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/a138c315b6c795c29d63ffda2948f378204e0d6a/docs/myeloid_lymphoid_markers_compare.html" target="_blank">a138c31</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+<td>
+added a dotplot of exhaustion markers
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -805,6 +834,43 @@ heinin
     theme_classic2() &amp;
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))</code></pre>
 <p><img src="figure/myeloid_lymphoid_markers_compare.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/a138c315b6c795c29d63ffda2948f378204e0d6a/docs/figure/myeloid_lymphoid_markers_compare.Rmd/unnamed-chunk-4-1.png" target="_blank">a138c31</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -842,15 +908,15 @@ other attached packages:
  [3] viridisLite_0.4.2           circlize_0.4.15            
  [5] plyr_1.8.8                  RColorBrewer_1.1-3         
  [7] scProportionTest_0.0.0.9000 googlesheets4_1.1.0        
- [9] workflowr_1.7.1             ggrepel_0.9.3              
-[11] ggpubr_0.6.0                lubridate_1.9.2            
-[13] forcats_1.0.0               stringr_1.5.0              
-[15] dplyr_1.1.2                 purrr_1.0.2                
-[17] readr_2.1.4                 tidyr_1.3.0                
-[19] tibble_3.2.1                ggplot2_3.4.2              
-[21] tidyverse_2.0.0             SeuratDisk_0.0.0.9021      
-[23] Seurat_5.0.1                SeuratObject_5.0.1         
-[25] sp_1.6-1                   
+ [9] ggrepel_0.9.3               ggpubr_0.6.0               
+[11] lubridate_1.9.2             forcats_1.0.0              
+[13] stringr_1.5.0               dplyr_1.1.2                
+[15] purrr_1.0.2                 readr_2.1.4                
+[17] tidyr_1.3.0                 tibble_3.2.1               
+[19] ggplot2_3.4.2               tidyverse_2.0.0            
+[21] SeuratDisk_0.0.0.9021       Seurat_5.0.1               
+[23] SeuratObject_5.0.1          sp_1.6-1                   
+[25] workflowr_1.7.1            
 
 loaded via a namespace (and not attached):
   [1] RcppAnnoy_0.0.20       splines_4.3.0          later_1.3.1           
