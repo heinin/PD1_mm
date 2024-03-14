@@ -9,7 +9,7 @@ editor_options:
 
 ## Introduction
 
-Adding annotations and comparing treatment groups/timepoints.
+Comparing treatment groups/timepoints.
 
 ### Packages and environment variables
 

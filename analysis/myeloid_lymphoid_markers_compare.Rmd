@@ -1,0 +1,73 @@
+---
+title: "Compare myeloid/lymphoid marker expression between groups"
+author: "heinin"
+date: "2024-03-13"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Plotting various myeloid and lymphoid markers in each treatment group and cell type.
+
+### Packages and environment variables
+
+```{r, warning=F, message=F}
+
+suppressPackageStartupMessages({
+  #library(cli)
+  library(Seurat)
+  library(SeuratObject)
+  library(SeuratDisk)
+  library(tidyverse)
+  library(tibble)
+  library(ggplot2)
+  library(ggpubr)
+  library(ggrepel)
+  library(workflowr)
+  library(googlesheets4)
+  library(scProportionTest)})
+
+setwd("/home/hnatri/PD1_mm/")
+set.seed(9999)
+options(ggrepel.max.overlaps = Inf)
+
+# Colors, themes, cell type markers, and plot functions
+source("/home/hnatri/PD1_mm/code/utilities.R")
+source("/home/hnatri/PD1_mm/code/PD1_mm_themes.R")
+source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
+
+```
+
+### Importing data
+
+```{r}
+
+seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+
+```
+
+### Exhaustion markers and ENTPD1 (CD39)
+
+```{r, fig.height = 16, fig.width = 9}
+
+# PDCD1 = PD1
+# CD244 = 2B4
+
+seurat_data$celltype <- factor(seurat_data$celltype,
+                               levels = sort(as.character(unique(seurat_data$celltype))))
+
+VlnPlot(seurat_data,
+        features = c("ENTPD1", "TIGIT", "PDCD1", "LAG3", "CD244", "CD160", "CD8A"),
+        assay = "RNA_human",
+        group.by = "celltype",
+        split.by = "Treatment",
+        split.plot = T,
+        pt.size = 0,
+        ncol = 1) &
+    theme_classic2() &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+```
+

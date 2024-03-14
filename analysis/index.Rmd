@@ -14,4 +14,5 @@ Analyzing scRNAseq data of CD45+ cells from Kluc mice treated with PD1 antibody 
 
 1. [Processing Seurat objects for analysis](processing.html)\
 2. [Feature expression and cell type annotation](annotate.html)\
-3. [Comparative analysis](comparative_analysis.html)\
+3. [Comparative analysis: cell type proportions and DEGs](comparative_analysis.html)\
+4. [T cell and myeloid markers](myeloid_lymphoid_markers_compare.html)\

@@ -575,15 +575,15 @@ code/CART_plot_functions.R
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreed62a214b9dbb6224d63a2b2acac0545cef7139c5targetblankd62a214a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreef1e402aa0baad38630d0bb71f245b4637dbf3e19targetblankf1e402aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/d62a214b9dbb6224d63a2b2acac0545cef7139c5" target="_blank">d62a214</a>
+<a href="https://github.com/heinin/PD1_mm/tree/f1e402aa0baad38630d0bb71f245b4637dbf3e19" target="_blank">f1e402a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreed62a214b9dbb6224d63a2b2acac0545cef7139c5targetblankd62a214a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreef1e402aa0baad38630d0bb71f245b4637dbf3e19targetblankf1e402aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -593,7 +593,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/d62a214b9dbb6224d63a2b2acac0545cef7139c5" target="_blank">d62a214</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/f1e402aa0baad38630d0bb71f245b4637dbf3e19" target="_blank">f1e402a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -610,7 +610,11 @@ were generated:
 Ignored files:
     Ignored:    analysis/figure/
 
+Untracked files:
+    Untracked:  analysis/myeloid_lymphoid_markers_compare.Rmd
+
 Unstaged changes:
+    Modified:   analysis/annotate.Rmd
     Modified:   analysis/comparative_analysis.Rmd
 
 </code></pre>
@@ -657,6 +661,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/analysis/comparative_analysis.Rmd" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+<td>
+Added Seurat DEGs
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/comparative_analysis.html" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+<td>
+Added Seurat DEGs
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -836,7 +874,7 @@ Starting the comparative analysis
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Adding annotations and comparing treatment groups/timepoints.</p>
+<p>Comparing treatment groups/timepoints.</p>
 <div id="packages-and-environment-variables" class="section level3">
 <h3>Packages and environment variables</h3>
 <pre class="r"><code>suppressPackageStartupMessages({
@@ -1003,25 +1041,25 @@ axis. The forest plots show the significance level.</p>
 <pre><code>       
          ADJ CTRL  NEO
   M1    1090 2163 1603
-  Mono1  436 1444 2735
-  M2     910 1634 1452
+  M2     436 1444 2735
+  M3     910 1634 1452
   L1     571 1420 1475
   Neut1  526 1498 1321
   L2    1117 1045 1063
   NK     579  992 1167
-  M3     449 1117 1054
-  M4     502  921 1107
-  M5     252  665 1454
+  M4     449 1117 1054
+  M5     502  921 1107
+  M6     252  665 1454
   NOS1   251 1619  498
   DC     379  773  772
-  M6     132  763  590
+  M7     132  763  590
   B1     311  568  553
   Treg   178  521  523
-  M7     160  403  615
+  M8     160  403  615
   B2     171  320  347
   L3     269  305  225
   L4      50  154  371
-  M8      20  281  185</code></pre>
+  M9      20  281  185</code></pre>
 <pre class="r"><code>create_clusterpropplot(seurat_data,
                        group_var = &quot;Treatment&quot;,
                        group1 = &quot;ADJ&quot;,
@@ -1887,8 +1925,8 @@ dim(sig_markers)</code></pre>
 <pre><code>[1] 2206   10</code></pre>
 <pre class="r"><code>table(sig_markers$group)</code></pre>
 <pre><code>
-   B1    B2    DC    L1    L2    L3    M1    M2    M4    M7    M8 Mono1 Neut1 
-   28    73    42    10    32   997    74   135    25    65   487    37    53 
+   B1    B2    DC    L1    L2    L3    M1    M2    M3    M5    M8    M9 Neut1 
+   28    73    42    10    32   997    74    37   135    25    65   487    53 
    NK  NOS1  Treg 
    20    15   113 </code></pre>
 <pre class="r"><code>table(sig_markers$group) %&gt;% as.data.frame() %&gt;%
@@ -2043,6 +2081,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-1.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-1.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -2098,6 +2147,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-2.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-2.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -2137,6 +2197,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-3.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-3.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -2152,32 +2223,254 @@ heinin
 </div>
 <pre class="r"><code>hist(DEG_NEO_CTRL_Seurat_df_sig$p_val_adj)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-4">
+Past versions of unnamed-chunk-6-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-4.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>hist(DEG_NEO_CTRL_df_sig$padj)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-5">
+Past versions of unnamed-chunk-6-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-5.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Comparing logFC values
 merge(DEG_NEO_CTRL_Seurat_df, DEG_NEO_CTRL_df, by = c(&quot;feature&quot;, &quot;celltype&quot;)) %&gt;%
   ggplot(aes(x = avg_log2FC, y = logFC)) +
     geom_point() +
     theme_classic2()</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-6.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-6">
+Past versions of unnamed-chunk-6-6.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-6.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Comparing logFC values for significant DEGs only
 merge(DEG_NEO_CTRL_Seurat_df_sig, DEG_NEO_CTRL_df_sig, by = c(&quot;feature&quot;, &quot;celltype&quot;)) %&gt;%
   ggplot(aes(x = avg_log2FC, y = logFC)) +
     geom_point() +
     theme_classic2()</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-7.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-7">
+Past versions of unnamed-chunk-6-7.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-7.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Comparing adjusted p-values
 merge(DEG_NEO_CTRL_Seurat_df, DEG_NEO_CTRL_df, by = c(&quot;feature&quot;, &quot;celltype&quot;)) %&gt;%
   ggplot(aes(x = p_val_adj, y = padj)) +
     geom_point() +
     theme_classic2()</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-8.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-8">
+Past versions of unnamed-chunk-6-8.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-8.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Comparing adjusted p-values for significant DEGs
 merge(DEG_NEO_CTRL_Seurat_df_sig, DEG_NEO_CTRL_df_sig, by = c(&quot;feature&quot;, &quot;celltype&quot;)) %&gt;%
   ggplot(aes(x = p_val_adj, y = padj)) +
     geom_point() +
     theme_classic2()</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-9.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-9">
+Past versions of unnamed-chunk-6-9.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-9.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Plotting numbers of DEGs
 table(DEG_NEO_CTRL_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
@@ -2189,6 +2482,43 @@ table(DEG_NEO_CTRL_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
     xlab(&quot;Cell type&quot;) +
     ylab(&quot;# DEGs, NEO vs. CTRL, all timepoints&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-10.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-10">
+Past versions of unnamed-chunk-6-10.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-10" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-10.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>table(DEG_NEO_CTRL_Seurat_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = &quot;identity&quot;) +
@@ -2199,6 +2529,43 @@ table(DEG_NEO_CTRL_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
     xlab(&quot;Cell type&quot;) +
     ylab(&quot;# DEGs, NEO vs. CTRL, all timepoints, Seurat&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-11.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-11">
+Past versions of unnamed-chunk-6-11.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-11" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-11.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Top DEGs for each cluster
 DEG_NEO_CTRL_df_sig %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 10)</code></pre>
 <pre><code># A tibble: 10 × 11
@@ -2224,13 +2591,13 @@ DEG_NEO_CTRL_df_sig %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 
  1 7.76e-17       Inf  0.996 0.997  1.30e-12 CTSD    M1      
  2 2.58e-10       114. 0.991 0.989  4.34e- 6 FCER1G  M1      
  3 1.05e- 8      -151. 0.997 0.998  1.77e- 4 C1QB    M1      
- 4 4.33e- 7       Inf  0.552 0.467  7.26e- 3 GPNMB   Mono1   
- 5 3.56e-13      -207. 0.555 0.453  5.97e- 9 ARG1    Mono1   
- 6 5.55e- 8      -313. 0.986 0.983  9.32e- 4 CSTB    Mono1   
- 7 1.82e- 8       162. 1     1      3.06e- 4 PLXDC2  M2      
- 8 3.96e-13       137. 1     1      6.64e- 9 ZFHX3   M2      
- 9 1.11e-14       109. 0.956 0.936  1.86e-10 GLUL    M2      
-10 1.76e-18      -105. 0.943 0.955  2.96e-14 CSMD3   M2      
+ 4 4.33e- 7       Inf  0.552 0.467  7.26e- 3 GPNMB   M2      
+ 5 3.56e-13      -207. 0.555 0.453  5.97e- 9 ARG1    M2      
+ 6 5.55e- 8      -313. 0.986 0.983  9.32e- 4 CSTB    M2      
+ 7 1.82e- 8       162. 1     1      3.06e- 4 PLXDC2  M3      
+ 8 3.96e-13       137. 1     1      6.64e- 9 ZFHX3   M3      
+ 9 1.11e-14       109. 0.956 0.936  1.86e-10 GLUL    M3      
+10 1.76e-18      -105. 0.943 0.955  2.96e-14 CSMD3   M3      
 # ℹ 49 more rows</code></pre>
 <pre class="r"><code># For each cluster, top DEGs between NEO and ADJ
 DEG_NEO_ADJ &lt;- lapply(unique(seurat_data$celltype), function(xx){
@@ -2289,6 +2656,43 @@ DEG_NEO_ADJ_Seurat_df &lt;- as.data.frame(do.call(rbind, DEG_NEO_ADJ_Seurat))
 # Distribution of log2FC
 hist(DEG_NEO_ADJ_Seurat_df$avg_log2FC, breaks = 100)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-12.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-12">
+Past versions of unnamed-chunk-6-12.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-12" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-12.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>DEG_NEO_ADJ_Seurat_df_sig &lt;- DEG_NEO_ADJ_Seurat_df %&gt;%
   filter(p_val_adj &lt; 0.01,
          abs(avg_log2FC) &gt; 100,
@@ -2309,6 +2713,43 @@ table(DEG_NEO_ADJ_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
     xlab(&quot;Cell type&quot;) +
     ylab(&quot;# DEGs, NEO vs. ADJ, all timepoints&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-13.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-13">
+Past versions of unnamed-chunk-6-13.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-13" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-13.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>table(DEG_NEO_ADJ_Seurat_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = &quot;identity&quot;) +
@@ -2319,6 +2760,43 @@ table(DEG_NEO_ADJ_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
     xlab(&quot;Cell type&quot;) +
     ylab(&quot;# DEGs, NEO vs. ADJ, all timepoints, Seurat&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-14.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-14">
+Past versions of unnamed-chunk-6-14.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-14" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-14.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Top DEGs for each cluster
 DEG_NEO_ADJ_df_sig %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 10)</code></pre>
 <pre><code># A tibble: 10 × 11
@@ -2350,7 +2828,7 @@ DEG_NEO_ADJ_df_sig %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 1
  7 6.13e-32      -136. 0.999 1      1.03e-27 LY86    M1      
  8 7.38e-31      -155. 0.996 0.997  1.24e-26 C1QC    M1      
  9 5.06e- 9      -194. 0.999 0.997  8.49e- 5 PLXDC2  M1      
-10 1.75e-37       Inf  0.997 0.998  2.94e-33 ATP6    Mono1   
+10 1.75e-37       Inf  0.997 0.998  2.94e-33 ATP6    M2      
 # ℹ 102 more rows</code></pre>
 <pre class="r"><code># For each cluster, top DEGs between ADJ and CTRL
 DEG_ADJ_CTRL &lt;- lapply(unique(seurat_data$celltype), function(xx){
@@ -2414,6 +2892,43 @@ DEG_ADJ_CTRL_Seurat_df &lt;- as.data.frame(do.call(rbind, DEG_ADJ_CTRL_Seurat))
 # Distribution of log2FC
 hist(DEG_ADJ_CTRL_Seurat_df$avg_log2FC, breaks = 100)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-15.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-15">
+Past versions of unnamed-chunk-6-15.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-15" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-15.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>DEG_ADJ_CTRL_Seurat_df_sig &lt;- DEG_ADJ_CTRL_Seurat_df %&gt;%
   filter(p_val_adj &lt; 0.01,
          abs(avg_log2FC) &gt; 100,
@@ -2434,6 +2949,43 @@ table(DEG_ADJ_CTRL_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
     xlab(&quot;Cell type&quot;) +
     ylab(&quot;# DEGs, ADJ vs. CTRL, all timepoints, Presto&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-16.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-16">
+Past versions of unnamed-chunk-6-16.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-16" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-16.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>table(DEG_ADJ_CTRL_Seurat_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = &quot;identity&quot;) +
@@ -2444,6 +2996,43 @@ table(DEG_ADJ_CTRL_df_sig$celltype) %&gt;% as.data.frame() %&gt;%
     xlab(&quot;Cell type&quot;) +
     ylab(&quot;# DEGs, ADJ vs. CTRL, all timepoints, Seurat&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-6-17.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-17">
+Past versions of unnamed-chunk-6-17.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-17" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-17.png" target="_blank">f1e402a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-13
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Top DEGs for each cluster
 DEG_ADJ_CTRL_df_sig %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 10)</code></pre>
 <pre><code># A tibble: 0 × 11
@@ -2491,22 +3080,22 @@ intersect(DEG_NEO_ADJ_df_sig$feature, DEG_NEO_CTRL_df_sig$feature)</code></pre>
 17   CMSS1     NEO  32.04228  6.929776     63913.5 0.6495274 5.389344e-09
          padj.x  pct_in.x pct_out.x celltype group.y avgExpr.y  logFC.y
 1  3.102827e-50  99.81185  99.82095       L2     NEO  44.07056 25.84567
-2  1.427813e-80  99.10468  99.67033       M2     NEO  20.84229 11.63054
+2  1.427813e-80  99.10468  99.67033       M3     NEO  20.84229 11.63054
 3  5.042108e-18 100.00000  99.62825       L3     NEO  23.73778 13.37384
 4  2.773581e-32 100.00000  98.51301       L3     NEO  15.74222 10.21435
 5  3.602245e-28 100.00000  98.88476       L3     NEO  29.48444 17.08117
 6  3.478546e-13 100.00000 100.00000       L3     NEO  58.76444 35.87920
-7  1.254031e-32  99.36766  99.20319       M4     NEO  33.93677 15.89116
+7  1.254031e-32  99.36766  99.20319       M5     NEO  33.93677 15.89116
 8  1.230984e-11  99.63834 100.00000       B1     NEO  28.52984 13.58794
 9  1.306397e-23  99.87047  99.73615       DC     NEO  28.63731 14.15736
-10 1.333029e-23  99.43074  98.44098       M3     NEO  20.09013 10.58342
-11 3.193208e-30  81.59393  53.22940       M3     NEO  75.67647 17.17781
+10 1.333029e-23  99.43074  98.44098       M4     NEO  20.09013 10.58342
+11 3.193208e-30  81.59393  53.22940       M4     NEO  75.67647 17.17781
 12 1.108240e-47  97.87898  99.26606       M1     NEO  21.71179 11.23514
-13 1.066766e-14  99.74406  99.54128    Mono1     NEO  32.62084 14.67971
+13 1.066766e-14  99.74406  99.54128       M2     NEO  32.62084 14.67971
 14 1.359242e-46 100.00000  99.80989    Neut1     NEO  30.89175 12.60470
 15 4.223589e-16  99.59839  99.60159     NOS1     NEO  26.30723 14.63644
 16 2.435776e-03  99.59839  98.00797     NOS1     NEO  46.76305 10.81802
-17 1.159884e-06  99.67480 100.00000       M7     NEO  32.04228 12.92813
+17 1.159884e-06  99.67480 100.00000       M8     NEO  32.04228 12.92813
    statistic.y     auc.y        pval.y        padj.y  pct_in.y pct_out.y
 1     982892.0 0.8848227 1.226684e-205 2.059235e-201  99.81185  99.90431
 2    2089805.0 0.8808199 2.906263e-293 4.878744e-289  99.10468  99.26561
@@ -2540,25 +3129,25 @@ intersect(DEG_NEO_ADJ_Seurat_df_sig$feature, DEG_NEO_CTRL_Seurat_df_sig$feature)
            by = c(&#39;feature&#39;,&#39;celltype&#39;))</code></pre>
 <pre><code>        p_val.x avg_log2FC.x pct.1.x pct.2.x  p_val_adj.x feature celltype
 1  3.966681e-27    -259.6136   0.984   1.000 6.658868e-23   ACTG1       L2
-2  1.228817e-27     106.0853   1.000   1.000 2.062816e-23    HEXB       M2
-3  2.364794e-22    -152.1571   0.925   0.947 3.969779e-18    NAV3       M2
-4  1.166178e-19    -229.9925   1.000   1.000 1.957663e-15    LY86       M2
-5  2.125357e-17    -100.2201   0.999   0.996 3.567837e-13    C1QA       M2
-6  1.229275e-14     113.2988   0.999   0.998 2.063584e-10    ACTB       M2
-7  1.129624e-11     359.9997   1.000   1.000 1.896300e-07  PLXDC2       M2
+2  1.228817e-27     106.0853   1.000   1.000 2.062816e-23    HEXB       M3
+3  2.364794e-22    -152.1571   0.925   0.947 3.969779e-18    NAV3       M3
+4  1.166178e-19    -229.9925   1.000   1.000 1.957663e-15    LY86       M3
+5  2.125357e-17    -100.2201   0.999   0.996 3.567837e-13    C1QA       M3
+6  1.229275e-14     113.2988   0.999   0.998 2.063584e-10    ACTB       M3
+7  1.129624e-11     359.9997   1.000   1.000 1.896300e-07  PLXDC2       M3
 8  2.274650e-43     129.0535   0.944   0.925 3.818455e-39   LARS2       L1
 9  5.786252e-30     103.9476   0.976   0.989 9.713381e-26    GPHN       L1
 10 5.634798e-08     124.1453   0.991   0.989 9.459136e-04   CMSS1       L1
-11 1.094706e-16     374.0149   0.852   0.937 1.837682e-12   ITM2B       M5
-12 2.419081e-16     271.5835   0.781   0.897 4.060912e-12    CST3       M5
-13 5.159923e-15     335.0621   0.927   0.937 8.661963e-11     FAU       M5
+11 1.094706e-16     374.0149   0.852   0.937 1.837682e-12   ITM2B       M6
+12 2.419081e-16     271.5835   0.781   0.897 4.060912e-12    CST3       M6
+13 5.159923e-15     335.0621   0.927   0.937 8.661963e-11     FAU       M6
 14 3.735451e-10    -117.6887   0.993   0.994 6.270701e-06    CD74       B1
-15 3.224185e-30     249.7978   0.551   0.247 5.412439e-26   PLAC8       M3
-16 7.146759e-27     129.0493   0.994   0.984 1.199726e-22   CMSS1       M3
+15 3.224185e-30     249.7978   0.551   0.247 5.412439e-26   PLAC8       M4
+16 7.146759e-27     129.0493   0.994   0.984 1.199726e-22   CMSS1       M4
 17 3.247347e-38    -133.2941   0.997   0.999 5.451321e-34    C1QB       M1
 18 3.680739e-10     189.8788   0.991   0.994 6.178857e-06  FCER1G       M1
-19 3.085565e-12          Inf   0.552   0.372 5.179738e-08   GPNMB    Mono1
-20 1.340781e-08     132.9642   0.986   0.968 2.250769e-04    CSTB    Mono1
+19 3.085565e-12          Inf   0.552   0.372 5.179738e-08   GPNMB       M2
+20 1.340781e-08     132.9642   0.986   0.968 2.250769e-04    CSTB       M2
 21 3.238796e-50     425.2534   1.000   0.998 5.436966e-46   CMSS1    Neut1
          p_val.y avg_log2FC.y pct.1.y pct.2.y   p_val_adj.y
 1   8.473544e-08     198.8842   0.984   0.994  1.422454e-03
@@ -2637,10 +3226,10 @@ sig_markers %&gt;% filter(feature %in% canonical_markers$RNA)</code></pre>
 21     CD3E    L3 13.697121 12.314550  33808550 0.9346936  0.000000e+00
 22    IL2RB    L3 13.021277 11.143698  33106946 0.9152966  0.000000e+00
 23     LAG3    M1  5.020593  3.908881 167653373 0.8377210  0.000000e+00
-24    IL2RB    M4  6.216996  4.387073  89836868 0.8155595  0.000000e+00
-25    PTPRC    M7 30.775042 17.970627  43098701 0.8150038 1.061915e-299
-26    MKI67    M8 12.376543 11.607068  21543860 0.9724882  0.000000e+00
-27   ENTPD1    M8 10.506173  6.251626  18010500 0.8129926 5.791522e-129
+24    IL2RB    M5  6.216996  4.387073  89836868 0.8155595  0.000000e+00
+25    PTPRC    M8 30.775042 17.970627  43098701 0.8150038 1.061915e-299
+26    MKI67    M9 12.376543 11.607068  21543860 0.9724882  0.000000e+00
+27   ENTPD1    M9 10.506173  6.251626  18010500 0.8129926 5.791522e-129
 28     NKG7    NK 16.894083 13.675464 108545254 0.9149106  0.000000e+00
 29     PRF1    NK  5.254931  4.989393 108589986 0.9152877  0.000000e+00
 30     GZMA    NK 52.561359 49.296860 113350922 0.9554169  0.000000e+00
@@ -2741,10 +3330,10 @@ L3.19986 0.0008682804 83.55556 77.04918       L3</code></pre>
 <pre class="r"><code>DEG_NEO_ADJ_df_sig %&gt;% filter(feature %in% canonical_markers$RNA)</code></pre>
 <pre><code>           feature group  avgExpr    logFC statistic       auc         pval
 NOS1.22600   FOXP1   NEO 4.574297 1.948799   76120.5 0.6089737 4.691125e-07
-M7.31609       TNF   NEO 1.978862 1.285112   63298.0 0.6432724 2.170169e-09
+M8.31609       TNF   NEO 1.978862 1.285112   63298.0 0.6432724 2.170169e-09
                    padj   pct_in  pct_out celltype
 NOS1.22600 5.249994e-04 66.86747 49.40239     NOS1
-M7.31609   5.692287e-07 55.93496 31.87500       M7</code></pre>
+M8.31609   5.692287e-07 55.93496 31.87500       M8</code></pre>
 <pre class="r"><code># Overlapping with DEGs from the Seurat analysis
 DEG_NEO_CTRL_Seurat_df_sig %&gt;% filter(feature %in% canonical_markers$RNA)</code></pre>
 <pre><code>[1] p_val      avg_log2FC pct.1      pct.2      p_val_adj  feature    celltype  
