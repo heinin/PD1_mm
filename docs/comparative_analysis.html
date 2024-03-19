@@ -391,7 +391,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-03-13
+<strong>Last updated:</strong> 2024-03-19
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -575,15 +575,15 @@ code/CART_plot_functions.R
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreef1e402aa0baad38630d0bb71f245b4637dbf3e19targetblankf1e402aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree4a4137c5c43e1cc054fd1e81d96aa42727a146bdtargetblank4a4137ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/f1e402aa0baad38630d0bb71f245b4637dbf3e19" target="_blank">f1e402a</a>
+<a href="https://github.com/heinin/PD1_mm/tree/4a4137c5c43e1cc054fd1e81d96aa42727a146bd" target="_blank">4a4137c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreef1e402aa0baad38630d0bb71f245b4637dbf3e19targetblankf1e402aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree4a4137c5c43e1cc054fd1e81d96aa42727a146bdtargetblank4a4137ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -593,7 +593,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/f1e402aa0baad38630d0bb71f245b4637dbf3e19" target="_blank">f1e402a</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/4a4137c5c43e1cc054fd1e81d96aa42727a146bd" target="_blank">4a4137c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -607,15 +607,11 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Ignored files:
-    Ignored:    analysis/figure/
-
-Untracked files:
-    Untracked:  analysis/myeloid_lymphoid_markers_compare.Rmd
-
 Unstaged changes:
-    Modified:   analysis/annotate.Rmd
     Modified:   analysis/comparative_analysis.Rmd
+
+Staged changes:
+    Deleted:    test.txt
 
 </code></pre>
 <p>
@@ -661,6 +657,42 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/analysis/comparative_analysis.Rmd" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+<td>
+Changed Mono1 to M2, added an analysis file to look at exhaustion
+markers
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/comparative_analysis.html" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+<td>
+Changed Mono1 to M2, added an analysis file to look at exhaustion
+markers
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -889,7 +921,8 @@ Starting the comparative analysis
   library(ggrepel)
   library(workflowr)
   library(googlesheets4)
-  library(scProportionTest)})
+  library(scProportionTest)
+  library(UpSetR)})
 
 setwd(&quot;/home/hnatri/PD1_mm/&quot;)
 set.seed(9999)
@@ -942,6 +975,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-3-1.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-3-1.png" target="_blank">4cf95d7</a>
@@ -1012,6 +1056,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-3-2.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-3-2.png" target="_blank">4cf95d7</a>
@@ -1099,6 +1154,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-1.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-1.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -1156,6 +1222,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-2.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-2.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -1211,6 +1288,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-3.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-3.png" target="_blank">4cf95d7</a>
@@ -1271,6 +1359,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-4.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-4.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -1327,6 +1426,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-5.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-5.png" target="_blank">4cf95d7</a>
@@ -1386,6 +1496,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-6.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-6.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -1441,6 +1562,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-7.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-7.png" target="_blank">4cf95d7</a>
@@ -1507,6 +1639,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-8.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-8.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -1568,6 +1711,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-9.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-9.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -1627,6 +1781,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-10.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-10.png" target="_blank">4cf95d7</a>
@@ -1694,6 +1859,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-11.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-11.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -1758,6 +1934,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-12.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-12.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -1819,6 +2006,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-13.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-13.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -1878,6 +2076,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-14.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-4-14.png" target="_blank">4cf95d7</a>
@@ -1963,6 +2172,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-5-1.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/4cf95d7d0e7cb20f08292c9ff173c5a71798ac4e/docs/figure/comparative_analysis.Rmd/unnamed-chunk-5-1.png" target="_blank">4cf95d7</a>
 </td>
 <td>
@@ -2028,7 +2248,8 @@ DEG_NEO_CTRL_df_sig &lt;- DEG_NEO_CTRL_df %&gt;%
          (pct_in &gt; 50 | pct_out &gt; 50))
 
 # Saving to a file
-write.table(DEG_NEO_CTRL_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_sig.tsv&quot;,
+write.table(DEG_NEO_CTRL_df_sig,
+            &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_sig.tsv&quot;,
             sep = &quot;\t&quot;, quote = F, row.names = F)
 
 # Comparing to the Seurat function
@@ -2111,7 +2332,8 @@ heinin
          (pct.1 &gt; 0.50 | pct.2 &gt; 0.50))
 
 # Saving to a file
-write.table(DEG_NEO_CTRL_Seurat_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_Seurat_sig.tsv&quot;,
+write.table(DEG_NEO_CTRL_Seurat_df_sig,
+            &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_Seurat_sig.tsv&quot;,
             sep = &quot;\t&quot;, quote = F, row.names = F)
 
 # DEGs shared between and unique to each method
@@ -2506,6 +2728,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-10.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-10.png" target="_blank">f1e402a</a>
 </td>
 <td>
@@ -2551,6 +2784,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-11.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-11.png" target="_blank">f1e402a</a>
@@ -2627,7 +2871,8 @@ DEG_NEO_ADJ_df_sig &lt;- DEG_NEO_ADJ_df %&gt;%
          (pct_in &gt; 50 | pct_out &gt; 50))
 
 # Saving to a file
-write.table(DEG_NEO_ADJ_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_sig.tsv&quot;,
+write.table(DEG_NEO_ADJ_df_sig,
+            &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_sig.tsv&quot;,
             sep = &quot;\t&quot;, quote = F, row.names = F)
 
 # Calling DEGs with Seurat
@@ -2699,7 +2944,8 @@ heinin
          (pct.1 &gt; 0.50 | pct.2 &gt; 0.50))
 
 # Saving to a file
-write.table(DEG_NEO_ADJ_Seurat_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_Seurat_sig.tsv&quot;,
+write.table(DEG_NEO_ADJ_Seurat_df_sig,
+            &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_Seurat_sig.tsv&quot;,
             sep = &quot;\t&quot;, quote = F, row.names = F)
 
 # Plotting
@@ -2735,6 +2981,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-13.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-13.png" target="_blank">f1e402a</a>
@@ -2782,6 +3039,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-14.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-14.png" target="_blank">f1e402a</a>
@@ -2863,7 +3131,8 @@ DEG_ADJ_CTRL_df_sig &lt;- DEG_ADJ_CTRL_df %&gt;%
          (pct_in &gt; 50 | pct_out &gt; 50))
 
 # Saving to a file
-write.table(DEG_ADJ_CTRL_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_sig.tsv&quot;,
+write.table(DEG_ADJ_CTRL_df_sig,
+            &quot;/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_sig.tsv&quot;,
             sep = &quot;\t&quot;, quote = F, row.names = F)
 
 # Comparing to the Seurat function
@@ -2935,7 +3204,8 @@ heinin
          (pct.1 &gt; 0.50 | pct.2 &gt; 0.50))
 
 # Saving to a file
-write.table(DEG_ADJ_CTRL_Seurat_df_sig, &quot;/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_Seurat_sig.tsv&quot;,
+write.table(DEG_ADJ_CTRL_Seurat_df_sig,
+            &quot;/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_Seurat_sig.tsv&quot;,
             sep = &quot;\t&quot;, quote = F, row.names = F)
 
 # Plotting
@@ -2971,6 +3241,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-16.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-16.png" target="_blank">f1e402a</a>
@@ -3018,6 +3299,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/c63a16f66d0c30c8324a33a211f9550680e75fc6/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-17.png" target="_blank">c63a16f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-14
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/f1e402aa0baad38630d0bb71f245b4637dbf3e19/docs/figure/comparative_analysis.Rmd/unnamed-chunk-6-17.png" target="_blank">f1e402a</a>
@@ -3175,6 +3467,131 @@ intersect(DEG_NEO_ADJ_Seurat_df_sig$feature, DEG_NEO_CTRL_Seurat_df_sig$feature)
                        by = c(&#39;feature&#39;,&#39;celltype&#39;)),
             &quot;/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_CTRL_overlap.tsv&quot;,
             sep = &quot;\t&quot;, quote = F, row.names = F)</code></pre>
+</div>
+<div id="degs-between-treatment-groups-by-timepoint"
+class="section level3">
+<h3>DEGs between treatment groups by timepoint</h3>
+<p>Comparing NEO vs. CTRL on Day 12 and NEO vs. CTRL, NEO vs. ADJ, and
+ADJ vs. CTRL on Day 16.</p>
+<pre class="r"><code># A function for running the analysis
+get_degs &lt;- function(group1, group2, day){
+
+  # For each cluster, top DEGs between group1 and group2 on day x
+  # Using the Seurat function
+  DEG_list &lt;- lapply(unique(seurat_data$celltype), function(xx){
+    data_subset &lt;- subset(seurat_data, subset = celltype == xx)
+    data_subset &lt;- subset(data_subset, subset = Day == day)
+    Idents(data_subset) &lt;- data_subset$Treatment
+    if (all((c(group1, group2) %in% data_subset$Treatment) == c(T, T))){
+      markers &lt;- FindMarkers(data_subset,
+                             ident.1 = group1,
+                             ident.2 = group2,
+                             assay = &quot;RNA_human&quot;,
+                             verbose = F)
+      markers$feature &lt;- rownames(markers)
+      markers$celltype &lt;- xx
+      
+      return(markers)
+    } else {
+      return(NULL)
+    }
+  })
+  names(DEG_list) &lt;- unique(seurat_data$celltype)
+  DEG_list[sapply(DEG_list, is.null)] &lt;- NULL
+  
+  DEG_df &lt;- as.data.frame(do.call(rbind, DEG_list))
+  
+  DEG_df_sig &lt;- DEG_df %&gt;%
+    filter(p_val_adj &lt; 0.01,
+           abs(avg_log2FC) &gt; 100,
+           (pct.1 &gt; 0.50 | pct.2 &gt; 0.50))
+  
+  # Saving to a file
+  filename &lt;- paste0(&quot;/scratch/hnatri/CART/PD1_CART_DEG_&quot;, group1, &quot;_&quot;, group2,
+                     &quot;_&quot;, day, &quot;_Seurat_sig.tsv&quot;)
+  write.table(DEG_df_sig, filename,
+              sep = &quot;\t&quot;, quote = F, row.names = F)
+  
+  return(DEG_df_sig)
+}
+
+# For each comparison and timepoint, calling DEGs and plotting
+DEG_NEO_CTRL_D12 &lt;- get_degs(group1 = &quot;NEO&quot;,
+                             group2 = &quot;CTRL&quot;, 
+                             day = 12)
+
+DEG_NEO_CTRL_D16 &lt;- get_degs(group1 = &quot;NEO&quot;,
+                             group2 = &quot;CTRL&quot;, 
+                             day = 16)
+
+DEG_NEO_ADJ_D16 &lt;- get_degs(group1 = &quot;NEO&quot;,
+                            group2 = &quot;ADJ&quot;, 
+                            day = 16)
+
+DEG_ADJ_CTRL_D16 &lt;- get_degs(group1 = &quot;ADJ&quot;,
+                             group2 = &quot;CTRL&quot;, 
+                             day = 16)
+
+length(unique(DEG_NEO_CTRL_D12$feature))</code></pre>
+<pre><code>[1] 33</code></pre>
+<pre class="r"><code>length(unique(DEG_NEO_CTRL_D16$feature))</code></pre>
+<pre><code>[1] 54</code></pre>
+<pre class="r"><code>length(unique(DEG_NEO_ADJ_D16$feature))</code></pre>
+<pre><code>[1] 64</code></pre>
+<pre class="r"><code>length(unique(DEG_ADJ_CTRL_D16$feature))</code></pre>
+<pre><code>[1] 48</code></pre>
+<pre class="r"><code># Plotting
+table(DEG_NEO_CTRL_D12$celltype) %&gt;% as.data.frame() %&gt;%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab(&quot;Cell type&quot;) +
+    ylab(&quot;# DEGs NEO vs. CTRL, Day 12&quot;)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>table(DEG_NEO_CTRL_D16$celltype) %&gt;% as.data.frame() %&gt;%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab(&quot;Cell type&quot;) +
+    ylab(&quot;# DEGs NEO vs. CTRL, Day 16&quot;)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>table(DEG_NEO_ADJ_D16$celltype) %&gt;% as.data.frame() %&gt;%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab(&quot;Cell type&quot;) +
+    ylab(&quot;# DEGs NEO vs. ADJ, Day 16&quot;)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>table(DEG_ADJ_CTRL_D16$celltype) %&gt;% as.data.frame() %&gt;%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab(&quot;Cell type&quot;) +
+    ylab(&quot;# DEGs ADJ vs. CTRL, Day 12=6&quot;)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Top DEGs for each cluster
+#DEG_df_sig %&gt;% group_by(celltype) %&gt;% slice_max(order_by = avg_log2FC, n = 10)
+
+# Overlap of significant DEGs in each comparison
+input_list &lt;- list(&quot;NEO vs. CTRL, Day 12&quot; = DEG_NEO_CTRL_D12$feature,
+                   &quot;NEO vs. CTRL, Day 16&quot; = DEG_NEO_CTRL_D16$feature,
+                   &quot;NEO vs. ADJ, Day 16&quot; = DEG_NEO_ADJ_D16$feature,
+                   &quot;ADJ vs. CTRL, Day 16&quot; = DEG_ADJ_CTRL_D16$feature)
+
+upset(fromList(input_list), order.by = &quot;freq&quot;)</code></pre>
+<p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-7-5.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 <div id="human-t-cell-canonical-markers" class="section level3">
 <h3>Human T cell canonical markers</h3>
@@ -3378,16 +3795,16 @@ other attached packages:
  [1] ComplexHeatmap_2.18.0       viridis_0.6.3              
  [3] viridisLite_0.4.2           circlize_0.4.15            
  [5] plyr_1.8.8                  RColorBrewer_1.1-3         
- [7] scProportionTest_0.0.0.9000 googlesheets4_1.1.0        
- [9] workflowr_1.7.1             ggrepel_0.9.3              
-[11] ggpubr_0.6.0                lubridate_1.9.2            
-[13] forcats_1.0.0               stringr_1.5.0              
-[15] dplyr_1.1.2                 purrr_1.0.2                
-[17] readr_2.1.4                 tidyr_1.3.0                
-[19] tibble_3.2.1                ggplot2_3.4.2              
-[21] tidyverse_2.0.0             SeuratDisk_0.0.0.9021      
-[23] Seurat_5.0.1                SeuratObject_5.0.1         
-[25] sp_1.6-1                   
+ [7] UpSetR_1.4.0                scProportionTest_0.0.0.9000
+ [9] googlesheets4_1.1.0         workflowr_1.7.1            
+[11] ggrepel_0.9.3               ggpubr_0.6.0               
+[13] lubridate_1.9.2             forcats_1.0.0              
+[15] stringr_1.5.0               dplyr_1.1.2                
+[17] purrr_1.0.2                 readr_2.1.4                
+[19] tidyr_1.3.0                 tibble_3.2.1               
+[21] ggplot2_3.4.2               tidyverse_2.0.0            
+[23] SeuratDisk_0.0.0.9021       Seurat_5.0.1               
+[25] SeuratObject_5.0.1          sp_1.6-1                   
 
 loaded via a namespace (and not attached):
   [1] RcppAnnoy_0.0.20       splines_4.3.0          later_1.3.1           

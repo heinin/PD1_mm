@@ -27,7 +27,8 @@ suppressPackageStartupMessages({
   library(ggrepel)
   library(workflowr)
   library(googlesheets4)
-  library(scProportionTest)})
+  library(scProportionTest)
+  library(UpSetR)})
 
 setwd("/home/hnatri/PD1_mm/")
 set.seed(9999)
@@ -319,7 +320,8 @@ DEG_NEO_CTRL_df_sig <- DEG_NEO_CTRL_df %>%
          (pct_in > 50 | pct_out > 50))
 
 # Saving to a file
-write.table(DEG_NEO_CTRL_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_sig.tsv",
+write.table(DEG_NEO_CTRL_df_sig,
+            "/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_sig.tsv",
             sep = "\t", quote = F, row.names = F)
 
 # Comparing to the Seurat function
@@ -354,7 +356,8 @@ DEG_NEO_CTRL_Seurat_df_sig <- DEG_NEO_CTRL_Seurat_df %>%
          (pct.1 > 0.50 | pct.2 > 0.50))
 
 # Saving to a file
-write.table(DEG_NEO_CTRL_Seurat_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_Seurat_sig.tsv",
+write.table(DEG_NEO_CTRL_Seurat_df_sig,
+            "/scratch/hnatri/CART/PD1_CART_DEG_NEO_CTRL_Seurat_sig.tsv",
             sep = "\t", quote = F, row.names = F)
 
 # DEGs shared between and unique to each method
@@ -445,7 +448,8 @@ DEG_NEO_ADJ_df_sig <- DEG_NEO_ADJ_df %>%
          (pct_in > 50 | pct_out > 50))
 
 # Saving to a file
-write.table(DEG_NEO_ADJ_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_sig.tsv",
+write.table(DEG_NEO_ADJ_df_sig,
+            "/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_sig.tsv",
             sep = "\t", quote = F, row.names = F)
 
 # Calling DEGs with Seurat
@@ -480,7 +484,8 @@ DEG_NEO_ADJ_Seurat_df_sig <- DEG_NEO_ADJ_Seurat_df %>%
          (pct.1 > 0.50 | pct.2 > 0.50))
 
 # Saving to a file
-write.table(DEG_NEO_ADJ_Seurat_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_Seurat_sig.tsv",
+write.table(DEG_NEO_ADJ_Seurat_df_sig,
+            "/scratch/hnatri/CART/PD1_CART_DEG_NEO_ADJ_Seurat_sig.tsv",
             sep = "\t", quote = F, row.names = F)
 
 # Plotting
@@ -541,7 +546,8 @@ DEG_ADJ_CTRL_df_sig <- DEG_ADJ_CTRL_df %>%
          (pct_in > 50 | pct_out > 50))
 
 # Saving to a file
-write.table(DEG_ADJ_CTRL_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_sig.tsv",
+write.table(DEG_ADJ_CTRL_df_sig,
+            "/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_sig.tsv",
             sep = "\t", quote = F, row.names = F)
 
 # Comparing to the Seurat function
@@ -576,7 +582,8 @@ DEG_ADJ_CTRL_Seurat_df_sig <- DEG_ADJ_CTRL_Seurat_df %>%
          (pct.1 > 0.50 | pct.2 > 0.50))
 
 # Saving to a file
-write.table(DEG_ADJ_CTRL_Seurat_df_sig, "/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_Seurat_sig.tsv",
+write.table(DEG_ADJ_CTRL_Seurat_df_sig,
+            "/scratch/hnatri/CART/PD1_CART_DEG_ADJ_CTRL_Seurat_sig.tsv",
             sep = "\t", quote = F, row.names = F)
 
 # Plotting
@@ -625,6 +632,132 @@ write.table(inner_join(DEG_NEO_ADJ_Seurat_df_sig, DEG_NEO_CTRL_Seurat_df_sig,
             sep = "\t", quote = F, row.names = F)
 
 ```
+
+### DEGs between treatment groups by timepoint
+
+Comparing NEO vs. CTRL on Day 12 and NEO vs. CTRL, NEO vs. ADJ, and ADJ vs. CTRL
+on Day 16.
+
+```{r}
+
+# A function for running the analysis
+get_degs <- function(group1, group2, day){
+
+  # For each cluster, top DEGs between group1 and group2 on day x
+  # Using the Seurat function
+  DEG_list <- lapply(unique(seurat_data$celltype), function(xx){
+    data_subset <- subset(seurat_data, subset = celltype == xx)
+    data_subset <- subset(data_subset, subset = Day == day)
+    Idents(data_subset) <- data_subset$Treatment
+    if (all((c(group1, group2) %in% data_subset$Treatment) == c(T, T))){
+      markers <- FindMarkers(data_subset,
+                             ident.1 = group1,
+                             ident.2 = group2,
+                             assay = "RNA_human",
+                             verbose = F)
+      markers$feature <- rownames(markers)
+      markers$celltype <- xx
+      
+      return(markers)
+    } else {
+      return(NULL)
+    }
+  })
+  names(DEG_list) <- unique(seurat_data$celltype)
+  DEG_list[sapply(DEG_list, is.null)] <- NULL
+  
+  DEG_df <- as.data.frame(do.call(rbind, DEG_list))
+  
+  DEG_df_sig <- DEG_df %>%
+    filter(p_val_adj < 0.01,
+           abs(avg_log2FC) > 100,
+           (pct.1 > 0.50 | pct.2 > 0.50))
+  
+  # Saving to a file
+  filename <- paste0("/scratch/hnatri/CART/PD1_CART_DEG_", group1, "_", group2,
+                     "_", day, "_Seurat_sig.tsv")
+  write.table(DEG_df_sig, filename,
+              sep = "\t", quote = F, row.names = F)
+  
+  return(DEG_df_sig)
+}
+
+# For each comparison and timepoint, calling DEGs and plotting
+DEG_NEO_CTRL_D12 <- get_degs(group1 = "NEO",
+                             group2 = "CTRL", 
+                             day = 12)
+
+DEG_NEO_CTRL_D16 <- get_degs(group1 = "NEO",
+                             group2 = "CTRL", 
+                             day = 16)
+
+DEG_NEO_ADJ_D16 <- get_degs(group1 = "NEO",
+                            group2 = "ADJ", 
+                            day = 16)
+
+DEG_ADJ_CTRL_D16 <- get_degs(group1 = "ADJ",
+                             group2 = "CTRL", 
+                             day = 16)
+
+length(unique(DEG_NEO_CTRL_D12$feature))
+length(unique(DEG_NEO_CTRL_D16$feature))
+length(unique(DEG_NEO_ADJ_D16$feature))
+length(unique(DEG_ADJ_CTRL_D16$feature))
+
+# Plotting
+table(DEG_NEO_CTRL_D12$celltype) %>% as.data.frame() %>%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab("Cell type") +
+    ylab("# DEGs NEO vs. CTRL, Day 12")
+
+table(DEG_NEO_CTRL_D16$celltype) %>% as.data.frame() %>%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab("Cell type") +
+    ylab("# DEGs NEO vs. CTRL, Day 16")
+
+table(DEG_NEO_ADJ_D16$celltype) %>% as.data.frame() %>%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab("Cell type") +
+    ylab("# DEGs NEO vs. ADJ, Day 16")
+
+table(DEG_ADJ_CTRL_D16$celltype) %>% as.data.frame() %>%
+  ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
+    geom_bar(stat = "identity") +
+    scale_fill_manual(values = plot_colors) +
+    theme_classic2() +
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
+    NoLegend() +
+    xlab("Cell type") +
+    ylab("# DEGs ADJ vs. CTRL, Day 12=6")
+
+# Top DEGs for each cluster
+#DEG_df_sig %>% group_by(celltype) %>% slice_max(order_by = avg_log2FC, n = 10)
+
+# Overlap of significant DEGs in each comparison
+input_list <- list("NEO vs. CTRL, Day 12" = DEG_NEO_CTRL_D12$feature,
+                   "NEO vs. CTRL, Day 16" = DEG_NEO_CTRL_D16$feature,
+                   "NEO vs. ADJ, Day 16" = DEG_NEO_ADJ_D16$feature,
+                   "ADJ vs. CTRL, Day 16" = DEG_ADJ_CTRL_D16$feature)
+
+upset(fromList(input_list), order.by = "freq")
+
+```
+
 
 ### Human T cell canonical markers
 
