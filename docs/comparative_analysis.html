@@ -567,6 +567,14 @@ code/PD1_mm_themes.R
 code/CART_plot_functions.R
 </td>
 </tr>
+<tr>
+<td style="text-align:left;">
+/home/hnatri/PD1_mm/PD1_CART_celltype_markers_top20.tsv
+</td>
+<td style="text-align:left;">
+PD1_CART_celltype_markers_top20.tsv
+</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -575,15 +583,15 @@ code/CART_plot_functions.R
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree4a4137c5c43e1cc054fd1e81d96aa42727a146bdtargetblank4a4137ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreecef63a7e8a7999ba84f2e186b273752479321c4ctargetblankcef63a7a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/4a4137c5c43e1cc054fd1e81d96aa42727a146bd" target="_blank">4a4137c</a>
+<a href="https://github.com/heinin/PD1_mm/tree/cef63a7e8a7999ba84f2e186b273752479321c4c" target="_blank">cef63a7</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree4a4137c5c43e1cc054fd1e81d96aa42727a146bdtargetblank4a4137ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreecef63a7e8a7999ba84f2e186b273752479321c4ctargetblankcef63a7a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -593,7 +601,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/4a4137c5c43e1cc054fd1e81d96aa42727a146bd" target="_blank">4a4137c</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/cef63a7e8a7999ba84f2e186b273752479321c4c" target="_blank">cef63a7</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -609,9 +617,6 @@ were generated:
 <pre><code>
 Unstaged changes:
     Modified:   analysis/comparative_analysis.Rmd
-
-Staged changes:
-    Deleted:    test.txt
 
 </code></pre>
 <p>
@@ -657,6 +662,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/cef63a7e8a7999ba84f2e186b273752479321c4c/analysis/comparative_analysis.Rmd" target="_blank">cef63a7</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-19
+</td>
+<td>
+Added DEGs by timepoint
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/cef63a7e8a7999ba84f2e186b273752479321c4c/docs/comparative_analysis.html" target="_blank">cef63a7</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-19
+</td>
+<td>
+Added DEGs by timepoint
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2201,22 +2240,10 @@ write.table(sig_markers, &quot;/scratch/hnatri/CART/PD1_CART_celltype_markers.ts
             sep = &quot;\t&quot;, quote = F, row.names = F)
 
 # Top markers for each cluster
-sig_markers %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 10)</code></pre>
-<pre><code># A tibble: 160 × 10
-# Groups:   group [16]
-   feature group avgExpr  logFC statistic   auc  pval  padj pct_in pct_out
-   &lt;chr&gt;   &lt;chr&gt;   &lt;dbl&gt;  &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;
- 1 CD79B   B1       8.07   7.89 62293006. 0.975     0     0   96.4  12.9  
- 2 CD79A   B1      12.0   12.0  62271029  0.974     0     0   95.2   1.14 
- 3 LY6D    B1      17.2   16.6  62213838  0.973     0     0   97.2   3.14 
- 4 IGKC    B1     643.   642.   61544516  0.963     0     0   94.3  16.6  
- 5 EBF1    B1      18.1   18.0  60798972. 0.951     0     0   90.8   1.11 
- 6 IGLC1   B1       7.65   7.48 60499564  0.946     0     0   91.4   2.07 
- 7 IGHM    B1      86.4   84.5  59814459. 0.936     0     0   95.7  54.7  
- 8 MS4A1   B1       6.62   6.59 59724680  0.934     0     0   87.3   0.802
- 9 BANK1   B1      15.6   15.1  59243218  0.927     0     0   89.3  14.8  
-10 PAX5    B1       4.31   4.29 58841820. 0.921     0     0   84.6   0.690
-# ℹ 150 more rows</code></pre>
+top_markers &lt;- markers %&gt;% group_by(group) %&gt;% slice_max(order_by = auc, n = 20)
+
+write.table(top_markers, &quot;/home/hnatri/PD1_mm/PD1_CART_celltype_markers_top20.tsv&quot;,
+            quote = F, row.names = F, sep = &quot;\t&quot;)</code></pre>
 </div>
 <div id="degs-between-treatment-groups" class="section level3">
 <h3>DEGs between treatment groups</h3>
@@ -3551,6 +3578,43 @@ table(DEG_NEO_CTRL_D12$celltype) %&gt;% as.data.frame() %&gt;%
     xlab(&quot;Cell type&quot;) +
     ylab(&quot;# DEGs NEO vs. CTRL, Day 12&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/cef63a7e8a7999ba84f2e186b273752479321c4c/docs/figure/comparative_analysis.Rmd/unnamed-chunk-7-1.png" target="_blank">cef63a7</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>table(DEG_NEO_CTRL_D16$celltype) %&gt;% as.data.frame() %&gt;%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = &quot;identity&quot;) +
@@ -3561,6 +3625,43 @@ table(DEG_NEO_CTRL_D12$celltype) %&gt;% as.data.frame() %&gt;%
     xlab(&quot;Cell type&quot;) +
     ylab(&quot;# DEGs NEO vs. CTRL, Day 16&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
+Past versions of unnamed-chunk-7-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/cef63a7e8a7999ba84f2e186b273752479321c4c/docs/figure/comparative_analysis.Rmd/unnamed-chunk-7-2.png" target="_blank">cef63a7</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>table(DEG_NEO_ADJ_D16$celltype) %&gt;% as.data.frame() %&gt;%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = &quot;identity&quot;) +
@@ -3571,6 +3672,43 @@ table(DEG_NEO_CTRL_D12$celltype) %&gt;% as.data.frame() %&gt;%
     xlab(&quot;Cell type&quot;) +
     ylab(&quot;# DEGs NEO vs. ADJ, Day 16&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-3">
+Past versions of unnamed-chunk-7-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/cef63a7e8a7999ba84f2e186b273752479321c4c/docs/figure/comparative_analysis.Rmd/unnamed-chunk-7-3.png" target="_blank">cef63a7</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>table(DEG_ADJ_CTRL_D16$celltype) %&gt;% as.data.frame() %&gt;%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = &quot;identity&quot;) +
@@ -3581,6 +3719,43 @@ table(DEG_NEO_CTRL_D12$celltype) %&gt;% as.data.frame() %&gt;%
     xlab(&quot;Cell type&quot;) +
     ylab(&quot;# DEGs ADJ vs. CTRL, Day 12=6&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-4">
+Past versions of unnamed-chunk-7-4.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/cef63a7e8a7999ba84f2e186b273752479321c4c/docs/figure/comparative_analysis.Rmd/unnamed-chunk-7-4.png" target="_blank">cef63a7</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Top DEGs for each cluster
 #DEG_df_sig %&gt;% group_by(celltype) %&gt;% slice_max(order_by = avg_log2FC, n = 10)
 
@@ -3592,6 +3767,43 @@ input_list &lt;- list(&quot;NEO vs. CTRL, Day 12&quot; = DEG_NEO_CTRL_D12$featur
 
 upset(fromList(input_list), order.by = &quot;freq&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-7-5.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-5">
+Past versions of unnamed-chunk-7-5.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/cef63a7e8a7999ba84f2e186b273752479321c4c/docs/figure/comparative_analysis.Rmd/unnamed-chunk-7-5.png" target="_blank">cef63a7</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="human-t-cell-canonical-markers" class="section level3">
 <h3>Human T cell canonical markers</h3>

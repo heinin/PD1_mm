@@ -46,6 +46,7 @@ source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
 ```{r}
 
 seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+seurat_data$Treatment_Day <- paste0(seurat_data$Treatment, "_", seurat_data$Day)
 
 ```
 
@@ -284,7 +285,10 @@ write.table(sig_markers, "/scratch/hnatri/CART/PD1_CART_celltype_markers.tsv",
             sep = "\t", quote = F, row.names = F)
 
 # Top markers for each cluster
-sig_markers %>% group_by(group) %>% slice_max(order_by = auc, n = 10)
+top_markers <- markers %>% group_by(group) %>% slice_max(order_by = auc, n = 20)
+
+write.table(top_markers, "/home/hnatri/PD1_mm/PD1_CART_celltype_markers_top20.tsv",
+            quote = F, row.names = F, sep = "\t")
 
 ```
 
@@ -747,7 +751,11 @@ table(DEG_ADJ_CTRL_D16$celltype) %>% as.data.frame() %>%
 
 # Top DEGs for each cluster
 #DEG_df_sig %>% group_by(celltype) %>% slice_max(order_by = avg_log2FC, n = 10)
+```
 
+### Looking at DEGs unique to/shared between groups
+
+```{r}
 # Overlap of significant DEGs in each comparison
 input_list <- list("NEO vs. CTRL, Day 12" = DEG_NEO_CTRL_D12$feature,
                    "NEO vs. CTRL, Day 16" = DEG_NEO_CTRL_D16$feature,
@@ -755,6 +763,59 @@ input_list <- list("NEO vs. CTRL, Day 12" = DEG_NEO_CTRL_D12$feature,
                    "ADJ vs. CTRL, Day 16" = DEG_ADJ_CTRL_D16$feature)
 
 upset(fromList(input_list), order.by = "freq")
+
+# Plotting overlaps without RP and MT genes
+RBMTgenes <- grep(pattern = "^RP[SL]|^MRP[SL]|^MT-", x = rownames(seurat_data@assays$RNA_human@data), value = TRUE)
+    
+input_list <- lapply(input_list, function(xx){
+  setdiff(xx, RBMTgenes)
+})
+
+upset(fromList(input_list), order.by = "freq")
+
+# Looking at genes in intersections
+# Unique to ADJ_CTRL_D16
+setdiff(DEG_ADJ_CTRL_D16$feature, c(DEG_NEO_ADJ_D16$feature,
+                                    DEG_NEO_CTRL_D16$feature,
+                                    DEG_NEO_CTRL_D12$feature,
+                                    RBMTgenes))
+# Unique to DEG_NEO_CTRL_D16
+setdiff(DEG_NEO_CTRL_D16$feature, c(DEG_NEO_ADJ_D16$feature,
+                                    DEG_ADJ_CTRL_D16$feature,
+                                    DEG_NEO_CTRL_D12$feature,
+                                    RBMTgenes))
+# Unique to DEG_NEO_ADJ_D16
+setdiff(DEG_NEO_ADJ_D16$feature, c(DEG_NEO_CTRL_D16$feature,
+                                   DEG_ADJ_CTRL_D16$feature,
+                                   DEG_NEO_CTRL_D12$feature,
+                                   RBMTgenes))
+
+# Unique to DEG_NEO_ADJ_D16
+setdiff(DEG_NEO_CTRL_D12$feature, c(DEG_NEO_CTRL_D16$feature,
+                                    DEG_ADJ_CTRL_D16$feature,
+                                    DEG_NEO_ADJ_D16$feature,
+                                    RBMTgenes))
+
+# Shared between NEO vs. ADJ and ADJ vs. CTRL, without RB/MT genes
+setdiff(intersect(DEG_NEO_ADJ_D16$feature, DEG_ADJ_CTRL_D16$feature), RBMTgenes)
+
+```
+
+### Plotting SPP1
+
+```{r, fig.height = 12}
+# Looking at SPP1
+DEG_NEO_ADJ_D16 %>% filter(feature == "SPP1")
+VlnPlot(seurat_data,
+        features = "SPP1",
+        group.by = "celltype",
+        split.by = "Treatment_Day",
+        assay = "RNA_human",
+        layer = "data",
+        pt.size = 0,
+        log = T) +
+  ylim(0, 1000) +
+  coord_flip()
 
 ```
 
