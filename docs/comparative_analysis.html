@@ -580,15 +580,15 @@ PD1_CART_celltype_markers_top20.tsv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree0a6e0b74fb33f05044f9e547cbb229c91bbb9622targetblank0a6e0b7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree46627b7da0077b998e36712cb63dd60d9abf405dtargetblank46627b7a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/0a6e0b74fb33f05044f9e547cbb229c91bbb9622" target="_blank">0a6e0b7</a>
+<a href="https://github.com/heinin/PD1_mm/tree/46627b7da0077b998e36712cb63dd60d9abf405d" target="_blank">46627b7</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree0a6e0b74fb33f05044f9e547cbb229c91bbb9622targetblank0a6e0b7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree46627b7da0077b998e36712cb63dd60d9abf405dtargetblank46627b7a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -598,7 +598,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/0a6e0b74fb33f05044f9e547cbb229c91bbb9622" target="_blank">0a6e0b7</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/46627b7da0077b998e36712cb63dd60d9abf405d" target="_blank">46627b7</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -612,7 +612,9 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-working directory clean
+Unstaged changes:
+    Modified:   analysis/myeloid_lymphoid_markers_compare.Rmd
+
 </code></pre>
 <p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not
@@ -657,6 +659,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/46627b7da0077b998e36712cb63dd60d9abf405d/docs/comparative_analysis.html" target="_blank">46627b7</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -3802,6 +3821,43 @@ input_list &lt;- list(&quot;NEO vs. CTRL, Day 12&quot; = DEG_NEO_CTRL_D12$featur
 
 upset(fromList(input_list), order.by = &quot;freq&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/46627b7da0077b998e36712cb63dd60d9abf405d/docs/figure/comparative_analysis.Rmd/unnamed-chunk-8-1.png" target="_blank">46627b7</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Plotting overlaps without RP and MT genes
 RBMTgenes &lt;- grep(pattern = &quot;^RP[SL]|^MRP[SL]|^MT-&quot;, x = rownames(seurat_data@assays$RNA_human@data), value = TRUE)
     
@@ -3811,6 +3867,43 @@ input_list &lt;- lapply(input_list, function(xx){
 
 upset(fromList(input_list), order.by = &quot;freq&quot;)</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-2">
+Past versions of unnamed-chunk-8-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/46627b7da0077b998e36712cb63dd60d9abf405d/docs/figure/comparative_analysis.Rmd/unnamed-chunk-8-2.png" target="_blank">46627b7</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># Looking at genes in intersections
 # Unique to ADJ_CTRL_D16
 setdiff(DEG_ADJ_CTRL_D16$feature, c(DEG_NEO_ADJ_D16$feature,
@@ -3878,6 +3971,43 @@ This message will be shown once per session.</code></pre>
 Adding another scale for y, which will replace the existing scale.</code></pre>
 <pre><code>Warning: Removed 34 rows containing non-finite values (`stat_ydensity()`).</code></pre>
 <p><img src="figure/comparative_analysis.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/46627b7da0077b998e36712cb63dd60d9abf405d/docs/figure/comparative_analysis.Rmd/unnamed-chunk-9-1.png" target="_blank">46627b7</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-19
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="human-t-cell-canonical-markers" class="section level3">
 <h3>Human T cell canonical markers</h3>
