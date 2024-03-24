@@ -1,0 +1,361 @@
+---
+title: "GSEA pathway analysis on the Kluc tumor CD45+ scRNAseq data"
+author: "heinin"
+date: "2024-03-22"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Running GSEA for each cell and comparing between groups.
+
+### Packages and environment variables
+
+```{r, warning=F, message=F}
+
+suppressPackageStartupMessages({
+  #library(cli)
+  library(Seurat)
+  library(SeuratObject)
+  library(SeuratDisk)
+  library(tidyverse)
+  library(tibble)
+  library(ggplot2)
+  library(ggpubr)
+  library(ggrepel)
+  library(workflowr)
+  library(dittoSeq)
+  library(googlesheets4)
+  library(escape)
+  library(pheatmap)})
+
+setwd("/home/hnatri/PD1_mm/")
+set.seed(9999)
+options(ggrepel.max.overlaps = Inf)
+
+# Colors, themes, cell type markers, and plot functions
+source("/home/hnatri/PD1_mm/code/utilities.R")
+source("/home/hnatri/PD1_mm/code/PD1_mm_themes.R")
+source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
+
+```
+
+### Importing data
+
+```{r}
+
+#seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+#seurat_data$Treatment_Day <- paste0(seurat_data$Treatment, "_", seurat_data$Day)
+
+```
+
+### Running GSEA using R/escape
+
+GSEA was run using code/GSEA.R.
+
+### Importing GSEA outputs
+
+```{r}
+
+seurat_data <- readRDS("/scratch/hnatri/CART/PD1_mm_Seurat_GSEA.Rds")
+res <- readRDS("/scratch/hnatri/CART/KlucCD45pos_GSEA_res.rds")
+
+```
+
+### Significance testing
+
+```{r}
+
+res <- seurat_data@meta.data %>%
+  dplyr::select(c("orig.ident", "Treatment_Day", colnames(res)))
+
+#tumors_res2 <- tumors_res2 %>% filter(SPP1_surv_extremes %in% c("top", "bottom"))
+sig_res <- data.frame(getSignificance(res,
+                                      group = "Treatment_Day",
+                                      fit = "ANOVA"))
+sig_res$pathways <- rownames(sig_res)
+sig_res <- sig_res %>% filter(FDR < 0.05) %>% arrange(FDR)
+
+dim(sig_res)
+
+sig_res %>% dplyr::select(c("pathways"))
+
+```
+
+### Plotting results
+
+```{r, fig.width=14, fig.height=8}
+
+DefaultAssay(seurat_data) <- "RNA_human"
+seurat_data$Treatment_Day <- factor(seurat_data$Treatment_Day,
+                                    levels = c("NEO_12", "NEO_16",
+                                               "CTRL_12", "CTRL_16",
+                                               "ADJ_16"))
+
+dittoHeatmap(seurat_data,
+             genes = NULL,
+             metas = sig_res$pathways, 
+             heatmap.colors = colorRampPalette(c("dodgerblue4", "white", "tomato"))(100),
+             annot.colors = treatment_day_col,
+             annot.by = "Treatment_Day",
+             order.by = "Treatment_Day",
+             cluster_cols = F,
+             fontsize = 7)
+
+dittoHeatmap(seurat_data,
+             genes = NULL,
+             metas = sig_res$pathways, 
+             heatmap.colors = colorRampPalette(c("dodgerblue4", "white", "tomato"))(100),
+             annot.colors = treatment_day_col,
+             annot.by = "Treatment_Day",
+             cluster_cols = T,
+             fontsize = 7)
+
+```
+
+```{r, fig.width=16, fig.height=28}
+VlnPlot(seurat_data,
+        features = sig_res$pathways,
+        group.by = "celltype",
+        split.by = "Treatment_Day",
+        cols = treatment_day_col,
+        ncol = 1,
+        pt.size = 0) &
+  theme_classic() &
+  xlab("") &
+  NoLegend()
+```
+
+### Plotting by celltype and treatment only
+
+```{r, fig.width=28, fig.height=42}
+VlnPlot(seurat_data,
+        features = sig_res$pathways,
+        group.by = "celltype",
+        split.by = "Treatment",
+        cols = treatment_day_col,
+        ncol = 1,
+        pt.size = 0) &
+  theme_classic() &
+  xlab("") &
+  NoLegend()
+```
+
+### Plotting by celltype and timepoint only
+
+```{r, fig.width=28, fig.height=42}
+VlnPlot(seurat_data,
+        features = sig_res$pathways,
+        group.by = "celltype",
+        split.by = "Day",
+        cols = c("deeppink3", "aquamarine3"),
+        ncol = 1,
+        pt.size = 0) &
+  theme_classic() &
+  xlab("") &
+  NoLegend()
+```
+
+### Plotting by treatment only
+
+```{r, fig.width=3, fig.height=24}
+VlnPlot(seurat_data,
+        features = sig_res$pathways,
+        group.by = "Treatment",
+        cols = treatment_col,
+        ncol = 1,
+        pt.size = 0) &
+  theme_classic() &
+  xlab("") &
+  NoLegend()
+```
+
+### Plotting by timepoint only
+
+```{r, fig.width=3, fig.height=24}
+VlnPlot(seurat_data,
+        features = sig_res$pathways,
+        group.by = "Day",
+        cols = c("deeppink3", "aquamarine3"),
+        ncol = 1,
+        pt.size = 0) &
+  theme_classic() &
+  xlab("") &
+  NoLegend()
+```
+
+### Testing with myeloid cell types only
+
+```{r, fig.height=14, fig.width=12, warning=F, message=F}
+
+seurat_data_myeloid <- subset(seurat_data, subset = celltype %in% paste0("M", seq(1, 9)))
+
+res_myeloid <- seurat_data_myeloid@meta.data %>%
+  dplyr::select(c("orig.ident", "Treatment_Day", colnames(res)))
+
+sig_res_myeloid <- data.frame(getSignificance(res_myeloid,
+                                              group = "Treatment_Day",
+                                              fit = "ANOVA"))
+sig_res_myeloid$pathways <- rownames(sig_res_myeloid)
+sig_res_myeloid <- sig_res_myeloid %>% filter(FDR < 0.05) %>% arrange(FDR)
+
+dim(sig_res_myeloid)
+
+sig_res_myeloid %>% dplyr::select(c("pathways"))
+
+write.table(sig_res_myeloid, "/home/hnatri/PD1_mm/GSEA_myeloid_sig.tsv",
+            sep = "\t", quote = F, row.names = F)
+
+# Overlap of significant pathways for the whole data vs. myeloid only
+intersect(sig_res_myeloid$pathways, sig_res$pathways)
+
+# Checking significance by Treatment, Day and celltype in myeloid cells
+seurat_data_myeloid$Treatment_Day_celltype <- paste0(seurat_data_myeloid$Treatment_Day,
+                                                     "_", seurat_data_myeloid$celltype)
+res_myeloid_celltype <- seurat_data_myeloid@meta.data %>%
+  dplyr::select(c("orig.ident", "Treatment_Day_celltype", colnames(res)))
+
+sig_res_myeloid_celltype <- data.frame(getSignificance(res_myeloid_celltype,
+                                              group = "Treatment_Day_celltype",
+                                              fit = "ANOVA"))
+sig_res_myeloid_celltype$pathways <- rownames(sig_res_myeloid_celltype)
+sig_res_myeloid_celltype <- sig_res_myeloid_celltype %>%
+  filter(FDR < 0.05) %>% arrange(FDR)
+
+unique(sig_res_myeloid_celltype$pathways)
+
+# Only keeping comparisons for the same cell type
+sig_res_myeloid_celltype <- t(sig_res_myeloid_celltype)
+sig_res_myeloid_celltype <- sig_res_myeloid_celltype %>% as.data.frame() %>%
+  rownames_to_column(var = "comparison") %>%
+  separate(col = comparison, sep = "v", into = c("group1", "group2")) %>%
+  separate(col = group1, sep = "_", into = c("group1", "day1", "celltype1")) %>%
+  separate(col = group2, sep = "_", into = c("group2", "day2", "celltype2")) %>%
+  separate(col = celltype2, sep = "\\.", into = c("celltype2", "valtype")) %>% 
+  dplyr::filter(celltype1 == celltype2 | group1 == "f." | group1 == "p." | group1 == "pathways")
+
+dim(sig_res_myeloid_celltype)
+
+write.table(sig_res_myeloid_celltype, "/home/hnatri/PD1_mm/GSEA_myeloid_celltype_sig.tsv",
+            sep = "\t", quote = F, row.names = F)
+
+# Heatmap of p-values
+sig_res_myeloid_celltype <- sig_res_myeloid_celltype %>% filter(!group1 %in% c("f.", "p.")) %>%
+  select(!c("valtype"))
+
+colnames(sig_res_myeloid_celltype) <- c(colnames(sig_res_myeloid_celltype)[1:6],
+                                                as.character(sig_res_myeloid_celltype[nrow(sig_res_myeloid_celltype),][7:ncol(sig_res_myeloid_celltype)]))
+
+# Bottom, left, top, right
+#par(mar=c(2,12,2,3)) 
+
+sig_res_myeloid_celltype %>% unite("comparison", group1:celltype2, sep = "_") %>% 
+  column_to_rownames(var = "comparison") %>%
+  filter(row_number() <= n()-1) %>%
+  mutate_if(is.character, as.numeric) %>%
+  as.matrix() %>%
+  pheatmap(color = colorRampPalette(brewer.pal(n = 7, name = "RdYlBu"))(100),
+           fontsize = 7,
+           angle_col = "45",
+           display_numbers = T,
+            number_format = "%.2f", number_color = "black")
+
+```
+
+### Plotting results for myeloid
+
+```{r, fig.width=14, fig.height=8}
+
+dittoHeatmap(seurat_data_myeloid,
+             genes = NULL,
+             metas = sig_res_myeloid$pathways, 
+             heatmap.colors = colorRampPalette(c("dodgerblue4", "white", "tomato"))(100),
+             annot.colors = treatment_day_col,
+             annot.by = "Treatment_Day",
+             order.by = "Treatment_Day",
+             cluster_cols = F,
+             fontsize = 7)
+
+dittoHeatmap(seurat_data_myeloid,
+             genes = NULL,
+             metas = sig_res_myeloid$pathways, 
+             heatmap.colors = colorRampPalette(c("dodgerblue4", "white", "tomato"))(100),
+             annot.colors = treatment_day_col,
+             annot.by = "Treatment_Day",
+             cluster_cols = T,
+             fontsize = 7)
+
+```
+
+```{r, fig.width=16, fig.height=28}
+VlnPlot(seurat_data_myeloid,
+        features = sig_res$pathways,
+        group.by = "celltype",
+        split.by = "Treatment_Day",
+        cols = treatment_day_col,
+        ncol = 1,
+        pt.size = 0) &
+  theme_classic() &
+  xlab("") &
+  NoLegend()
+```
+
+### Plotting by celltype and treatment (myeloid)
+
+```{r, fig.width=28, fig.height=42}
+VlnPlot(seurat_data_myeloid,
+        features = sig_res$pathways,
+        group.by = "celltype",
+        split.by = "Treatment",
+        cols = treatment_day_col,
+        ncol = 1,
+        pt.size = 0) &
+  theme_classic() &
+  xlab("") &
+  NoLegend()
+```
+
+### Plotting by celltype and timepoint only (myeloid)
+
+```{r, fig.width=28, fig.height=42}
+VlnPlot(seurat_data_myeloid,
+        features = sig_res$pathways,
+        group.by = "celltype",
+        split.by = "Day",
+        cols = c("deeppink3", "aquamarine3"),
+        ncol = 1,
+        pt.size = 0) &
+  theme_classic() &
+  xlab("") &
+  NoLegend()
+```
+
+### Plotting by treatment only (myeloid)
+
+```{r, fig.width=3, fig.height=24}
+VlnPlot(seurat_data_myeloid,
+        features = sig_res$pathways,
+        group.by = "Treatment",
+        cols = treatment_col,
+        ncol = 1,
+        pt.size = 0) &
+  theme_classic() &
+  xlab("") &
+  NoLegend()
+```
+
+### Plotting by timepoint only (myeloid)
+
+```{r, fig.width=3, fig.height=24}
+VlnPlot(seurat_data_myeloid,
+        features = sig_res$pathways,
+        group.by = "Day",
+        cols = c("deeppink3", "aquamarine3"),
+        ncol = 1,
+        pt.size = 0) &
+  theme_classic() &
+  xlab("") &
+  NoLegend()
+```
