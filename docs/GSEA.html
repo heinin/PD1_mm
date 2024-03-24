@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="heinin" />
+
+<meta name="date" content="2024-03-22" />
+
+<title>GSEA pathway analysis on the Kluc tumor CD45+ scRNAseq data</title>
+
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PD1_mm</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/heinin/PD1_mm">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">GSEA pathway analysis on the Kluc tumor
+CD45+ scRNAseq data</h1>
+<h4 class="author">heinin</h4>
+<h4 class="date">2024-03-22</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2024-03-23
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>PD1_mm/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20240223code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20240223)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20240223code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20240223)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongabsolute">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>File paths:</strong> absolute </a>
+</p>
+</div>
+<div id="strongFilepathsstrongabsolute" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Using absolute paths to the files within your workflowr project makes it
+difficult for you and others to run your code on a different machine.
+Change the absolute path(s) below to the suggested relative path(s) to
+make your code more reproducible.
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+absolute
+</th>
+<th style="text-align:left;">
+relative
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+/home/hnatri/PD1_mm/
+</td>
+<td style="text-align:left;">
+.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/home/hnatri/PD1_mm/code/utilities.R
+</td>
+<td style="text-align:left;">
+code/utilities.R
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/home/hnatri/PD1_mm/code/PD1_mm_themes.R
+</td>
+<td style="text-align:left;">
+code/PD1_mm_themes.R
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/home/hnatri/PD1_mm/code/CART_plot_functions.R
+</td>
+<td style="text-align:left;">
+code/CART_plot_functions.R
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/home/hnatri/PD1_mm/GSEA_myeloid_sig.tsv
+</td>
+<td style="text-align:left;">
+GSEA_myeloid_sig.tsv
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/home/hnatri/PD1_mm/GSEA_myeloid_celltype_sig.tsv
+</td>
+<td style="text-align:left;">
+GSEA_myeloid_celltype_sig.tsv
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreeb97dfb767265deebce8c57b60764dc3e40ee6a0ftargetblankb97dfb7a">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/heinin/PD1_mm/tree/b97dfb767265deebce8c57b60764dc3e40ee6a0f" target="_blank">b97dfb7</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreeb97dfb767265deebce8c57b60764dc3e40ee6a0ftargetblankb97dfb7a"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/heinin/PD1_mm/tree/b97dfb767265deebce8c57b60764dc3e40ee6a0f" target="_blank">b97dfb7</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .RData
+
+Untracked files:
+    Untracked:  GSEA_myeloid_celltype_sig.tsv
+    Untracked:  GSEA_myeloid_sig.tsv
+    Untracked:  code/GSEA.R
+    Untracked:  code/run_rscript.sh
+
+Unstaged changes:
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/myeloid_lymphoid_markers_compare.Rmd
+    Modified:   code/PD1_mm_themes.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/GSEA.Rmd</code>) and HTML
+(<code>docs/GSEA.html</code>) files. If you’ve configured a remote Git
+repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
+in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/b97dfb767265deebce8c57b60764dc3e40ee6a0f/analysis/GSEA.Rmd" target="_blank">b97dfb7</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+<td>
+analysis/index.Rmd
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Running GSEA for each cell and comparing between groups.</p>
+<div id="packages-and-environment-variables" class="section level3">
+<h3>Packages and environment variables</h3>
+<pre class="r"><code>suppressPackageStartupMessages({
+  #library(cli)
+  library(Seurat)
+  library(SeuratObject)
+  library(SeuratDisk)
+  library(tidyverse)
+  library(tibble)
+  library(ggplot2)
+  library(ggpubr)
+  library(ggrepel)
+  library(workflowr)
+  library(dittoSeq)
+  library(googlesheets4)
+  library(escape)
+  library(pheatmap)})
+
+setwd(&quot;/home/hnatri/PD1_mm/&quot;)
+set.seed(9999)
+options(ggrepel.max.overlaps = Inf)
+
+# Colors, themes, cell type markers, and plot functions
+source(&quot;/home/hnatri/PD1_mm/code/utilities.R&quot;)
+source(&quot;/home/hnatri/PD1_mm/code/PD1_mm_themes.R&quot;)
+source(&quot;/home/hnatri/PD1_mm/code/CART_plot_functions.R&quot;)</code></pre>
+</div>
+<div id="importing-data" class="section level3">
+<h3>Importing data</h3>
+<pre class="r"><code>#seurat_data &lt;- readRDS(&quot;/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds&quot;)
+#seurat_data$Treatment_Day &lt;- paste0(seurat_data$Treatment, &quot;_&quot;, seurat_data$Day)</code></pre>
+</div>
+<div id="running-gsea-using-rescape" class="section level3">
+<h3>Running GSEA using R/escape</h3>
+<p>GSEA was run using code/GSEA.R.</p>
+</div>
+<div id="importing-gsea-outputs" class="section level3">
+<h3>Importing GSEA outputs</h3>
+<pre class="r"><code>seurat_data &lt;- readRDS(&quot;/scratch/hnatri/CART/PD1_mm_Seurat_GSEA.Rds&quot;)
+res &lt;- readRDS(&quot;/scratch/hnatri/CART/KlucCD45pos_GSEA_res.rds&quot;)</code></pre>
+</div>
+<div id="significance-testing" class="section level3">
+<h3>Significance testing</h3>
+<pre class="r"><code>res &lt;- seurat_data@meta.data %&gt;%
+  dplyr::select(c(&quot;orig.ident&quot;, &quot;Treatment_Day&quot;, colnames(res)))
+
+#tumors_res2 &lt;- tumors_res2 %&gt;% filter(SPP1_surv_extremes %in% c(&quot;top&quot;, &quot;bottom&quot;))
+sig_res &lt;- data.frame(getSignificance(res,
+                                      group = &quot;Treatment_Day&quot;,
+                                      fit = &quot;ANOVA&quot;))
+sig_res$pathways &lt;- rownames(sig_res)
+sig_res &lt;- sig_res %&gt;% filter(FDR &lt; 0.05) %&gt;% arrange(FDR)
+
+dim(sig_res)</code></pre>
+<pre><code>[1] 15 19</code></pre>
+<pre class="r"><code>sig_res %&gt;% dplyr::select(c(&quot;pathways&quot;))</code></pre>
+<pre><code>                                                                            pathways
+1                                                         BIOCARTA_EXTRINSIC_PATHWAY
+2                                                         BIOCARTA_INTRINSIC_PATHWAY
+3                                           KEGG_COMPLEMENT_AND_COAGULATION_CASCADES
+4                                                        REACTOME_COMPLEMENT_CASCADE
+5  REACTOME_DEFECTS_OF_CONTACT_ACTIVATION_SYSTEM_CAS_AND_KALLIKREIN_KININ_SYSTEM_KKS
+6                                 REACTOME_FORMATION_OF_FIBRIN_CLOT_CLOTTING_CASCADE
+7       REACTOME_GAMMA_CARBOXYLATION_HYPUSINE_FORMATION_AND_ARYLSULFATASE_ACTIVATION
+8                                                                REACTOME_HEMOSTASIS
+9                                                      REACTOME_INNATE_IMMUNE_SYSTEM
+10                               REACTOME_INTRINSIC_PATHWAY_OF_FIBRIN_CLOT_FORMATION
+11                                  REACTOME_POST_TRANSLATIONAL_PROTEIN_MODIFICATION
+12                                                          BIOCARTA_CLASSIC_PATHWAY
+13                                                             BIOCARTA_COMP_PATHWAY
+14                                                           BIOCARTA_LECTIN_PATHWAY
+15                                                 KEGG_SYSTEMIC_LUPUS_ERYTHEMATOSUS</code></pre>
+</div>
+<div id="plotting-results" class="section level3">
+<h3>Plotting results</h3>
+<pre class="r"><code>DefaultAssay(seurat_data) &lt;- &quot;RNA_human&quot;
+seurat_data$Treatment_Day &lt;- factor(seurat_data$Treatment_Day,
+                                    levels = c(&quot;NEO_12&quot;, &quot;NEO_16&quot;,
+                                               &quot;CTRL_12&quot;, &quot;CTRL_16&quot;,
+                                               &quot;ADJ_16&quot;))
+
+dittoHeatmap(seurat_data,
+             genes = NULL,
+             metas = sig_res$pathways, 
+             heatmap.colors = colorRampPalette(c(&quot;dodgerblue4&quot;, &quot;white&quot;, &quot;tomato&quot;))(100),
+             annot.colors = treatment_day_col,
+             annot.by = &quot;Treatment_Day&quot;,
+             order.by = &quot;Treatment_Day&quot;,
+             cluster_cols = F,
+             fontsize = 7)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-5-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>dittoHeatmap(seurat_data,
+             genes = NULL,
+             metas = sig_res$pathways, 
+             heatmap.colors = colorRampPalette(c(&quot;dodgerblue4&quot;, &quot;white&quot;, &quot;tomato&quot;))(100),
+             annot.colors = treatment_day_col,
+             annot.by = &quot;Treatment_Day&quot;,
+             cluster_cols = T,
+             fontsize = 7)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-5-2.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>VlnPlot(seurat_data,
+        features = sig_res$pathways,
+        group.by = &quot;celltype&quot;,
+        split.by = &quot;Treatment_Day&quot;,
+        cols = treatment_day_col,
+        ncol = 1,
+        pt.size = 0) &amp;
+  theme_classic() &amp;
+  xlab(&quot;&quot;) &amp;
+  NoLegend()</code></pre>
+<pre><code>The default behaviour of split.by has changed.
+Separate violin plots are now plotted side-by-side.
+To restore the old behaviour of a single split violin,
+set split.plot = TRUE.
+      
+This message will be shown once per session.</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-6-1.png" width="1536" style="display: block; margin: auto;" /></p>
+</div>
+<div id="plotting-by-celltype-and-treatment-only"
+class="section level3">
+<h3>Plotting by celltype and treatment only</h3>
+<pre class="r"><code>VlnPlot(seurat_data,
+        features = sig_res$pathways,
+        group.by = &quot;celltype&quot;,
+        split.by = &quot;Treatment&quot;,
+        cols = treatment_day_col,
+        ncol = 1,
+        pt.size = 0) &amp;
+  theme_classic() &amp;
+  xlab(&quot;&quot;) &amp;
+  NoLegend()</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-7-1.png" width="2688" style="display: block; margin: auto;" /></p>
+</div>
+<div id="plotting-by-celltype-and-timepoint-only"
+class="section level3">
+<h3>Plotting by celltype and timepoint only</h3>
+<pre class="r"><code>VlnPlot(seurat_data,
+        features = sig_res$pathways,
+        group.by = &quot;celltype&quot;,
+        split.by = &quot;Day&quot;,
+        cols = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;),
+        ncol = 1,
+        pt.size = 0) &amp;
+  theme_classic() &amp;
+  xlab(&quot;&quot;) &amp;
+  NoLegend()</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-8-1.png" width="2688" style="display: block; margin: auto;" /></p>
+</div>
+<div id="plotting-by-treatment-only" class="section level3">
+<h3>Plotting by treatment only</h3>
+<pre class="r"><code>VlnPlot(seurat_data,
+        features = sig_res$pathways,
+        group.by = &quot;Treatment&quot;,
+        cols = treatment_col,
+        ncol = 1,
+        pt.size = 0) &amp;
+  theme_classic() &amp;
+  xlab(&quot;&quot;) &amp;
+  NoLegend()</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-9-1.png" width="288" style="display: block; margin: auto;" /></p>
+</div>
+<div id="plotting-by-timepoint-only" class="section level3">
+<h3>Plotting by timepoint only</h3>
+<pre class="r"><code>VlnPlot(seurat_data,
+        features = sig_res$pathways,
+        group.by = &quot;Day&quot;,
+        cols = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;),
+        ncol = 1,
+        pt.size = 0) &amp;
+  theme_classic() &amp;
+  xlab(&quot;&quot;) &amp;
+  NoLegend()</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-10-1.png" width="288" style="display: block; margin: auto;" /></p>
+</div>
+<div id="testing-with-myeloid-cell-types-only" class="section level3">
+<h3>Testing with myeloid cell types only</h3>
+<pre class="r"><code>seurat_data_myeloid &lt;- subset(seurat_data, subset = celltype %in% paste0(&quot;M&quot;, seq(1, 9)))
+
+res_myeloid &lt;- seurat_data_myeloid@meta.data %&gt;%
+  dplyr::select(c(&quot;orig.ident&quot;, &quot;Treatment_Day&quot;, colnames(res)))
+
+sig_res_myeloid &lt;- data.frame(getSignificance(res_myeloid,
+                                              group = &quot;Treatment_Day&quot;,
+                                              fit = &quot;ANOVA&quot;))
+sig_res_myeloid$pathways &lt;- rownames(sig_res_myeloid)
+sig_res_myeloid &lt;- sig_res_myeloid %&gt;% filter(FDR &lt; 0.05) %&gt;% arrange(FDR)
+
+dim(sig_res_myeloid)</code></pre>
+<pre><code>[1] 15 19</code></pre>
+<pre class="r"><code>sig_res_myeloid %&gt;% dplyr::select(c(&quot;pathways&quot;))</code></pre>
+<pre><code>                                                                            pathways
+1                                                         BIOCARTA_EXTRINSIC_PATHWAY
+2                                                         BIOCARTA_INTRINSIC_PATHWAY
+3                                           KEGG_COMPLEMENT_AND_COAGULATION_CASCADES
+4  REACTOME_DEFECTS_OF_CONTACT_ACTIVATION_SYSTEM_CAS_AND_KALLIKREIN_KININ_SYSTEM_KKS
+5                                 REACTOME_FORMATION_OF_FIBRIN_CLOT_CLOTTING_CASCADE
+6       REACTOME_GAMMA_CARBOXYLATION_HYPUSINE_FORMATION_AND_ARYLSULFATASE_ACTIVATION
+7                                                                REACTOME_HEMOSTASIS
+8                                REACTOME_INTRINSIC_PATHWAY_OF_FIBRIN_CLOT_FORMATION
+9                                   REACTOME_POST_TRANSLATIONAL_PROTEIN_MODIFICATION
+10                                                       REACTOME_COMPLEMENT_CASCADE
+11                                                     REACTOME_INNATE_IMMUNE_SYSTEM
+12                                                          BIOCARTA_CLASSIC_PATHWAY
+13                                                             BIOCARTA_COMP_PATHWAY
+14                                                           BIOCARTA_LECTIN_PATHWAY
+15                                                 KEGG_SYSTEMIC_LUPUS_ERYTHEMATOSUS</code></pre>
+<pre class="r"><code>write.table(sig_res_myeloid, &quot;/home/hnatri/PD1_mm/GSEA_myeloid_sig.tsv&quot;,
+            sep = &quot;\t&quot;, quote = F, row.names = F)
+
+# Overlap of significant pathways for the whole data vs. myeloid only
+intersect(sig_res_myeloid$pathways, sig_res$pathways)</code></pre>
+<pre><code> [1] &quot;BIOCARTA_EXTRINSIC_PATHWAY&quot;                                                       
+ [2] &quot;BIOCARTA_INTRINSIC_PATHWAY&quot;                                                       
+ [3] &quot;KEGG_COMPLEMENT_AND_COAGULATION_CASCADES&quot;                                         
+ [4] &quot;REACTOME_DEFECTS_OF_CONTACT_ACTIVATION_SYSTEM_CAS_AND_KALLIKREIN_KININ_SYSTEM_KKS&quot;
+ [5] &quot;REACTOME_FORMATION_OF_FIBRIN_CLOT_CLOTTING_CASCADE&quot;                               
+ [6] &quot;REACTOME_GAMMA_CARBOXYLATION_HYPUSINE_FORMATION_AND_ARYLSULFATASE_ACTIVATION&quot;     
+ [7] &quot;REACTOME_HEMOSTASIS&quot;                                                              
+ [8] &quot;REACTOME_INTRINSIC_PATHWAY_OF_FIBRIN_CLOT_FORMATION&quot;                              
+ [9] &quot;REACTOME_POST_TRANSLATIONAL_PROTEIN_MODIFICATION&quot;                                 
+[10] &quot;REACTOME_COMPLEMENT_CASCADE&quot;                                                      
+[11] &quot;REACTOME_INNATE_IMMUNE_SYSTEM&quot;                                                    
+[12] &quot;BIOCARTA_CLASSIC_PATHWAY&quot;                                                         
+[13] &quot;BIOCARTA_COMP_PATHWAY&quot;                                                            
+[14] &quot;BIOCARTA_LECTIN_PATHWAY&quot;                                                          
+[15] &quot;KEGG_SYSTEMIC_LUPUS_ERYTHEMATOSUS&quot;                                                </code></pre>
+<pre class="r"><code># Checking significance by Treatment, Day and celltype in myeloid cells
+seurat_data_myeloid$Treatment_Day_celltype &lt;- paste0(seurat_data_myeloid$Treatment_Day,
+                                                     &quot;_&quot;, seurat_data_myeloid$celltype)
+res_myeloid_celltype &lt;- seurat_data_myeloid@meta.data %&gt;%
+  dplyr::select(c(&quot;orig.ident&quot;, &quot;Treatment_Day_celltype&quot;, colnames(res)))
+
+sig_res_myeloid_celltype &lt;- data.frame(getSignificance(res_myeloid_celltype,
+                                              group = &quot;Treatment_Day_celltype&quot;,
+                                              fit = &quot;ANOVA&quot;))
+sig_res_myeloid_celltype$pathways &lt;- rownames(sig_res_myeloid_celltype)
+sig_res_myeloid_celltype &lt;- sig_res_myeloid_celltype %&gt;%
+  filter(FDR &lt; 0.05) %&gt;% arrange(FDR)
+
+unique(sig_res_myeloid_celltype$pathways)</code></pre>
+<pre><code> [1] &quot;BIOCARTA_CLASSIC_PATHWAY&quot;                                                         
+ [2] &quot;BIOCARTA_COMP_PATHWAY&quot;                                                            
+ [3] &quot;BIOCARTA_EXTRINSIC_PATHWAY&quot;                                                       
+ [4] &quot;BIOCARTA_INTRINSIC_PATHWAY&quot;                                                       
+ [5] &quot;BIOCARTA_LECTIN_PATHWAY&quot;                                                          
+ [6] &quot;KEGG_COMPLEMENT_AND_COAGULATION_CASCADES&quot;                                         
+ [7] &quot;KEGG_SYSTEMIC_LUPUS_ERYTHEMATOSUS&quot;                                                
+ [8] &quot;REACTOME_COMPLEMENT_CASCADE&quot;                                                      
+ [9] &quot;REACTOME_DEFECTS_OF_CONTACT_ACTIVATION_SYSTEM_CAS_AND_KALLIKREIN_KININ_SYSTEM_KKS&quot;
+[10] &quot;REACTOME_FORMATION_OF_FIBRIN_CLOT_CLOTTING_CASCADE&quot;                               
+[11] &quot;REACTOME_GAMMA_CARBOXYLATION_HYPUSINE_FORMATION_AND_ARYLSULFATASE_ACTIVATION&quot;     
+[12] &quot;REACTOME_HEMOSTASIS&quot;                                                              
+[13] &quot;REACTOME_INNATE_IMMUNE_SYSTEM&quot;                                                    
+[14] &quot;REACTOME_INTRINSIC_PATHWAY_OF_FIBRIN_CLOT_FORMATION&quot;                              
+[15] &quot;REACTOME_POST_TRANSLATIONAL_PROTEIN_MODIFICATION&quot;                                 </code></pre>
+<pre class="r"><code># Only keeping comparisons for the same cell type
+sig_res_myeloid_celltype &lt;- t(sig_res_myeloid_celltype)
+sig_res_myeloid_celltype &lt;- sig_res_myeloid_celltype %&gt;% as.data.frame() %&gt;%
+  rownames_to_column(var = &quot;comparison&quot;) %&gt;%
+  separate(col = comparison, sep = &quot;v&quot;, into = c(&quot;group1&quot;, &quot;group2&quot;)) %&gt;%
+  separate(col = group1, sep = &quot;_&quot;, into = c(&quot;group1&quot;, &quot;day1&quot;, &quot;celltype1&quot;)) %&gt;%
+  separate(col = group2, sep = &quot;_&quot;, into = c(&quot;group2&quot;, &quot;day2&quot;, &quot;celltype2&quot;)) %&gt;%
+  separate(col = celltype2, sep = &quot;\\.&quot;, into = c(&quot;celltype2&quot;, &quot;valtype&quot;)) %&gt;% 
+  dplyr::filter(celltype1 == celltype2 | group1 == &quot;f.&quot; | group1 == &quot;p.&quot; | group1 == &quot;pathways&quot;)
+
+dim(sig_res_myeloid_celltype)</code></pre>
+<pre><code>[1] 93 22</code></pre>
+<pre class="r"><code>write.table(sig_res_myeloid_celltype, &quot;/home/hnatri/PD1_mm/GSEA_myeloid_celltype_sig.tsv&quot;,
+            sep = &quot;\t&quot;, quote = F, row.names = F)
+
+# Heatmap of p-values
+sig_res_myeloid_celltype &lt;- sig_res_myeloid_celltype %&gt;% filter(!group1 %in% c(&quot;f.&quot;, &quot;p.&quot;)) %&gt;%
+  select(!c(&quot;valtype&quot;))
+
+colnames(sig_res_myeloid_celltype) &lt;- c(colnames(sig_res_myeloid_celltype)[1:6],
+                                                as.character(sig_res_myeloid_celltype[nrow(sig_res_myeloid_celltype),][7:ncol(sig_res_myeloid_celltype)]))
+
+# Bottom, left, top, right
+#par(mar=c(2,12,2,3)) 
+
+sig_res_myeloid_celltype %&gt;% unite(&quot;comparison&quot;, group1:celltype2, sep = &quot;_&quot;) %&gt;% 
+  column_to_rownames(var = &quot;comparison&quot;) %&gt;%
+  filter(row_number() &lt;= n()-1) %&gt;%
+  mutate_if(is.character, as.numeric) %&gt;%
+  as.matrix() %&gt;%
+  pheatmap(color = colorRampPalette(brewer.pal(n = 7, name = &quot;RdYlBu&quot;))(100),
+           fontsize = 7,
+           angle_col = &quot;45&quot;,
+           display_numbers = T,
+            number_format = &quot;%.2f&quot;, number_color = &quot;black&quot;)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-11-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+<div id="plotting-results-for-myeloid" class="section level3">
+<h3>Plotting results for myeloid</h3>
+<pre class="r"><code>dittoHeatmap(seurat_data_myeloid,
+             genes = NULL,
+             metas = sig_res_myeloid$pathways, 
+             heatmap.colors = colorRampPalette(c(&quot;dodgerblue4&quot;, &quot;white&quot;, &quot;tomato&quot;))(100),
+             annot.colors = treatment_day_col,
+             annot.by = &quot;Treatment_Day&quot;,
+             order.by = &quot;Treatment_Day&quot;,
+             cluster_cols = F,
+             fontsize = 7)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-12-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>dittoHeatmap(seurat_data_myeloid,
+             genes = NULL,
+             metas = sig_res_myeloid$pathways, 
+             heatmap.colors = colorRampPalette(c(&quot;dodgerblue4&quot;, &quot;white&quot;, &quot;tomato&quot;))(100),
+             annot.colors = treatment_day_col,
+             annot.by = &quot;Treatment_Day&quot;,
+             cluster_cols = T,
+             fontsize = 7)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-12-2.png" width="1344" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>VlnPlot(seurat_data_myeloid,
+        features = sig_res$pathways,
+        group.by = &quot;celltype&quot;,
+        split.by = &quot;Treatment_Day&quot;,
+        cols = treatment_day_col,
+        ncol = 1,
+        pt.size = 0) &amp;
+  theme_classic() &amp;
+  xlab(&quot;&quot;) &amp;
+  NoLegend()</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-13-1.png" width="1536" style="display: block; margin: auto;" /></p>
+</div>
+<div id="plotting-by-celltype-and-treatment-myeloid"
+class="section level3">
+<h3>Plotting by celltype and treatment (myeloid)</h3>
+<pre class="r"><code>VlnPlot(seurat_data_myeloid,
+        features = sig_res$pathways,
+        group.by = &quot;celltype&quot;,
+        split.by = &quot;Treatment&quot;,
+        cols = treatment_day_col,
+        ncol = 1,
+        pt.size = 0) &amp;
+  theme_classic() &amp;
+  xlab(&quot;&quot;) &amp;
+  NoLegend()</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-14-1.png" width="2688" style="display: block; margin: auto;" /></p>
+</div>
+<div id="plotting-by-celltype-and-timepoint-only-myeloid"
+class="section level3">
+<h3>Plotting by celltype and timepoint only (myeloid)</h3>
+<pre class="r"><code>VlnPlot(seurat_data_myeloid,
+        features = sig_res$pathways,
+        group.by = &quot;celltype&quot;,
+        split.by = &quot;Day&quot;,
+        cols = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;),
+        ncol = 1,
+        pt.size = 0) &amp;
+  theme_classic() &amp;
+  xlab(&quot;&quot;) &amp;
+  NoLegend()</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-15-1.png" width="2688" style="display: block; margin: auto;" /></p>
+</div>
+<div id="plotting-by-treatment-only-myeloid" class="section level3">
+<h3>Plotting by treatment only (myeloid)</h3>
+<pre class="r"><code>VlnPlot(seurat_data_myeloid,
+        features = sig_res$pathways,
+        group.by = &quot;Treatment&quot;,
+        cols = treatment_col,
+        ncol = 1,
+        pt.size = 0) &amp;
+  theme_classic() &amp;
+  xlab(&quot;&quot;) &amp;
+  NoLegend()</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-16-1.png" width="288" style="display: block; margin: auto;" /></p>
+</div>
+<div id="plotting-by-timepoint-only-myeloid" class="section level3">
+<h3>Plotting by timepoint only (myeloid)</h3>
+<pre class="r"><code>VlnPlot(seurat_data_myeloid,
+        features = sig_res$pathways,
+        group.by = &quot;Day&quot;,
+        cols = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;),
+        ncol = 1,
+        pt.size = 0) &amp;
+  theme_classic() &amp;
+  xlab(&quot;&quot;) &amp;
+  NoLegend()</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-17-1.png" width="288" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.3.0 (2023-04-21)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 22.04.3 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+time zone: Etc/UTC
+tzcode source: system (glibc)
+
+attached base packages:
+[1] grid      stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] ComplexHeatmap_2.18.0 viridis_0.6.3         viridisLite_0.4.2    
+ [4] circlize_0.4.15       plyr_1.8.8            RColorBrewer_1.1-3   
+ [7] pheatmap_1.0.12       escape_1.9.0          googlesheets4_1.1.0  
+[10] dittoSeq_1.14.2       ggrepel_0.9.3         ggpubr_0.6.0         
+[13] lubridate_1.9.2       forcats_1.0.0         stringr_1.5.0        
+[16] dplyr_1.1.2           purrr_1.0.2           readr_2.1.4          
+[19] tidyr_1.3.0           tibble_3.2.1          ggplot2_3.4.2        
+[22] tidyverse_2.0.0       SeuratDisk_0.0.0.9021 Seurat_5.0.1         
+[25] SeuratObject_5.0.1    sp_1.6-1              workflowr_1.7.1      
+
+loaded via a namespace (and not attached):
+  [1] fs_1.6.2                    matrixStats_1.0.0          
+  [3] GSVA_1.50.0                 spatstat.sparse_3.0-1      
+  [5] bitops_1.0-7                doParallel_1.0.17          
+  [7] httr_1.4.6                  tools_4.3.0                
+  [9] sctransform_0.4.1           backports_1.4.1            
+ [11] utf8_1.2.3                  R6_2.5.1                   
+ [13] HDF5Array_1.30.0            lazyeval_0.2.2             
+ [15] uwot_0.1.14                 GetoptLong_1.0.5           
+ [17] rhdf5filters_1.14.1         withr_2.5.0                
+ [19] gridExtra_2.3               progressr_0.13.0           
+ [21] cli_3.6.1                   Biobase_2.62.0             
+ [23] Cairo_1.6-0                 spatstat.explore_3.2-1     
+ [25] fastDummies_1.7.3           labeling_0.4.2             
+ [27] sass_0.4.6                  spatstat.data_3.0-1        
+ [29] ggridges_0.5.4              pbapply_1.7-0              
+ [31] parallelly_1.36.0           rstudioapi_0.14            
+ [33] RSQLite_2.3.1               shape_1.4.6                
+ [35] generics_0.1.3              ica_1.0-3                  
+ [37] spatstat.random_3.1-5       car_3.1-2                  
+ [39] Matrix_1.6-5                ggbeeswarm_0.7.2           
+ [41] fansi_1.0.4                 S4Vectors_0.40.2           
+ [43] abind_1.4-5                 lifecycle_1.0.3            
+ [45] whisker_0.4.1               yaml_2.3.7                 
+ [47] carData_3.0-5               SummarizedExperiment_1.32.0
+ [49] rhdf5_2.46.1                SparseArray_1.2.4          
+ [51] Rtsne_0.16                  blob_1.2.4                 
+ [53] promises_1.2.0.1            crayon_1.5.2               
+ [55] miniUI_0.1.1.1              lattice_0.21-8             
+ [57] msigdbr_7.5.1               beachmat_2.18.0            
+ [59] cowplot_1.1.1               annotate_1.80.0            
+ [61] KEGGREST_1.42.0             magick_2.7.4               
+ [63] pillar_1.9.0                knitr_1.43                 
+ [65] GenomicRanges_1.54.1        rjson_0.2.21               
+ [67] future.apply_1.11.0         codetools_0.2-19           
+ [69] leiden_0.4.3                glue_1.6.2                 
+ [71] getPass_0.2-4               data.table_1.14.8          
+ [73] vctrs_0.6.5                 png_0.1-8                  
+ [75] spam_2.9-1                  cellranger_1.1.0           
+ [77] gtable_0.3.3                cachem_1.0.8               
+ [79] xfun_0.39                   S4Arrays_1.2.1             
+ [81] mime_0.12                   survival_3.5-5             
+ [83] gargle_1.4.0                SingleCellExperiment_1.24.0
+ [85] iterators_1.0.14            ellipsis_0.3.2             
+ [87] fitdistrplus_1.1-11         ROCR_1.0-11                
+ [89] nlme_3.1-162                bit64_4.0.5                
+ [91] RcppAnnoy_0.0.20            GenomeInfoDb_1.38.7        
+ [93] rprojroot_2.0.3             bslib_0.4.2                
+ [95] irlba_2.3.5.1               vipor_0.4.5                
+ [97] KernSmooth_2.23-21          colorspace_2.1-0           
+ [99] BiocGenerics_0.48.1         DBI_1.1.3                  
+[101] ggrastr_1.0.2               UCell_2.6.2                
+[103] tidyselect_1.2.0            processx_3.8.1             
+[105] bit_4.0.5                   compiler_4.3.0             
+[107] git2r_0.32.0                graph_1.80.0               
+[109] BiocNeighbors_1.20.2        hdf5r_1.3.8                
+[111] DelayedArray_0.28.0         plotly_4.10.2              
+[113] scales_1.2.1                lmtest_0.9-40              
+[115] callr_3.7.3                 digest_0.6.31              
+[117] goftest_1.2-3               spatstat.utils_3.0-3       
+[119] rmarkdown_2.22              XVector_0.42.0             
+[121] htmltools_0.5.5             pkgconfig_2.0.3            
+[123] sparseMatrixStats_1.14.0    MatrixGenerics_1.14.0      
+[125] highr_0.10                  fastmap_1.1.1              
+[127] GlobalOptions_0.1.2         rlang_1.1.1                
+[129] htmlwidgets_1.6.2           shiny_1.7.4                
+[131] DelayedMatrixStats_1.24.0   farver_2.1.1               
+[133] jquerylib_0.1.4             zoo_1.8-12                 
+[135] jsonlite_1.8.5              BiocParallel_1.36.0        
+[137] BiocSingular_1.18.0         RCurl_1.98-1.12            
+[139] magrittr_2.0.3              GenomeInfoDbData_1.2.11    
+[141] dotCall64_1.0-2             patchwork_1.1.2            
+[143] Rhdf5lib_1.24.1             munsell_0.5.0              
+[145] Rcpp_1.0.10                 babelgene_22.9             
+[147] reticulate_1.29             stringi_1.7.12             
+[149] zlibbioc_1.48.0             MASS_7.3-60                
+[151] parallel_4.3.0              listenv_0.9.0              
+[153] deldir_1.0-9                Biostrings_2.70.2          
+[155] splines_4.3.0               tensor_1.5                 
+[157] hms_1.1.3                   ps_1.7.5                   
+[159] igraph_1.4.3                spatstat.geom_3.2-1        
+[161] ggsignif_0.6.4              RcppHNSW_0.5.0             
+[163] ScaledMatrix_1.10.0         reshape2_1.4.4             
+[165] stats4_4.3.0                XML_3.99-0.14              
+[167] evaluate_0.21               foreach_1.5.2              
+[169] tzdb_0.4.0                  httpuv_1.6.11              
+[171] RANN_2.6.1                  polyclip_1.10-4            
+[173] clue_0.3-64                 future_1.32.0              
+[175] scattermore_1.2             rsvd_1.0.5                 
+[177] broom_1.0.4                 xtable_1.8-4               
+[179] RSpectra_0.16-1             rstatix_0.7.2              
+[181] later_1.3.1                 googledrive_2.1.0          
+[183] beeswarm_0.4.0              memoise_2.0.1              
+[185] AnnotationDbi_1.64.1        IRanges_2.36.0             
+[187] cluster_2.1.4               timechange_0.2.0           
+[189] globals_0.16.2              GSEABase_1.64.0            </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
