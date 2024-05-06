@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="heinin" />
+
+<meta name="date" content="2024-05-06" />
+
+<title>GO enrichment analysis of the myeloid subset</title>
+
+<script src="site_libs/header-attrs-2.22/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PD1_mm</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/heinin/PD1_mm">
+    <span class="fab fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">GO enrichment analysis of the myeloid
+subset</h1>
+<h4 class="author">heinin</h4>
+<h4 class="date">2024-05-06</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2024-05-06
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>PD1_mm/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.1). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20240223code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20240223)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20240223code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20240223)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongabsolute">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>File paths:</strong> absolute </a>
+</p>
+</div>
+<div id="strongFilepathsstrongabsolute" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Using absolute paths to the files within your workflowr project makes it
+difficult for you and others to run your code on a different machine.
+Change the absolute path(s) below to the suggested relative path(s) to
+make your code more reproducible.
+</p>
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th style="text-align:left;">
+absolute
+</th>
+<th style="text-align:left;">
+relative
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+/home/hnatri/PD1_mm/
+</td>
+<td style="text-align:left;">
+.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/home/hnatri/PD1_mm/code/utilities.R
+</td>
+<td style="text-align:left;">
+code/utilities.R
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/home/hnatri/PD1_mm/code/PD1_mm_themes.R
+</td>
+<td style="text-align:left;">
+code/PD1_mm_themes.R
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+/home/hnatri/PD1_mm/code/CART_plot_functions.R
+</td>
+<td style="text-align:left;">
+code/CART_plot_functions.R
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreea2e000f7a5f462991b8177fb1736557a76cee34ftargetblanka2e000fa">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/heinin/PD1_mm/tree/a2e000f7a5f462991b8177fb1736557a76cee34f" target="_blank">a2e000f</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreea2e000f7a5f462991b8177fb1736557a76cee34ftargetblanka2e000fa"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/heinin/PD1_mm/tree/a2e000f7a5f462991b8177fb1736557a76cee34f" target="_blank">a2e000f</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .RData
+
+Untracked files:
+    Untracked:  GSEA_myeloid_celltype_sig.tsv
+    Untracked:  GSEA_myeloid_sig.tsv
+    Untracked:  Rplots.pdf
+    Untracked:  analysis/CellChat.Rmd
+    Untracked:  code/CellChat.R
+    Untracked:  code/GSEA.R
+    Untracked:  code/run_rscript.sh
+
+Unstaged changes:
+    Modified:   PD1_CART_celltype_markers_top20.tsv
+    Modified:   analysis/GSEA.Rmd
+    Modified:   analysis/annotate.Rmd
+    Modified:   analysis/comparative_analysis.Rmd
+    Modified:   analysis/index.Rmd
+    Modified:   cluster_markers.tsv
+    Modified:   code/CART_plot_functions.R
+    Modified:   code/PD1_mm_themes.R
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/GO.Rmd</code>) and HTML
+(<code>docs/GO.html</code>) files. If you’ve configured a remote Git
+repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
+in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/a2e000f7a5f462991b8177fb1736557a76cee34f/analysis/GO.Rmd" target="_blank">a2e000f</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-05-06
+</td>
+<td>
+wflow_publish("analysis/GO.Rmd")
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level3">
+<h3>Introduction</h3>
+<p>GO enrichment analysis of DEGs between treatment groups. Only looking
+at the myeloid fraction.</p>
+</div>
+<div id="packages-and-environment-variables" class="section level3">
+<h3>Packages and environment variables</h3>
+<pre class="r"><code>suppressPackageStartupMessages({
+  library(Seurat)
+  library(tidyverse)
+  library(tibble)
+  library(ggplot2)
+  library(workflowr)
+  library(googlesheets4)
+  library(UpSetR)
+  library(topGO)
+  require(org.Hs.eg.db)})</code></pre>
+<pre><code>
+groupGOTerms:   GOBPTerm, GOMFTerm, GOCCTerm environments built.</code></pre>
+<pre class="r"><code>setwd(&quot;/home/hnatri/PD1_mm/&quot;)
+set.seed(9999)
+options(ggrepel.max.overlaps = Inf)
+
+# Colors, themes, cell type markers, and plot functions
+source(&quot;/home/hnatri/PD1_mm/code/utilities.R&quot;)
+source(&quot;/home/hnatri/PD1_mm/code/PD1_mm_themes.R&quot;)</code></pre>
+<pre><code>------------------------------------------------------------------------------</code></pre>
+<pre><code>You have loaded plyr after dplyr - this is likely to cause problems.
+If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+library(plyr); library(dplyr)</code></pre>
+<pre><code>------------------------------------------------------------------------------</code></pre>
+<pre><code>
+Attaching package: &#39;plyr&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:IRanges&#39;:
+
+    desc</code></pre>
+<pre><code>The following object is masked from &#39;package:S4Vectors&#39;:
+
+    rename</code></pre>
+<pre><code>The following object is masked from &#39;package:graph&#39;:
+
+    join</code></pre>
+<pre><code>The following objects are masked from &#39;package:dplyr&#39;:
+
+    arrange, count, desc, failwith, id, mutate, rename, summarise,
+    summarize</code></pre>
+<pre><code>The following object is masked from &#39;package:purrr&#39;:
+
+    compact</code></pre>
+<pre><code>========================================
+circlize version 0.4.15
+CRAN page: https://cran.r-project.org/package=circlize
+Github page: https://github.com/jokergoo/circlize
+Documentation: https://jokergoo.github.io/circlize_book/book/
+
+If you use it in published research, please cite:
+Gu, Z. circlize implements and enhances circular visualization
+  in R. Bioinformatics 2014.
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(circlize))
+========================================</code></pre>
+<pre><code>
+Attaching package: &#39;circlize&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:graph&#39;:
+
+    degree</code></pre>
+<pre><code>✖ Request failed [429]. Retry 1 happens in 5.7 seconds ...</code></pre>
+<pre><code>✔ Reading from &quot;PD1 Kluc scRNAseq tables&quot;.</code></pre>
+<pre><code>✔ Range &#39;&#39;Cluster annotations&#39;&#39;.</code></pre>
+<pre class="r"><code>source(&quot;/home/hnatri/PD1_mm/code/CART_plot_functions.R&quot;)</code></pre>
+<pre><code>Loading required package: viridisLite</code></pre>
+<pre><code>Loading required package: grid</code></pre>
+<pre><code>
+Attaching package: &#39;grid&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:topGO&#39;:
+
+    depth</code></pre>
+<pre><code>========================================
+ComplexHeatmap version 2.18.0
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================</code></pre>
+</div>
+<div id="importing-data" class="section level3">
+<h3>Importing data</h3>
+<pre class="r"><code># Previously PD1_mm_Seurat_merged.Rds, using most up to date object when
+# replotting. PD1_mm_Seurat_GSEA.Rds has GSEA metadata for each cell.
+seurat_data &lt;- readRDS(&quot;/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds&quot;)
+seurat_data$Treatment_Day &lt;- paste0(seurat_data$Treatment, &quot;_&quot;, seurat_data$Day)
+seurat_data$celltype &lt;- factor(seurat_data$celltype,
+                               levels = sort(as.character(unique(seurat_data$celltype))))</code></pre>
+</div>
+<div id="deg-statistics-for-all-genes-for-the-myeloid-subset"
+class="section level3">
+<h3>DEG statistics for all genes for the myeloid subset</h3>
+<pre class="r"><code># A function for running the analysis
+get_degs &lt;- function(group1, group2, day){
+  # Subsetting myeloid cells
+  seurat_subset &lt;- subset(seurat_data, subset = celltype %in% c(paste0(&quot;M&quot;, seq(1, 7)), &quot;Neut1&quot;))
+
+  # For each cluster, top DEGs between group1 and group2 on day x
+  # Using the Seurat function
+  seurat_subset &lt;- subset(seurat_subset, subset = Day == day)
+  Idents(seurat_subset) &lt;- seurat_subset$Treatment
+  DEGs &lt;- FindMarkers(seurat_subset,
+                      ident.1 = group1,
+                      ident.2 = group2,
+                      assay = &quot;RNA_human&quot;,
+                      verbose = F)
+  DEGs$feature &lt;- rownames(DEGs)
+
+  return(DEGs)
+}
+
+# For each comparison and timepoint, calling DEGs and plotting
+DEG_NEO_CTRL_D12 &lt;- get_degs(group1 = &quot;NEO&quot;,
+                             group2 = &quot;CTRL&quot;, 
+                             day = 12)
+
+DEG_NEO_CTRL_D16 &lt;- get_degs(group1 = &quot;NEO&quot;,
+                             group2 = &quot;CTRL&quot;, 
+                             day = 16)
+
+DEG_NEO_ADJ_D16 &lt;- get_degs(group1 = &quot;NEO&quot;,
+                            group2 = &quot;ADJ&quot;, 
+                            day = 16)
+
+DEG_ADJ_CTRL_D16 &lt;- get_degs(group1 = &quot;ADJ&quot;,
+                             group2 = &quot;CTRL&quot;, 
+                             day = 16)
+
+length(unique(DEG_NEO_CTRL_D12$feature))</code></pre>
+<pre><code>[1] 7184</code></pre>
+<pre class="r"><code>length(unique(DEG_NEO_CTRL_D16$feature))</code></pre>
+<pre><code>[1] 7948</code></pre>
+<pre class="r"><code>length(unique(DEG_NEO_ADJ_D16$feature))</code></pre>
+<pre><code>[1] 8029</code></pre>
+<pre class="r"><code>length(unique(DEG_ADJ_CTRL_D16$feature))</code></pre>
+<pre><code>[1] 6076</code></pre>
+</div>
+<div id="running-topgo-for-each-comparison-bp" class="section level3">
+<h3>Running topGO for each comparison, BP</h3>
+<pre class="r"><code>inputs &lt;- list(&quot;NEO_CTRL_D12&quot; = DEG_NEO_CTRL_D12,
+               &quot;NEO_CTRL_D16&quot; = DEG_NEO_CTRL_D16,
+               &quot;NEO_ADJ_D16&quot; = DEG_NEO_ADJ_D16,
+               &quot;ADJ_CTRL_D16&quot; = DEG_ADJ_CTRL_D16)
+
+# Running for each comparison, BP
+GO_BP_list &lt;- lapply(names(inputs), function(comparison){
+  message(comparison)
+  
+  DEG_df &lt;- inputs[[comparison]]
+  
+  # Ordering by p-value
+  DEG_df &lt;- DEG_df[order(DEG_df$p_val),]
+  
+  # Gene universe
+  genes &lt;- DEG_df$p_val
+  names(genes) &lt;- rownames(DEG_df)
+   
+  # Significant DEGs
+  selection &lt;- function(p_val_adj){
+    p_val_adj &lt; 0.01
+  }
+  
+  allGO2genes &lt;- annFUN.org(whichOnto=&quot;BP&quot;, feasibleGenes=NULL, mapping=&quot;org.Hs.eg.db&quot;, ID=&quot;symbol&quot;)
+  GOdata &lt;- new(&quot;topGOdata&quot;,
+    ontology = &quot;BP&quot;,
+    allGenes = genes,
+    annot = annFUN.GO2genes,
+    GO2genes = allGO2genes,
+    geneSel = selection,
+    nodeSize = 10)
+  
+  # In order to make use of the rank information, use Kolmogorov-Smirnov (K-S) test:
+  results.ks &lt;- runTest(GOdata, algorithm = &quot;classic&quot;, statistic = &quot;ks&quot;)
+  goEnrichment &lt;- GenTable(GOdata, KS = results.ks, orderBy = &quot;KS&quot;, topNodes = length(results.ks@score))
+  # Some KS values have &quot;&lt;&quot;
+  goEnrichment$KS &lt;- gsub(&quot;&lt;&quot;, &quot;&quot;, goEnrichment$KS)
+  goEnrichment$KS &lt;- as.numeric(goEnrichment$KS)
+  #goEnrichment &lt;- goEnrichment[goEnrichment$KS&lt;0.01,]
+  goEnrichment &lt;- goEnrichment[,c(&quot;GO.ID&quot;,&quot;Term&quot;,&quot;KS&quot;)]
+  goEnrichment$Term &lt;- gsub(&quot; [a-z]*\\.\\.\\.$&quot;, &quot;&quot;, goEnrichment$Term)
+  goEnrichment$Term &lt;- gsub(&quot;\\.\\.\\.$&quot;, &quot;&quot;, goEnrichment$Term)
+  goEnrichment$Term &lt;- paste(goEnrichment$GO.ID, goEnrichment$Term, sep = &quot;, &quot;)
+  goEnrichment$Term &lt;- factor(goEnrichment$Term, levels = rev(goEnrichment$Term))
+
+  return(goEnrichment)
+})
+
+names(GO_BP_list) &lt;- names(inputs)
+
+lapply(GO_BP_list, dim)</code></pre>
+<pre><code>$NEO_CTRL_D12
+[1] 4377    3
+
+$NEO_CTRL_D16
+[1] 4609    3
+
+$NEO_ADJ_D16
+[1] 4624    3
+
+$ADJ_CTRL_D16
+[1] 4098    3</code></pre>
+</div>
+<div id="plotting-bp" class="section level3">
+<h3>Plotting, BP</h3>
+<pre class="r"><code>GO_BP_list_sig &lt;- lapply(GO_BP_list, function(xx){
+  xx %&gt;% filter(KS &lt; 0.01) %&gt;%
+    head(n = 20)
+})
+
+lapply(names(GO_BP_list_sig), function(xx){
+  GO_BP_list_sig[[xx]] %&gt;% filter(KS &lt; 0.01) %&gt;%
+  ggplot(aes(x=Term, y=-log10(KS))) +
+         stat_summary(geom = &quot;bar&quot;, fun.y = mean, position = &quot;dodge&quot;) +
+         xlab(&quot;Biological process&quot;) +
+         ylab(&quot;Enrichment&quot;) +
+         ggtitle(xx) +
+         scale_y_continuous(breaks = round(seq(0, max(-log10(GO_BP_list_sig[[xx]]$KS)), by = 2), 1)) +
+         theme_bw(base_size=24) +
+         theme(
+             legend.position=&#39;none&#39;,
+             legend.background=element_rect(),
+             plot.title=element_text(angle=0, size=7, face=&quot;bold&quot;, vjust=1),
+             axis.text.x=element_text(angle=0, size=7, face=&quot;bold&quot;, hjust=1.10),
+             axis.text.y=element_text(angle=0, size=7, face=&quot;bold&quot;, vjust=0.5),
+             axis.title=element_text(size=7, face=&quot;bold&quot;),
+             legend.key=element_blank(),
+             legend.key.size=unit(1, &quot;cm&quot;),
+             legend.text=element_text(size=7),
+             title=element_text(size=7)) +
+         guides(colour=guide_legend(override.aes = list(size=2.5))) +
+         coord_flip()
+})</code></pre>
+<pre><code>Warning: The `fun.y` argument of `stat_summary()` is deprecated as of ggplot2 3.3.0.
+ℹ Please use the `fun` argument instead.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+generated.</code></pre>
+<pre><code>[[1]]</code></pre>
+<p><img src="figure/GO.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[2]]</code></pre>
+<p><img src="figure/GO.Rmd/unnamed-chunk-5-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[3]]</code></pre>
+<p><img src="figure/GO.Rmd/unnamed-chunk-5-3.png" width="672" style="display: block; margin: auto;" /></p>
+<pre><code>
+[[4]]</code></pre>
+<p><img src="figure/GO.Rmd/unnamed-chunk-5-4.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.3.0 (2023-04-21)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Ubuntu 22.04.3 LTS
+
+Matrix products: default
+BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0
+
+locale:
+ [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+ [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
+ [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
+ [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
+ [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+[11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
+
+time zone: Etc/UTC
+tzcode source: system (glibc)
+
+attached base packages:
+[1] grid      stats4    stats     graphics  grDevices utils     datasets 
+[8] methods   base     
+
+other attached packages:
+ [1] ComplexHeatmap_2.18.0 viridis_0.6.3         viridisLite_0.4.2    
+ [4] circlize_0.4.15       plyr_1.8.8            RColorBrewer_1.1-3   
+ [7] org.Hs.eg.db_3.18.0   topGO_2.54.0          SparseM_1.81         
+[10] GO.db_3.18.0          AnnotationDbi_1.64.1  IRanges_2.36.0       
+[13] S4Vectors_0.40.2      Biobase_2.62.0        graph_1.80.0         
+[16] BiocGenerics_0.48.1   UpSetR_1.4.0          googlesheets4_1.1.0  
+[19] lubridate_1.9.2       forcats_1.0.0         stringr_1.5.0        
+[22] dplyr_1.1.2           purrr_1.0.2           readr_2.1.4          
+[25] tidyr_1.3.0           tibble_3.2.1          ggplot2_3.4.2        
+[28] tidyverse_2.0.0       Seurat_5.0.1          SeuratObject_5.0.1   
+[31] sp_1.6-1              workflowr_1.7.1      
+
+loaded via a namespace (and not attached):
+  [1] RcppAnnoy_0.0.20        splines_4.3.0           later_1.3.1            
+  [4] bitops_1.0-7            cellranger_1.1.0        polyclip_1.10-4        
+  [7] fastDummies_1.7.3       lifecycle_1.0.3         doParallel_1.0.17      
+ [10] rprojroot_2.0.3         globals_0.16.2          processx_3.8.1         
+ [13] lattice_0.21-8          MASS_7.3-60             magrittr_2.0.3         
+ [16] limma_3.58.1            plotly_4.10.2           sass_0.4.6             
+ [19] rmarkdown_2.22          jquerylib_0.1.4         yaml_2.3.7             
+ [22] httpuv_1.6.11           sctransform_0.4.1       spam_2.9-1             
+ [25] spatstat.sparse_3.0-1   reticulate_1.29         cowplot_1.1.1          
+ [28] pbapply_1.7-0           DBI_1.1.3               zlibbioc_1.48.0        
+ [31] abind_1.4-5             Rtsne_0.16              presto_1.0.0           
+ [34] RCurl_1.98-1.12         git2r_0.32.0            GenomeInfoDbData_1.2.11
+ [37] ggrepel_0.9.3           irlba_2.3.5.1           listenv_0.9.0          
+ [40] spatstat.utils_3.0-3    goftest_1.2-3           RSpectra_0.16-1        
+ [43] spatstat.random_3.1-5   fitdistrplus_1.1-11     parallelly_1.36.0      
+ [46] leiden_0.4.3            codetools_0.2-19        shape_1.4.6            
+ [49] tidyselect_1.2.0        farver_2.1.1            matrixStats_1.0.0      
+ [52] spatstat.explore_3.2-1  googledrive_2.1.0       jsonlite_1.8.5         
+ [55] GetoptLong_1.0.5        ellipsis_0.3.2          progressr_0.13.0       
+ [58] iterators_1.0.14        ggridges_0.5.4          survival_3.5-5         
+ [61] foreach_1.5.2           tools_4.3.0             ica_1.0-3              
+ [64] Rcpp_1.0.10             glue_1.6.2              gridExtra_2.3          
+ [67] xfun_0.39               GenomeInfoDb_1.38.7     withr_2.5.0            
+ [70] fastmap_1.1.1           fansi_1.0.4             callr_3.7.3            
+ [73] digest_0.6.31           timechange_0.2.0        R6_2.5.1               
+ [76] mime_0.12               colorspace_2.1-0        scattermore_1.2        
+ [79] tensor_1.5              spatstat.data_3.0-1     RSQLite_2.3.1          
+ [82] utf8_1.2.3              generics_0.1.3          data.table_1.14.8      
+ [85] httr_1.4.6              htmlwidgets_1.6.2       whisker_0.4.1          
+ [88] uwot_0.1.14             pkgconfig_2.0.3         gtable_0.3.3           
+ [91] blob_1.2.4              lmtest_0.9-40           XVector_0.42.0         
+ [94] htmltools_0.5.5         dotCall64_1.0-2         clue_0.3-64            
+ [97] scales_1.2.1            png_0.1-8               knitr_1.43             
+[100] rstudioapi_0.14         rjson_0.2.21            tzdb_0.4.0             
+[103] reshape2_1.4.4          curl_5.0.1              nlme_3.1-162           
+[106] GlobalOptions_0.1.2     cachem_1.0.8            zoo_1.8-12             
+[109] KernSmooth_2.23-21      parallel_4.3.0          miniUI_0.1.1.1         
+[112] pillar_1.9.0            vctrs_0.6.5             RANN_2.6.1             
+[115] promises_1.2.0.1        xtable_1.8-4            cluster_2.1.4          
+[118] evaluate_0.21           cli_3.6.1               compiler_4.3.0         
+[121] rlang_1.1.1             crayon_1.5.2            future.apply_1.11.0    
+[124] ps_1.7.5                getPass_0.2-4           fs_1.6.2               
+[127] stringi_1.7.12          deldir_1.0-9            munsell_0.5.0          
+[130] Biostrings_2.70.2       lazyeval_0.2.2          spatstat.geom_3.2-1    
+[133] Matrix_1.6-5            RcppHNSW_0.5.0          hms_1.1.3              
+[136] patchwork_1.1.2         bit64_4.0.5             future_1.32.0          
+[139] statmod_1.5.0           KEGGREST_1.42.0         shiny_1.7.4            
+[142] highr_0.10              ROCR_1.0-11             gargle_1.4.0           
+[145] igraph_1.4.3            memoise_2.0.1           bslib_0.4.2            
+[148] bit_4.0.5              </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
