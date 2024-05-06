@@ -44,8 +44,12 @@ source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
 
 ```{r}
 
-seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
 seurat_data$Treatment_Day <- paste0(seurat_data$Treatment, "_", seurat_data$Day)
+
+# Normalizing all features in the Seurat object for plotting
+seurat_data <- NormalizeData(seurat_data, assay = "RNA", verbose = F)
+seurat_data <- NormalizeData(seurat_data, assay = "RNA_human", verbose = F)
 
 ```
 
@@ -85,20 +89,85 @@ DotPlot(seurat_data,
 
 ```
 
+### Human T cell canonical markers
+
+```{r, fig.height = 3, fig.width = 9, warning=F, message=F}
+
+# Canonical T cell markers
+gs4_deauth()
+canonical_markers  <- gs4_get("https://docs.google.com/spreadsheets/d/186PIcU3Jb0Xm3IuZgENEChluykvwsK4JnHF8FbeJASA/edit?usp=sharing")
+sheet_names(canonical_markers)
+canonical_markers <- read_sheet(canonical_markers, sheet = "T cells, gene sets")
+canonical_markers <- unique(canonical_markers$RNA)
+canonical_markers <- intersect(canonical_markers, rownames(seurat_data))
+
+lapply(canonical_markers, function(xx){
+  VlnPlot(seurat_data,
+          features = xx,
+          assay = "RNA_human",
+          slot = "data",
+          group.by = "celltype",
+          split.by = "Treatment_Day",
+          pt.size = 0,
+          ncol = 1) &
+    theme_classic2() &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+})
+```
+
 ### Myeloid markers
 
-```{r, fig.height = 38, fig.width = 14}
+```{r, fig.height = 42, fig.width = 8}
 
-plot_features <- c("MIF", "PDPN", "NLRP3", "IL1B", "CCL4", "S100A8", "S100A9",
+plot_features <- c("MIF", "PDPN", "NLRP3", "IL1B", "S100A8", "S100A9",
                    "S100A10", "TYROBP", "CD68", "ICAM1", "C1QA", "C1QB", "C1QC",
-                   "CD74", "AREG", "APOE", "FABP5", "SPP1", "CD274")
+                   "CD74", "AREG", "APOE", "SPP1", "CD274")
+
+# Plotting by cell type
+VlnPlot(seurat_data,
+        features = sort(plot_features),
+        assay = "RNA_human",
+        group.by = "celltype",
+        pt.size = 0,
+        ncol = 1) &
+    theme_classic2() &
+    NoLegend() &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+```
+
+```{r, fig.height = 9}
+DotPlot(seurat_data,
+        features = sort(plot_features),
+        assay = "RNA_human",
+        group.by = "celltype") &
+    theme_classic2() &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+```
+
+```{r, fig.height = 38, fig.width = 14}
 
 VlnPlot(seurat_data,
         features = sort(plot_features),
         assay = "RNA_human",
         group.by = "celltype",
         split.by = "Treatment_Day",
-        split.plot = T,
+        pt.size = 0,
+        ncol = 1) &
+    theme_classic2() &
+    theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) &
+    NoLegend()
+
+```
+
+```{r, fig.height = 34, fig.width = 10}
+
+# Myeloid cells only
+VlnPlot(subset(seurat_data, subset = celltype %in% paste0("M", seq(1, 9))),
+        features = sort(plot_features),
+        assay = "RNA_human",
+        group.by = "celltype",
+        split.by = "Treatment_Day",
         pt.size = 0,
         ncol = 1) &
     theme_classic2() &
@@ -106,18 +175,17 @@ VlnPlot(seurat_data,
 
 ```
 
-```{r, fig.height = 38, fig.width = 10}
-
-# Myeloid cells only
+```{r, fig.height = 10, fig.width = 10}
 
 VlnPlot(subset(seurat_data, subset = celltype %in% paste0("M", seq(1, 9))),
-        features = sort(plot_features),
+        features = c("SPP1", "C1QA", "C1QB", "C1QC"),
         assay = "RNA_human",
+        layer = "data",
         group.by = "celltype",
         split.by = "Treatment_Day",
-        split.plot = T,
         pt.size = 0,
-        ncol = 1) &
+        ncol = 1,
+        cols = treatment_day_col) &
     theme_classic2() &
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
@@ -125,7 +193,7 @@ VlnPlot(subset(seurat_data, subset = celltype %in% paste0("M", seq(1, 9))),
 
 ### Plotting SPP1
 
-```{r}
+```{r, fig.height=3}
 
 VlnPlot(subset(seurat_data, subset = celltype %in% paste0("M", seq(1, 9))),
         features = "SPP1",
@@ -134,8 +202,7 @@ VlnPlot(subset(seurat_data, subset = celltype %in% paste0("M", seq(1, 9))),
         assay = "RNA_human",
         layer = "data",
         pt.size = 0,
-        log = T) +
-  ylim(0, 1000)
+        log = T)
 
 ```
 
