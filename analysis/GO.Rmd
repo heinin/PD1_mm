@@ -1,0 +1,191 @@
+---
+title: "GO enrichment analysis of the myeloid subset"
+author: "heinin"
+date: "2024-05-06"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+### Introduction
+
+GO enrichment analysis of DEGs between treatment groups. Only looking at the
+myeloid fraction.
+
+### Packages and environment variables
+
+```{r}
+
+suppressPackageStartupMessages({
+  library(Seurat)
+  library(tidyverse)
+  library(tibble)
+  library(ggplot2)
+  library(workflowr)
+  library(googlesheets4)
+  library(UpSetR)
+  library(topGO)
+  require(org.Hs.eg.db)})
+
+setwd("/home/hnatri/PD1_mm/")
+set.seed(9999)
+options(ggrepel.max.overlaps = Inf)
+
+# Colors, themes, cell type markers, and plot functions
+source("/home/hnatri/PD1_mm/code/utilities.R")
+source("/home/hnatri/PD1_mm/code/PD1_mm_themes.R")
+source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
+
+```
+
+### Importing data
+
+```{r}
+
+# Previously PD1_mm_Seurat_merged.Rds, using most up to date object when
+# replotting. PD1_mm_Seurat_GSEA.Rds has GSEA metadata for each cell.
+seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
+seurat_data$Treatment_Day <- paste0(seurat_data$Treatment, "_", seurat_data$Day)
+seurat_data$celltype <- factor(seurat_data$celltype,
+                               levels = sort(as.character(unique(seurat_data$celltype))))
+
+```
+
+### DEG statistics for all genes for the myeloid subset
+
+```{r}
+# A function for running the analysis
+get_degs <- function(group1, group2, day){
+  # Subsetting myeloid cells
+  seurat_subset <- subset(seurat_data, subset = celltype %in% c(paste0("M", seq(1, 7)), "Neut1"))
+
+  # For each cluster, top DEGs between group1 and group2 on day x
+  # Using the Seurat function
+  seurat_subset <- subset(seurat_subset, subset = Day == day)
+  Idents(seurat_subset) <- seurat_subset$Treatment
+  DEGs <- FindMarkers(seurat_subset,
+                      ident.1 = group1,
+                      ident.2 = group2,
+                      assay = "RNA_human",
+                      verbose = F)
+  DEGs$feature <- rownames(DEGs)
+
+  return(DEGs)
+}
+
+# For each comparison and timepoint, calling DEGs and plotting
+DEG_NEO_CTRL_D12 <- get_degs(group1 = "NEO",
+                             group2 = "CTRL", 
+                             day = 12)
+
+DEG_NEO_CTRL_D16 <- get_degs(group1 = "NEO",
+                             group2 = "CTRL", 
+                             day = 16)
+
+DEG_NEO_ADJ_D16 <- get_degs(group1 = "NEO",
+                            group2 = "ADJ", 
+                            day = 16)
+
+DEG_ADJ_CTRL_D16 <- get_degs(group1 = "ADJ",
+                             group2 = "CTRL", 
+                             day = 16)
+
+length(unique(DEG_NEO_CTRL_D12$feature))
+length(unique(DEG_NEO_CTRL_D16$feature))
+length(unique(DEG_NEO_ADJ_D16$feature))
+length(unique(DEG_ADJ_CTRL_D16$feature))
+
+```
+
+### Running topGO for each comparison, BP
+
+```{r, warning=F, message=F}
+
+inputs <- list("NEO_CTRL_D12" = DEG_NEO_CTRL_D12,
+               "NEO_CTRL_D16" = DEG_NEO_CTRL_D16,
+               "NEO_ADJ_D16" = DEG_NEO_ADJ_D16,
+               "ADJ_CTRL_D16" = DEG_ADJ_CTRL_D16)
+
+# Running for each comparison, BP
+GO_BP_list <- lapply(names(inputs), function(comparison){
+  message(comparison)
+  
+  DEG_df <- inputs[[comparison]]
+  
+  # Ordering by p-value
+  DEG_df <- DEG_df[order(DEG_df$p_val),]
+  
+  # Gene universe
+  genes <- DEG_df$p_val
+  names(genes) <- rownames(DEG_df)
+   
+  # Significant DEGs
+  selection <- function(p_val_adj){
+    p_val_adj < 0.01
+  }
+  
+  allGO2genes <- annFUN.org(whichOnto="BP", feasibleGenes=NULL, mapping="org.Hs.eg.db", ID="symbol")
+  GOdata <- new("topGOdata",
+    ontology = "BP",
+    allGenes = genes,
+    annot = annFUN.GO2genes,
+    GO2genes = allGO2genes,
+    geneSel = selection,
+    nodeSize = 10)
+  
+  # In order to make use of the rank information, use Kolmogorov-Smirnov (K-S) test:
+  results.ks <- runTest(GOdata, algorithm = "classic", statistic = "ks")
+  goEnrichment <- GenTable(GOdata, KS = results.ks, orderBy = "KS", topNodes = length(results.ks@score))
+  # Some KS values have "<"
+  goEnrichment$KS <- gsub("<", "", goEnrichment$KS)
+  goEnrichment$KS <- as.numeric(goEnrichment$KS)
+  #goEnrichment <- goEnrichment[goEnrichment$KS<0.01,]
+  goEnrichment <- goEnrichment[,c("GO.ID","Term","KS")]
+  goEnrichment$Term <- gsub(" [a-z]*\\.\\.\\.$", "", goEnrichment$Term)
+  goEnrichment$Term <- gsub("\\.\\.\\.$", "", goEnrichment$Term)
+  goEnrichment$Term <- paste(goEnrichment$GO.ID, goEnrichment$Term, sep = ", ")
+  goEnrichment$Term <- factor(goEnrichment$Term, levels = rev(goEnrichment$Term))
+
+  return(goEnrichment)
+})
+
+names(GO_BP_list) <- names(inputs)
+
+lapply(GO_BP_list, dim)
+
+```
+
+### Plotting, BP
+
+```{r}
+
+GO_BP_list_sig <- lapply(GO_BP_list, function(xx){
+  xx %>% filter(KS < 0.01) %>%
+    head(n = 20)
+})
+
+lapply(names(GO_BP_list_sig), function(xx){
+  GO_BP_list_sig[[xx]] %>% filter(KS < 0.01) %>%
+  ggplot(aes(x=Term, y=-log10(KS))) +
+         stat_summary(geom = "bar", fun.y = mean, position = "dodge") +
+         xlab("Biological process") +
+         ylab("Enrichment") +
+         ggtitle(xx) +
+         scale_y_continuous(breaks = round(seq(0, max(-log10(GO_BP_list_sig[[xx]]$KS)), by = 2), 1)) +
+         theme_bw(base_size=24) +
+         theme(
+             legend.position='none',
+             legend.background=element_rect(),
+             plot.title=element_text(angle=0, size=7, face="bold", vjust=1),
+             axis.text.x=element_text(angle=0, size=7, face="bold", hjust=1.10),
+             axis.text.y=element_text(angle=0, size=7, face="bold", vjust=0.5),
+             axis.title=element_text(size=7, face="bold"),
+             legend.key=element_blank(),
+             legend.key.size=unit(1, "cm"),
+             legend.text=element_text(size=7),
+             title=element_text(size=7)) +
+         guides(colour=guide_legend(override.aes = list(size=2.5))) +
+         coord_flip()
+})
+
+```
