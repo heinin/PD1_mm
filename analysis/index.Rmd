@@ -17,3 +17,6 @@ Analyzing scRNAseq data of CD45+ cells from Kluc mice treated with PD1 antibody 
 3. [Comparative analysis: cell type proportions and DEGs](comparative_analysis.html)\
 4. [T cell and myeloid markers](myeloid_lymphoid_markers_compare.html)\
 5. [Gene Set Enrichment Analysis](GSEA.html)\
+6. [CellChat ligand-receptor analysis](CellChat.html)\
+7. [GO enrichment analysis of the myeloid fraction](GO.html)\
+

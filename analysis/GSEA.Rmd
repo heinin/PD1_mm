@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Introduction
+### Introduction
 
 Running GSEA for each cell and comparing between groups.
 
@@ -59,7 +59,7 @@ GSEA was run using code/GSEA.R.
 
 ```{r}
 
-seurat_data <- readRDS("/scratch/hnatri/CART/PD1_mm_Seurat_GSEA.Rds")
+seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
 res <- readRDS("/scratch/hnatri/CART/KlucCD45pos_GSEA_res.rds")
 
 ```
@@ -71,7 +71,6 @@ res <- readRDS("/scratch/hnatri/CART/KlucCD45pos_GSEA_res.rds")
 res <- seurat_data@meta.data %>%
   dplyr::select(c("orig.ident", "Treatment_Day", colnames(res)))
 
-#tumors_res2 <- tumors_res2 %>% filter(SPP1_surv_extremes %in% c("top", "bottom"))
 sig_res <- data.frame(getSignificance(res,
                                       group = "Treatment_Day",
                                       fit = "ANOVA"))
@@ -188,7 +187,7 @@ VlnPlot(seurat_data,
 
 ### Testing with myeloid cell types only
 
-```{r, fig.height=14, fig.width=12, warning=F, message=F}
+```{r, fig.height=10, fig.width=12, warning=F, message=F}
 
 seurat_data_myeloid <- subset(seurat_data, subset = celltype %in% paste0("M", seq(1, 9)))
 
@@ -245,8 +244,7 @@ write.table(sig_res_myeloid_celltype, "/home/hnatri/PD1_mm/GSEA_myeloid_celltype
 sig_res_myeloid_celltype <- sig_res_myeloid_celltype %>% filter(!group1 %in% c("f.", "p.")) %>%
   select(!c("valtype"))
 
-colnames(sig_res_myeloid_celltype) <- c(colnames(sig_res_myeloid_celltype)[1:6],
-                                                as.character(sig_res_myeloid_celltype[nrow(sig_res_myeloid_celltype),][7:ncol(sig_res_myeloid_celltype)]))
+colnames(sig_res_myeloid_celltype) <- c(colnames(sig_res_myeloid_celltype)[1:6], as.character(sig_res_myeloid_celltype[nrow(sig_res_myeloid_celltype),][7:ncol(sig_res_myeloid_celltype)]))
 
 # Bottom, left, top, right
 #par(mar=c(2,12,2,3)) 
@@ -254,19 +252,20 @@ colnames(sig_res_myeloid_celltype) <- c(colnames(sig_res_myeloid_celltype)[1:6],
 sig_res_myeloid_celltype %>% unite("comparison", group1:celltype2, sep = "_") %>% 
   column_to_rownames(var = "comparison") %>%
   filter(row_number() <= n()-1) %>%
-  mutate_if(is.character, as.numeric) %>%
+  mutate_if(is.character, as.numeric) %>% 
+  filter_all(any_vars(is.numeric(.) & . < 0.05)) %>%
   as.matrix() %>%
   pheatmap(color = colorRampPalette(brewer.pal(n = 7, name = "RdYlBu"))(100),
            fontsize = 7,
            angle_col = "45",
            display_numbers = T,
-            number_format = "%.2f", number_color = "black")
+           number_format = "%.2f", number_color = "black")
 
 ```
 
 ### Plotting results for myeloid
 
-```{r, fig.width=14, fig.height=8}
+```{r, fig.width=14, fig.height=6}
 
 dittoHeatmap(seurat_data_myeloid,
              genes = NULL,

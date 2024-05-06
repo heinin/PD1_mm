@@ -208,6 +208,11 @@ create_dotplot_heatmap_horizontal <- function(seurat_object, plot_features, grou
     # Reproducing the dotplot using ComplexHeatmap
     df <- p$data
     
+    # Removing NaN values
+    if(nrow(df[which(is.nan(df$avg.exp.scaled)),])>0){
+      df <- df[-which(is.nan(df$avg.exp.scaled)),]
+    }
+    
     # (Scaled) expression levels
     exp_mat <- df %>% 
         dplyr::select(-pct.exp, -avg.exp) %>%  
@@ -278,7 +283,7 @@ create_dotplot_heatmap_horizontal <- function(seurat_object, plot_features, grou
                                     border = "black")
     } else {
     
-    exp_mat <- exp_mat[complete.cases(exp_mat),]
+    #exp_mat <- exp_mat[complete.cases(exp_mat),]
     
     hp <- ComplexHeatmap::Heatmap(exp_mat, # t(exp_mat)
                   heatmap_legend_param=list(title="Scaled expression"),

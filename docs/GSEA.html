@@ -391,13 +391,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-03-23
+<strong>Last updated:</strong> 2024-03-26
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 2
 </p>
 <p>
 <strong>Knit directory:</strong> <code>PD1_mm/</code> <span
@@ -420,18 +420,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -588,15 +591,15 @@ GSEA_myeloid_celltype_sig.tsv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreeb97dfb767265deebce8c57b60764dc3e40ee6a0ftargetblankb97dfb7a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree18c6a12ca5e8e8fa9fbcd97c30f53f6f0c8504catargetblank18c6a12a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/b97dfb767265deebce8c57b60764dc3e40ee6a0f" target="_blank">b97dfb7</a>
+<a href="https://github.com/heinin/PD1_mm/tree/18c6a12ca5e8e8fa9fbcd97c30f53f6f0c8504ca" target="_blank">18c6a12</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreeb97dfb767265deebce8c57b60764dc3e40ee6a0ftargetblankb97dfb7a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree18c6a12ca5e8e8fa9fbcd97c30f53f6f0c8504catargetblank18c6a12a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -606,7 +609,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/b97dfb767265deebce8c57b60764dc3e40ee6a0f" target="_blank">b97dfb7</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/18c6a12ca5e8e8fa9fbcd97c30f53f6f0c8504ca" target="_blank">18c6a12</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -630,7 +633,7 @@ Untracked files:
     Untracked:  code/run_rscript.sh
 
 Unstaged changes:
-    Modified:   analysis/index.Rmd
+    Modified:   analysis/GSEA.Rmd
     Modified:   analysis/myeloid_lymphoid_markers_compare.Rmd
     Modified:   code/PD1_mm_themes.R
 
@@ -677,6 +680,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/GSEA.html" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -795,6 +815,43 @@ dittoHeatmap(seurat_data,
              cluster_cols = F,
              fontsize = 7)</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-5-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-5-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>dittoHeatmap(seurat_data,
              genes = NULL,
              metas = sig_res$pathways, 
@@ -804,6 +861,43 @@ dittoHeatmap(seurat_data,
              cluster_cols = T,
              fontsize = 7)</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-5-2.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
+Past versions of unnamed-chunk-5-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-5-2.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>VlnPlot(seurat_data,
         features = sig_res$pathways,
         group.by = &quot;celltype&quot;,
@@ -821,6 +915,43 @@ set split.plot = TRUE.
       
 This message will be shown once per session.</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-6-1.png" width="1536" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-6-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="plotting-by-celltype-and-treatment-only"
 class="section level3">
@@ -836,6 +967,43 @@ class="section level3">
   xlab(&quot;&quot;) &amp;
   NoLegend()</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-7-1.png" width="2688" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-7-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="plotting-by-celltype-and-timepoint-only"
 class="section level3">
@@ -851,6 +1019,43 @@ class="section level3">
   xlab(&quot;&quot;) &amp;
   NoLegend()</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-8-1.png" width="2688" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-8-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="plotting-by-treatment-only" class="section level3">
 <h3>Plotting by treatment only</h3>
@@ -864,6 +1069,43 @@ class="section level3">
   xlab(&quot;&quot;) &amp;
   NoLegend()</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-9-1.png" width="288" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-9-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="plotting-by-timepoint-only" class="section level3">
 <h3>Plotting by timepoint only</h3>
@@ -877,6 +1119,43 @@ class="section level3">
   xlab(&quot;&quot;) &amp;
   NoLegend()</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-10-1.png" width="288" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-10-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="testing-with-myeloid-cell-types-only" class="section level3">
 <h3>Testing with myeloid cell types only</h3>
@@ -978,8 +1257,7 @@ dim(sig_res_myeloid_celltype)</code></pre>
 sig_res_myeloid_celltype &lt;- sig_res_myeloid_celltype %&gt;% filter(!group1 %in% c(&quot;f.&quot;, &quot;p.&quot;)) %&gt;%
   select(!c(&quot;valtype&quot;))
 
-colnames(sig_res_myeloid_celltype) &lt;- c(colnames(sig_res_myeloid_celltype)[1:6],
-                                                as.character(sig_res_myeloid_celltype[nrow(sig_res_myeloid_celltype),][7:ncol(sig_res_myeloid_celltype)]))
+colnames(sig_res_myeloid_celltype) &lt;- c(colnames(sig_res_myeloid_celltype)[1:6], as.character(sig_res_myeloid_celltype[nrow(sig_res_myeloid_celltype),][7:ncol(sig_res_myeloid_celltype)]))
 
 # Bottom, left, top, right
 #par(mar=c(2,12,2,3)) 
@@ -987,14 +1265,52 @@ colnames(sig_res_myeloid_celltype) &lt;- c(colnames(sig_res_myeloid_celltype)[1:
 sig_res_myeloid_celltype %&gt;% unite(&quot;comparison&quot;, group1:celltype2, sep = &quot;_&quot;) %&gt;% 
   column_to_rownames(var = &quot;comparison&quot;) %&gt;%
   filter(row_number() &lt;= n()-1) %&gt;%
-  mutate_if(is.character, as.numeric) %&gt;%
+  mutate_if(is.character, as.numeric) %&gt;% 
+  filter_all(any_vars(is.numeric(.) &amp; . &lt; 0.05)) %&gt;%
   as.matrix() %&gt;%
   pheatmap(color = colorRampPalette(brewer.pal(n = 7, name = &quot;RdYlBu&quot;))(100),
            fontsize = 7,
            angle_col = &quot;45&quot;,
            display_numbers = T,
-            number_format = &quot;%.2f&quot;, number_color = &quot;black&quot;)</code></pre>
+           number_format = &quot;%.2f&quot;, number_color = &quot;black&quot;)</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-11-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-11-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="plotting-results-for-myeloid" class="section level3">
 <h3>Plotting results for myeloid</h3>
@@ -1008,6 +1324,43 @@ sig_res_myeloid_celltype %&gt;% unite(&quot;comparison&quot;, group1:celltype2, 
              cluster_cols = F,
              fontsize = 7)</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-12-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-12-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>dittoHeatmap(seurat_data_myeloid,
              genes = NULL,
              metas = sig_res_myeloid$pathways, 
@@ -1017,6 +1370,43 @@ sig_res_myeloid_celltype %&gt;% unite(&quot;comparison&quot;, group1:celltype2, 
              cluster_cols = T,
              fontsize = 7)</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-12-2.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-2">
+Past versions of unnamed-chunk-12-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-12-2.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>VlnPlot(seurat_data_myeloid,
         features = sig_res$pathways,
         group.by = &quot;celltype&quot;,
@@ -1028,6 +1418,43 @@ sig_res_myeloid_celltype %&gt;% unite(&quot;comparison&quot;, group1:celltype2, 
   xlab(&quot;&quot;) &amp;
   NoLegend()</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-13-1.png" width="1536" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-13-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="plotting-by-celltype-and-treatment-myeloid"
 class="section level3">
@@ -1043,6 +1470,43 @@ class="section level3">
   xlab(&quot;&quot;) &amp;
   NoLegend()</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-14-1.png" width="2688" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-14-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="plotting-by-celltype-and-timepoint-only-myeloid"
 class="section level3">
@@ -1058,6 +1522,43 @@ class="section level3">
   xlab(&quot;&quot;) &amp;
   NoLegend()</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-15-1.png" width="2688" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
+Past versions of unnamed-chunk-15-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-15-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-15-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="plotting-by-treatment-only-myeloid" class="section level3">
 <h3>Plotting by treatment only (myeloid)</h3>
@@ -1071,6 +1572,43 @@ class="section level3">
   xlab(&quot;&quot;) &amp;
   NoLegend()</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-16-1.png" width="288" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-16-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="plotting-by-timepoint-only-myeloid" class="section level3">
 <h3>Plotting by timepoint only (myeloid)</h3>
@@ -1084,6 +1622,43 @@ class="section level3">
   xlab(&quot;&quot;) &amp;
   NoLegend()</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-17-1.png" width="288" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-17-1.png" target="_blank">2e7906a</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-03-24
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1120,12 +1695,12 @@ other attached packages:
  [1] ComplexHeatmap_2.18.0 viridis_0.6.3         viridisLite_0.4.2    
  [4] circlize_0.4.15       plyr_1.8.8            RColorBrewer_1.1-3   
  [7] pheatmap_1.0.12       escape_1.9.0          googlesheets4_1.1.0  
-[10] dittoSeq_1.14.2       ggrepel_0.9.3         ggpubr_0.6.0         
-[13] lubridate_1.9.2       forcats_1.0.0         stringr_1.5.0        
-[16] dplyr_1.1.2           purrr_1.0.2           readr_2.1.4          
-[19] tidyr_1.3.0           tibble_3.2.1          ggplot2_3.4.2        
-[22] tidyverse_2.0.0       SeuratDisk_0.0.0.9021 Seurat_5.0.1         
-[25] SeuratObject_5.0.1    sp_1.6-1              workflowr_1.7.1      
+[10] dittoSeq_1.14.2       workflowr_1.7.1       ggrepel_0.9.3        
+[13] ggpubr_0.6.0          lubridate_1.9.2       forcats_1.0.0        
+[16] stringr_1.5.0         dplyr_1.1.2           purrr_1.0.2          
+[19] readr_2.1.4           tidyr_1.3.0           tibble_3.2.1         
+[22] ggplot2_3.4.2         tidyverse_2.0.0       SeuratDisk_0.0.0.9021
+[25] Seurat_5.0.1          SeuratObject_5.0.1    sp_1.6-1             
 
 loaded via a namespace (and not attached):
   [1] fs_1.6.2                    matrixStats_1.0.0          

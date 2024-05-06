@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Introduction
+### Introduction
 
 Initial analysis on the scRNAseq data from Kluc tumors treated with PD1 and/or
 CAR T.
@@ -107,7 +107,7 @@ seurat_data[["RNA_human"]] <- CreateAssayObject(assay_data,
                                                 min.cells = 0,
                                                 min.features = 0)
 
-#saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 
 ```
 
@@ -133,8 +133,6 @@ DimPlot(seurat_data,
 ```{r, fig.height=12}
 
 DefaultAssay(seurat_data) <- "RNA"
-
-plot_features <- c()
 
 # Top markers for each cluster
 markers <- presto::wilcoxauc(seurat_data,
@@ -210,7 +208,7 @@ count_data <- LayerData(seurat_data, assay = "RNA_human", layer = "counts")
 #scImmuCC_Layered(count = count_data, Non_Immune = FALSE)
 
 # Importing results
-scicc_labels <- read.csv("/home/hnatri/PD1_mm/Layer1_scImmuCC_label.csv",
+scicc_labels <- read.csv("/home/hnatri/PD1_mm/docs/Layer1_scImmuCC_label.csv",
                          row.names = "X")
 
 length(colnames(seurat_data))
@@ -232,7 +230,7 @@ DimPlot(seurat_data,
   NoLegend() &
   manuscript_theme
 
-#saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 
 ```
 

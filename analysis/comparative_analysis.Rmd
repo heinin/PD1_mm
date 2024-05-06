@@ -7,16 +7,17 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Introduction
+### Introduction
 
-Comparing treatment groups/timepoints.
+Comparing treatment groups/timepoints. **Note:** The DEGs were called with "data"
+as the assay, but the expression values were not normalized and the analysis was
+thus done on the raw counts (?), yielding more DEGs.
 
 ### Packages and environment variables
 
 ```{r, warning=F, message=F}
 
 suppressPackageStartupMessages({
-  #library(cli)
   library(Seurat)
   library(SeuratObject)
   library(SeuratDisk)
@@ -45,8 +46,42 @@ source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
 
 ```{r}
 
+# Previously PD1_mm_Seurat_merged.Rds, using most up to date object when
+# replotting. PD1_mm_Seurat_GSEA.Rds has GSEA metadata for each cell.
 seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 seurat_data$Treatment_Day <- paste0(seurat_data$Treatment, "_", seurat_data$Day)
+seurat_data$celltype <- factor(seurat_data$celltype,
+                               levels = sort(as.character(unique(seurat_data$celltype))))
+
+# Updating annotations
+gs4_deauth()
+markers_annotations  <- gs4_get("https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharin#g")
+sheet_names(markers_annotations)
+annotations <- read_sheet(markers_annotations, sheet = "Cluster annotations")
+
+seurat_data$celltype <- mapvalues(seurat_data$snn_res.0.5,
+                                  from = annotations$snn_res.0.5,
+                                  to = annotations$annotation)
+
+#saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+
+# Normalizing all features in the Seurat object for plotting
+#seurat_data <- NormalizeData(seurat_data, assay = "RNA", verbose = F)
+#seurat_data <- NormalizeData(seurat_data, assay = "RNA_human", verbose = F)
+
+#DefaultAssay(seurat_data) <- "RNA"
+#VariableFeatures <- rownames(seurat_data)
+#seurat_data <- ScaleData(seurat_data,
+#                         vars.to.regress = c("percent.mt_RNA"),
+#                         verbose = F)
+#
+#DefaultAssay(seurat_data) <- "RNA_human"
+#VariableFeatures <- rownames(seurat_data)
+#seurat_data <- ScaleData(seurat_data,
+#                         vars.to.regress = c("percent.mt_RNA"),
+#                         verbose = F)
+
+#saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
 
 ```
 
@@ -54,16 +89,16 @@ seurat_data$Treatment_Day <- paste0(seurat_data$Treatment, "_", seurat_data$Day)
 
 ```{r}
 
-celltypes <- sort(as.character(unique(seurat_data$celltype)))
-plot_colors <- colorRampPalette(brewer.pal(11, "Paired"))(length(celltypes))
-names(plot_colors) <- celltypes
+#celltypes <- sort(as.character(unique(seurat_data$celltype)))
+#PD1_Kluc_celltype_col <- colorRampPalette(brewer.pal(11, "Paired"))(length(celltypes))
+#names(PD1_Kluc_celltype_col) <- celltypes
 
 DimPlot(seurat_data,
         group.by = "celltype",
         reduction = "umap",
         raster = T,
         label = T,
-        cols = plot_colors) &
+        cols = PD1_Kluc_celltype_col) &
   coord_fixed(ratio = 1) &
   theme_bw() &
   NoLegend()
@@ -74,10 +109,52 @@ DimPlot(seurat_data,
         reduction = "umap",
         raster = T,
         #label = T,
-        cols = plot_colors) &
+        cols = PD1_Kluc_celltype_col) &
   coord_fixed(ratio = 1) &
   theme_bw() &
   NoLegend()
+
+```
+
+### Cell type marker expression with annotations
+
+```{r, fig.height=12}
+
+DefaultAssay(seurat_data) <- "RNA_human"
+
+# Top markers for each cluster
+markers <- presto::wilcoxauc(seurat_data,
+                             group_by = "celltype",
+                             assay = "data",
+                             seurat_assay = "RNA_human")
+
+top_markers <- markers %>% group_by(group) %>% slice_max(order_by = auc, n = 2)
+
+FeaturePlot(seurat_data,
+            features = top_markers$feature,
+            ncol = 5,
+            reduction = "umap",
+            raster = T,
+            cols = c("gray89", "tomato3")) &
+  coord_fixed(ratio = 1) &
+  theme_bw() &
+  NoLegend() &
+  manuscript_theme
+
+```
+
+```{r, fig.width=12, fig.height=10}
+
+top_markers <- markers %>%  group_by(group) %>% slice_max(order_by = auc, n = 5)
+
+# seurat_object, plot_features, group_var, group_colors, column_title, km=5, row.order = NULL
+DefaultAssay(seurat_data) <- "RNA_human"
+dotplot_heatmap <- create_dotplot_heatmap_horizontal(seurat_object = seurat_data,
+                                                     plot_features = unique(top_markers$feature),
+                                                     group_var = "celltype",
+                                                     group_colors = PD1_Kluc_celltype_col,
+                                                     column_title = "",
+                                                     km = 5, col.order = NULL)
 
 ```
 
@@ -99,7 +176,7 @@ create_clusterpropplot(seurat_data,
                        group1 = "ADJ",
                        group2 = "CTRL",
                        plot_var = "celltype",
-                       plot_colors = plot_colors,
+                       plot_colors = PD1_Kluc_celltype_col,
                        var_names = c("ADJ", "CTRL"),
                        legend_title = "Treatment")
 
@@ -108,7 +185,7 @@ create_clusterpropplot(seurat_data,
                        group1 = "NEO",
                        group2 = "CTRL",
                        plot_var = "celltype",
-                       plot_colors = plot_colors,
+                       plot_colors = PD1_Kluc_celltype_col,
                        var_names = c("NEO", "CTRL"),
                        legend_title = "Treatment")
 
@@ -117,7 +194,7 @@ create_clusterpropplot(seurat_data,
                        group1 = "ADJ",
                        group2 = "NEO",
                        plot_var = "celltype",
-                       plot_colors = plot_colors,
+                       plot_colors = PD1_Kluc_celltype_col,
                        var_names = c("ADJ", "NEO"),
                        legend_title = "Treatment")
 
@@ -127,7 +204,7 @@ create_clusterpropplot(subset(seurat_data, subset = Day == 12),
                        group1 = "NEO",
                        group2 = "CTRL",
                        plot_var = "celltype",
-                       plot_colors = plot_colors,
+                       plot_colors = PD1_Kluc_celltype_col,
                        var_names = c("NEO", "CTRL"),
                        legend_title = "Treatment, Day 12")
 
@@ -137,7 +214,7 @@ create_clusterpropplot(subset(seurat_data, subset = Day == 16),
                        group1 = "ADJ",
                        group2 = "CTRL",
                        plot_var = "celltype",
-                       plot_colors = plot_colors,
+                       plot_colors = PD1_Kluc_celltype_col,
                        var_names = c("ADJ", "CTRL"),
                        legend_title = "Treatment, Day 16")
 
@@ -146,7 +223,7 @@ create_clusterpropplot(subset(seurat_data, subset = Day == 16),
                        group1 = "NEO",
                        group2 = "CTRL",
                        plot_var = "celltype",
-                       plot_colors = plot_colors,
+                       plot_colors = PD1_Kluc_celltype_col,
                        var_names = c("NEO", "CTRL"),
                        legend_title = "Treatment, Day 16")
 
@@ -155,10 +232,9 @@ create_clusterpropplot(subset(seurat_data, subset = Day == 16),
                        group1 = "ADJ",
                        group2 = "NEO",
                        plot_var = "celltype",
-                       plot_colors = plot_colors,
+                       plot_colors = PD1_Kluc_celltype_col,
                        var_names = c("ADJ", "NEO"),
                        legend_title = "Treatment, Day 16")
-
 
 # Using scProportionTest
 prop_test <- sc_utils(seurat_data)
@@ -273,7 +349,7 @@ table(sig_markers$group)
 table(sig_markers$group) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = "identity") +
-    scale_fill_manual(values = plot_colors) +
+    scale_fill_manual(values = PD1_Kluc_celltype_col) +
     theme_classic2() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     NoLegend() +
@@ -317,6 +393,10 @@ DEG_NEO_CTRL[sapply(DEG_NEO_CTRL, is.null)] <- NULL
 
 DEG_NEO_CTRL_df <- as.data.frame(do.call(rbind, DEG_NEO_CTRL))
 
+# Distribution of log2FC
+hist(DEG_NEO_CTRL_df$pval)
+hist(DEG_NEO_CTRL_df$logFC)
+
 DEG_NEO_CTRL_df_sig <- DEG_NEO_CTRL_df %>%
   filter(group=="NEO",
          padj < 0.01,
@@ -352,7 +432,7 @@ DEG_NEO_CTRL_Seurat[sapply(DEG_NEO_CTRL_Seurat, is.null)] <- NULL
 DEG_NEO_CTRL_Seurat_df <- as.data.frame(do.call(rbind, DEG_NEO_CTRL_Seurat))
 
 # Distribution of log2FC
-hist(DEG_NEO_CTRL_Seurat_df$avg_log2FC, breaks = 100)
+hist(DEG_NEO_CTRL_Seurat_df$avg_log2FC)
 
 DEG_NEO_CTRL_Seurat_df_sig <- DEG_NEO_CTRL_Seurat_df %>%
   filter(p_val_adj < 0.01,
@@ -369,11 +449,11 @@ length(intersect(DEG_NEO_CTRL_Seurat_df_sig$feature, DEG_NEO_CTRL_df_sig$feature
 length(setdiff(DEG_NEO_CTRL_Seurat_df_sig$feature, DEG_NEO_CTRL_df_sig$feature))
 length(setdiff(DEG_NEO_CTRL_df_sig$feature, DEG_NEO_CTRL_Seurat_df_sig$feature))
 
-hist(DEG_NEO_CTRL_Seurat_df_sig$avg_log2FC)
-hist(DEG_NEO_CTRL_df_sig$logFC)
-
-hist(DEG_NEO_CTRL_Seurat_df_sig$p_val_adj)
-hist(DEG_NEO_CTRL_df_sig$padj)
+#hist(DEG_NEO_CTRL_Seurat_df_sig$avg_log2FC)
+#hist(DEG_NEO_CTRL_df_sig$logFC)
+#
+#hist(DEG_NEO_CTRL_Seurat_df_sig$p_val_adj)
+#hist(DEG_NEO_CTRL_df_sig$padj)
 
 # Comparing logFC values
 merge(DEG_NEO_CTRL_Seurat_df, DEG_NEO_CTRL_df, by = c("feature", "celltype")) %>%
@@ -403,7 +483,7 @@ merge(DEG_NEO_CTRL_Seurat_df_sig, DEG_NEO_CTRL_df_sig, by = c("feature", "cellty
 table(DEG_NEO_CTRL_df_sig$celltype) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = "identity") +
-    scale_fill_manual(values = plot_colors) +
+    scale_fill_manual(values = PD1_Kluc_celltype_col) +
     theme_classic2() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     NoLegend() +
@@ -413,7 +493,7 @@ table(DEG_NEO_CTRL_df_sig$celltype) %>% as.data.frame() %>%
 table(DEG_NEO_CTRL_Seurat_df_sig$celltype) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = "identity") +
-    scale_fill_manual(values = plot_colors) +
+    scale_fill_manual(values = PD1_Kluc_celltype_col) +
     theme_classic2() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     NoLegend() +
@@ -480,7 +560,7 @@ DEG_NEO_ADJ_Seurat[sapply(DEG_NEO_ADJ_Seurat, is.null)] <- NULL
 DEG_NEO_ADJ_Seurat_df <- as.data.frame(do.call(rbind, DEG_NEO_ADJ_Seurat))
 
 # Distribution of log2FC
-hist(DEG_NEO_ADJ_Seurat_df$avg_log2FC, breaks = 100)
+hist(DEG_NEO_ADJ_Seurat_df$avg_log2FC)
 
 DEG_NEO_ADJ_Seurat_df_sig <- DEG_NEO_ADJ_Seurat_df %>%
   filter(p_val_adj < 0.01,
@@ -496,7 +576,7 @@ write.table(DEG_NEO_ADJ_Seurat_df_sig,
 table(DEG_NEO_ADJ_df_sig$celltype) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = "identity") +
-    scale_fill_manual(values = plot_colors) +
+    scale_fill_manual(values = PD1_Kluc_celltype_col) +
     theme_classic2() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     NoLegend() +
@@ -506,7 +586,7 @@ table(DEG_NEO_ADJ_df_sig$celltype) %>% as.data.frame() %>%
 table(DEG_NEO_ADJ_Seurat_df_sig$celltype) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = "identity") +
-    scale_fill_manual(values = plot_colors) +
+    scale_fill_manual(values = PD1_Kluc_celltype_col) +
     theme_classic2() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     NoLegend() +
@@ -578,7 +658,7 @@ DEG_ADJ_CTRL_Seurat[sapply(DEG_ADJ_CTRL_Seurat, is.null)] <- NULL
 DEG_ADJ_CTRL_Seurat_df <- as.data.frame(do.call(rbind, DEG_ADJ_CTRL_Seurat))
 
 # Distribution of log2FC
-hist(DEG_ADJ_CTRL_Seurat_df$avg_log2FC, breaks = 100)
+hist(DEG_ADJ_CTRL_Seurat_df$avg_log2FC)
 
 DEG_ADJ_CTRL_Seurat_df_sig <- DEG_ADJ_CTRL_Seurat_df %>%
   filter(p_val_adj < 0.01,
@@ -594,7 +674,7 @@ write.table(DEG_ADJ_CTRL_Seurat_df_sig,
 table(DEG_ADJ_CTRL_df_sig$celltype) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = "identity") +
-    scale_fill_manual(values = plot_colors) +
+    scale_fill_manual(values = PD1_Kluc_celltype_col) +
     theme_classic2() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     NoLegend() +
@@ -604,7 +684,7 @@ table(DEG_ADJ_CTRL_df_sig$celltype) %>% as.data.frame() %>%
 table(DEG_ADJ_CTRL_Seurat_df_sig$celltype) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = "identity") +
-    scale_fill_manual(values = plot_colors) +
+    scale_fill_manual(values = PD1_Kluc_celltype_col) +
     theme_classic2() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     NoLegend() +
@@ -709,48 +789,55 @@ length(unique(DEG_NEO_ADJ_D16$feature))
 length(unique(DEG_ADJ_CTRL_D16$feature))
 
 # Plotting
-table(DEG_NEO_CTRL_D12$celltype) %>% as.data.frame() %>%
+p1 <- table(DEG_NEO_CTRL_D12$celltype) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = "identity") +
-    scale_fill_manual(values = plot_colors) +
+    scale_fill_manual(values = PD1_Kluc_celltype_col) +
     theme_classic2() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     NoLegend() +
     xlab("Cell type") +
     ylab("# DEGs NEO vs. CTRL, Day 12")
 
-table(DEG_NEO_CTRL_D16$celltype) %>% as.data.frame() %>%
+p2 <- table(DEG_NEO_CTRL_D16$celltype) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = "identity") +
-    scale_fill_manual(values = plot_colors) +
+    scale_fill_manual(values = PD1_Kluc_celltype_col) +
     theme_classic2() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     NoLegend() +
     xlab("Cell type") +
     ylab("# DEGs NEO vs. CTRL, Day 16")
 
-table(DEG_NEO_ADJ_D16$celltype) %>% as.data.frame() %>%
+p3 <- table(DEG_NEO_ADJ_D16$celltype) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = "identity") +
-    scale_fill_manual(values = plot_colors) +
+    scale_fill_manual(values = PD1_Kluc_celltype_col) +
     theme_classic2() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     NoLegend() +
     xlab("Cell type") +
     ylab("# DEGs NEO vs. ADJ, Day 16")
 
-table(DEG_ADJ_CTRL_D16$celltype) %>% as.data.frame() %>%
+p4 <- table(DEG_ADJ_CTRL_D16$celltype) %>% as.data.frame() %>%
   ggplot(aes(x = reorder(Var1, -Freq), y = Freq, fill = Var1)) +
     geom_bar(stat = "identity") +
-    scale_fill_manual(values = plot_colors) +
+    scale_fill_manual(values = PD1_Kluc_celltype_col) +
     theme_classic2() +
     theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1)) +
     NoLegend() +
     xlab("Cell type") +
-    ylab("# DEGs ADJ vs. CTRL, Day 12=6")
+    ylab("# DEGs ADJ vs. CTRL, Day 16")
 
 # Top DEGs for each cluster
-#DEG_df_sig %>% group_by(celltype) %>% slice_max(order_by = avg_log2FC, n = 10)
+#DEG_df_sig %>% group_by(celltype) %>% slice_max(order_by = avg_log2FC, n = 10
+
+```
+
+```{r, fig.width=12, fig.height=8}
+
+(p1 | p2) / (p3 | p4)
+
 ```
 
 ### Looking at DEGs unique to/shared between groups
@@ -803,9 +890,15 @@ setdiff(intersect(DEG_NEO_ADJ_D16$feature, DEG_ADJ_CTRL_D16$feature), RBMTgenes)
 
 ### Plotting SPP1
 
-```{r, fig.height = 12}
+```{r, fig.width = 12, fig.height = 4}
+
+# Normalizing all features in the Seurat object for plotting
+seurat_data <- NormalizeData(seurat_data, assay = "RNA", verbose = F)
+seurat_data <- NormalizeData(seurat_data, assay = "RNA_human", verbose = F)
+
 # Looking at SPP1
 DEG_NEO_ADJ_D16 %>% filter(feature == "SPP1")
+
 VlnPlot(seurat_data,
         features = "SPP1",
         group.by = "celltype",
@@ -813,12 +906,10 @@ VlnPlot(seurat_data,
         assay = "RNA_human",
         layer = "data",
         pt.size = 0,
-        log = T) +
-  ylim(0, 1000) +
-  coord_flip()
+        log = T,
+        cols = treatment_day_col)
 
 ```
-
 
 ### Human T cell canonical markers
 

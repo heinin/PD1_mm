@@ -31,15 +31,26 @@ cluster_col <- colorRampPalette(brewer.pal(11, "Paired"))(length(clusters))
 names(cluster_col) <- levels(clusters)
 
 # Cell types
-# https://docs.google.com/spreadsheets/d/1ApwXjEVtpPB87al6q3ab8TKvZYJTh3iNH1cuO-A_OoU/edit?usp=sharing
-#gs4_deauth()
-#tumor_tables  <- gs4_get("https://docs.google.com/spreadsheets/d/1ApwXjEVtpPB87al6q3ab8TKvZYJTh3iNH1cuO-A_OoU/edit?usp=sharing")
-#sheet_names(tumor_tables)
-#celltype_annot <- read_sheet(tumor_tables, sheet = "Cluster annotations")
-#head(celltype_annot)
-#length(unique(celltype_annot$annotation))
-#
-#tumor_celltype_col <- celltype_annot$color_fig1
-#names(tumor_celltype_col) <- celltype_annot$annotation
+gs4_deauth()
 
+PD1_tables  <- gs4_get("https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharing")
+sheet_names(PD1_tables)
+celltype_annot <- read_sheet(PD1_tables, sheet = "Cluster annotations")
+head(celltype_annot)
+length(unique(celltype_annot$annotation))
+
+PD1_Kluc_celltypes <- sort(celltype_annot$annotation)
+PD1_Kluc_celltype_col <- colorRampPalette(brewer.pal(11, "Spectral"))(length(PD1_Kluc_celltypes))
+names(PD1_Kluc_celltype_col) <- PD1_Kluc_celltypes
+
+# Colors for each treatment group and time point
+treatment_day_col <- c("NEO_12" = "#85428a",
+                       "NEO_16" = "#bb7abf",
+                       "CTRL_12" = "#41697a",
+                       "CTRL_16" = "#86b9cf",
+                       "ADJ_16" = "#678c23")
+
+treatment_col <- c("NEO" = "#85428a",
+                   "CTRL" = "#41697a",
+                   "ADJ" = "#678c23")
 

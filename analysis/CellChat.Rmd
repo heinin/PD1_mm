@@ -1,0 +1,348 @@
+---
+title: "CellChat analysis on CD45+ Kluc tumor scRNA-seq, NEO vs. ADJ Day 16"
+author: "heinin"
+date: "2024-04-03"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+### Introduction
+
+Ligand-receptor analysis using CellChat.
+
+### Packages and environment variables
+
+```{r, warning=F, message=F}
+
+suppressPackageStartupMessages({
+  library(Seurat)
+  library(SeuratObject)
+  library(SeuratDisk)
+  library(tidyverse)
+  library(tibble)
+  library(ggplot2)
+  library(ggpubr)
+  library(workflowr)
+  library(googlesheets4)
+  library(CellChat)})
+
+setwd("/home/hnatri/PD1_mm/")
+set.seed(9999)
+options(ggrepel.max.overlaps = Inf)
+options(future.globals.maxSize = 30000 * 1024^2)
+
+# Colors, themes, cell type markers, and plot functions
+source("/home/hnatri/PD1_mm/code/utilities.R")
+source("/home/hnatri/PD1_mm/code/PD1_mm_themes.R")
+source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
+
+```
+
+## Run CellChat
+
+CellChat was run for Day 16 only using code/CellChat.R.
+
+## Inspecting results
+
+### Import data
+
+```{r}
+
+seurat_object <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
+CC_objects_compare <- readRDS("/scratch/hnatri/CART/NEO_ADJ_16_CellChat_compare.rds")
+CC_merged_object <- readRDS("/scratch/hnatri/CART/NEO_ADJ_16_CellChat_merged_object.rds")
+
+```
+
+```{r, fig.width=12, fig.height=6}
+
+# Compare the total number of interactions and interaction strength
+gg1 <- compareInteractions(CC_merged_object, show.legend = F, group = c(1,2))
+gg2 <- compareInteractions(CC_merged_object, show.legend = F, group = c(1,2),
+                           measure = "weight")
+gg1 + gg2
+
+```
+
+```{r, fig.width=12, fig.height=6}
+
+# Differential number of interactions or interaction strength among different cell populations
+par(mfrow = c(1,2), xpd=TRUE)
+netVisual_diffInteraction(CC_merged_object, weight.scale = T)
+netVisual_diffInteraction(CC_merged_object, weight.scale = T,
+                          measure = "weight")
+
+# Heatmaps
+gg1 <- netVisual_heatmap(CC_merged_object,
+                         cluster.rows = T,
+                         cluster.cols = T,
+                         color.use = PD1_Kluc_celltype_col)
+gg2 <- netVisual_heatmap(CC_merged_object,
+                         measure = "weight",
+                         cluster.rows = T,
+                         cluster.cols = T,
+                         color.use = PD1_Kluc_celltype_col)
+gg1 + gg2
+
+# To better control the node size and edge weights of the inferred networks
+# across different datasets, we compute the maximum number of cells per cell
+# group and the maximum number of interactions (or interaction weights) across all datasets.
+weight.max <- getMaxWeight(CC_objects_compare, attribute = c("idents","count"))
+par(mfrow = c(1,2), xpd=TRUE)
+for (i in 1:length(CC_objects_compare)) {
+  netVisual_circle(CC_objects_compare[[i]]@net$count,
+                   weight.scale = T,
+                   label.edge= F,
+                   edge.weight.max = weight.max[2],
+                   edge.width.max = 12,
+                   title.name = paste0("Number of interactions - ", names(CC_objects_compare)[i]),
+                   color.use = PD1_Kluc_celltype_col)
+}
+
+# Need to run netAnalysis_computeCentrality before netAnalysis_signalingRole_scatter
+
+# Compute the network centrality scores
+CC_objects_compare <- lapply(CC_objects_compare, function(xx){
+  netAnalysis_computeCentrality(xx, slot.name = "netP") # the slot 'netP' means the inferred intercellular communication network of signaling pathways
+})
+
+# Visualize the computed centrality scores using heatmap, allowing ready identification of major signaling roles of cell groups
+#netAnalysis_signalingRole_network(CC_objects_compare[[1]], signaling = pathways.show, width = 8, height = 2.5, font.size = 10)
+
+# Compare the major sources and targets in 2D space
+num.link <- sapply(CC_objects_compare, function(x) {rowSums(x@net$count) + colSums(x@net$count)-diag(x@net$count)})
+weight.MinMax <- c(min(num.link), max(num.link)) # control the dot size in the different datasets
+gg <- list()
+for (i in 1:length(CC_objects_compare)) {
+  gg[[i]] <- netAnalysis_signalingRole_scatter(CC_objects_compare[[i]],
+                                               title = names(CC_objects_compare)[i],
+                                               weight.MinMax = weight.MinMax,
+                                               color.use = PD1_Kluc_celltype_col)
+}
+
+patchwork::wrap_plots(plots = gg)
+
+```
+
+### Identify and visualize the conserved and context-specific signaling pathways
+
+```{r, fig.height=10}
+# Identify and visualize the conserved and context-specific signaling pathways:
+# signaling pathways, (i) turn off, (ii) decrease, (iii) turn on or (iv)
+# increase, by change their information flow at one condition as compared to
+# another condition.
+# The top signaling pathways colored red are enriched in NEO, and these colored green were enriched in ADJ
+
+# NEO vs. ADJ
+
+# Extracting data from the plot
+ranknet_res <- rankNet(CC_merged_object,
+                       mode = "comparison",
+                       stacked = F,
+                       do.stat = T,
+                       cutoff.pvalue = 0.01,
+                       #tol = 1,
+                       thresh = 0.01)
+
+ranknet_res
+
+```
+
+
+```{r}
+ranknet_data <- ggplot_build(ranknet_res)
+info_flow_data <- ranknet_data$plot$data
+
+# Constructing the plot
+info_flow_data$log2_contribution_1 <- log2(info_flow_data$contribution+1)
+info_flow_data$group <- ifelse(info_flow_data$group == "NEO_CC", "NEO", "ADJ")
+
+barplot_colors <- c("NEO" = "deeppink3", "ADJ" = "aquamarine4")
+
+hist(info_flow_data$contribution, breaks = 55, main = "", xlab = "Information flow")
+abline(v=1, col = "red")
+
+hist(info_flow_data$contribution, breaks = 20)
+
+```
+
+```{r, fig.width=12}
+
+# Plotting delta
+barplot_colors <- c("aquamarine4", "deeppink3")
+
+delta_plot <- info_flow_data %>%
+  dplyr::group_by(name) %>%
+  dplyr::filter(any(contribution>1)) %>%
+  ungroup() %>%
+  dplyr::group_by(group) %>%
+  dplyr::filter(any(pvalues<0.01)) %>%
+  ungroup() %>% 
+  dplyr::select(name, contribution, group) %>%
+  tidyr::pivot_wider(names_from = "group", values_from = "contribution") %>%
+  mutate(delta = NEO-ADJ) %>%
+  dplyr::select(name, delta) %>%
+  #filter(abs(delta)>0.00002) %>%
+  #mutate(log2_delta = log2(delta)) %>%
+  mutate(sign = delta > 0) %>%
+  ggplot(aes(x = reorder(name, -delta), y = delta, fill = sign)) +
+  geom_bar(position = "dodge", stat="identity") +
+  scale_fill_manual(values = barplot_colors, labels=c("ADJ", "NEO")) +
+  theme_bw() + 
+  xlab("") + 
+  ylab(expression(Delta ~ "information flow")) +
+  labs(fill = "Treatment") +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.9, hjust=0.9))
+
+delta_plot
+
+```
+
+```{r, fig.width=12, fig.height=6}
+
+# Identify signaling changes associated with one cell group
+# Visualizing differential outgoing and incoming signaling changes
+
+# Visually compare cell-cell communication using Hierarchy plot, Circle plot or Chord diagram
+pathways.show <- c("SPP1") 
+weight.max <- getMaxWeight(CC_objects_compare, slot.name = c("netP"), attribute = pathways.show) # control the edge weights across different datasets
+par(mfrow = c(1,2), xpd=TRUE)
+for (i in 1:length(CC_objects_compare)) {
+  netVisual_aggregate(CC_objects_compare[[i]], signaling = pathways.show, layout = "circle", edge.weight.max = weight.max[1], edge.width.max = 10, signaling.name = paste(pathways.show, names(CC_objects_compare)[i]))
+}
+
+# Heatmap based on a single object 
+par(mfrow = c(1,2), xpd=TRUE)
+ht <- list()
+for (i in 1:length(CC_objects_compare)) {
+  ht[[i]] <- netVisual_heatmap(CC_objects_compare[[i]],
+                               signaling = pathways.show,
+                               color.heatmap = "Reds",
+                               #cluster.rows = T,
+                               #cluster.cols = T,
+                               title.name = paste(pathways.show, "signaling ",
+                                                  names(CC_objects_compare)[i]),
+                               color.use = PD1_Kluc_celltype_col)
+}
+
+ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, "cm"))
+
+pathways.show <- c("ApoE") 
+par(mfrow = c(1,2), xpd=TRUE)
+ht <- list()
+for (i in 1:length(CC_objects_compare)) {
+  ht[[i]] <- netVisual_heatmap(CC_objects_compare[[i]],
+                               signaling = pathways.show,
+                               color.heatmap = "Reds",
+                               #cluster.rows = T,
+                               #cluster.cols = T,
+                               title.name = paste(pathways.show, "signaling ", names(CC_objects_compare)[i]),
+                               color.use = PD1_Kluc_celltype_col)
+}
+
+ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, "cm"))
+
+pathways.show <- c("SPP1")
+par(mfrow = c(1,2), xpd=TRUE)
+ht <- list()
+for (i in 1:length(CC_objects_compare)) {
+  ht[[i]] <- netVisual_heatmap(object = CC_objects_compare[[i]],
+                               signaling = pathways.show,
+                               color.heatmap = "Reds",
+                               #cluster.rows = T,
+                               #cluster.cols = T,
+                               title.name = paste(pathways.show, "signaling ", names(CC_objects_compare)[i]),
+                               color.use = PD1_Kluc_celltype_col)
+}
+
+ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, "cm"))
+
+# Chord diagram
+pathways.show <- c("SPP1") 
+par(mfrow = c(1,2), xpd=TRUE)
+for (i in 1:length(CC_objects_compare)) {
+  netVisual_aggregate(CC_objects_compare[[i]],
+                      signaling = pathways.show,
+                      layout = "chord",
+                      signaling.name = paste(pathways.show, names(CC_objects_compare)[i]),
+                      color.use = PD1_Kluc_celltype_col)
+}
+
+pathways.show <- c("ApoE") 
+par(mfrow = c(1,2), xpd=TRUE)
+for (i in 1:length(CC_objects_compare)) {
+  #group = group.cellType,
+  netVisual_chord_cell(CC_objects_compare[[i]],
+                       signaling = pathways.show,
+                       title.name = paste0(pathways.show, " signaling network - ", names(CC_objects_compare)[i]),
+                       color.use = PD1_Kluc_celltype_col)
+}
+
+par(mfrow = c(1, 2), xpd=TRUE)
+
+# Compare the signaling gene expression distribution between different datasets
+CC_merged_object@meta$Treatment = factor(CC_merged_object@meta$Treatment, levels = c("ADJ", "NEO")) # set factor level
+plotGeneExpression(CC_merged_object,
+                   signaling = "SPP1",
+                   split.by = "Treatment",
+                   colors.ggplot = T)
+#color.use = c("red", "blue"))
+
+DefaultAssay(seurat_object) <- "RNA"
+plot_features <- c("Spp1", "ApoE", "Mif", "Icam1")
+ccl_features <- rownames(seurat_object)[grep("Ccl", rownames(seurat_object))]
+
+VlnPlot(seurat_object,
+        features = plot_features,
+        group.by = "celltype",
+        split.by = "Treatment",
+        pt.size = 0,
+        slot = "data",
+        ncol = 1) &
+  theme_bw()
+
+VlnPlot(seurat_object,
+        features = plot_features,
+        group.by = "celltype",
+        split.by = "Treatment_Day",
+        pt.size = 0,
+        slot = "data",
+        ncol = 1,
+        cols = c("aquamarine3", "deeppink3")) &
+  theme_bw() &
+  xlab("") &
+  ylab("Log-normalized expression") &
+  #NoLegend() +
+  manuscript_theme
+
+p1 <- VlnPlot(seurat_object,
+              features = c("Spp1"),
+              group.by = "celltype",
+              split.by = "Treatment_Day",
+              pt.size = 0,
+              layer = "data",
+              ncol = 1,
+              cols = c("aquamarine3", "deeppink3")) &
+  theme_bw() &
+  xlab("") &
+  ylab("Log-normalized expression") &
+  NoLegend()
+
+p2 <- VlnPlot(seurat_object,
+              features = c("Apoe"),
+              group.by = "celltype",
+              split.by = "Treatment",
+              pt.size = 0,
+              layer = "data",
+              ncol = 1,
+              cols = c("aquamarine3", "deeppink3")) &
+  theme_bw() &
+  xlab("") &
+  ylab("Log-normalized expression") &
+  NoLegend()
+
+p1 / p2
+
+```
+
