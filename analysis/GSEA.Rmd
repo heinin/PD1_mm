@@ -2,7 +2,10 @@
 title: "GSEA pathway analysis on the Kluc tumor CD45+ scRNAseq data"
 author: "heinin"
 date: "2024-03-22"
-output: workflowr::wflow_html
+output:
+  workflowr::wflow_html:
+    code_folding: hide
+  html_notebook: default
 editor_options:
   chunk_output_type: console
 ---
@@ -16,7 +19,6 @@ Running GSEA for each cell and comparing between groups.
 ```{r, warning=F, message=F}
 
 suppressPackageStartupMessages({
-  #library(cli)
   library(Seurat)
   library(SeuratObject)
   library(SeuratDisk)
@@ -62,9 +64,11 @@ GSEA was run using code/GSEA.R.
 seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
 res <- readRDS("/scratch/hnatri/CART/KlucCD45pos_GSEA_res.rds")
 
+sort(as.character(unique(seurat_data$celltype)))
+
 ```
 
-### Significance testing
+### Significance testing across all celltypes
 
 ```{r}
 
@@ -83,7 +87,235 @@ sig_res %>% dplyr::select(c("pathways"))
 
 ```
 
-### Plotting results
+### Barplot of differentially regulated pathways across all cell types
+
+```{r, fig.width=14, fig.height=8}
+
+sig_res %>%
+  mutate(delta = median.NEO_16 - median.CTRL_16,
+         sign = sign(delta),
+         signstr = if_else(sign == 1, "NEO_16", "CTRL_16")) %>%
+  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ "median enrichment score")) +
+    ggtitle("NEO Day 16 vs. CTRL Day 16")
+
+sig_res %>%
+  mutate(delta = median.NEO_16 - median.ADJ_16,
+         sign = sign(delta),
+         signstr = if_else(sign == 1, "NEO_16", "ADJ_16")) %>%
+  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ "median enrichment score")) +
+    ggtitle("NEO Day 16 vs. ADJ Day 16")
+
+sig_res %>%
+  mutate(delta = median.CTRL_16 - median.ADJ_16,
+         sign = sign(delta),
+         signstr = if_else(sign == 1, "CTRL_16", "ADJ_16")) %>%
+  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ "median enrichment score")) +
+    ggtitle("CTRL Day 16 vs. ADJ Day 16")
+
+sig_res %>%
+  mutate(delta = median.NEO_12 - median.CTRL_12,
+         sign = sign(delta),
+         signstr = if_else(sign == 1, "NEO_12", "CTRL_12")) %>%
+  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("aquamarine3", "deeppink3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ "median enrichment score")) +
+    ggtitle("NEO Day 12 vs. CTRL Day 12")
+
+```
+
+### Significance testing across myeloid celltypes (M1-7, Neut)
+
+```{r}
+
+myeloid <- subset(seurat_data, subset = celltype %in% c("Neut1", paste0("M", seq(1, 7))))
+
+res_myel <- myeloid@meta.data %>%
+  dplyr::select(c("orig.ident", "Treatment_Day", colnames(res)))
+
+sig_res_myel <- data.frame(getSignificance(res_myel,
+                                           group = "Treatment_Day",
+                                           fit = "ANOVA"))
+sig_res_myel$pathways <- rownames(sig_res_myel)
+sig_res_myel <- sig_res_myel %>% filter(FDR < 0.05) %>% arrange(FDR)
+
+dim(sig_res_myel)
+
+sig_res_myel %>% dplyr::select(c("pathways"))
+
+```
+
+### Barplot of differentially regulated pathways across myeloid cell types  (M1-7, Neut)
+
+```{r, fig.width=14, fig.height=8}
+
+sig_res_myel %>%
+  mutate(delta = median.NEO_16 - median.CTRL_16,
+         sign = sign(delta),
+         signstr = if_else(sign == 1, "NEO_16", "CTRL_16")) %>%
+  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ "median enrichment score")) +
+    ggtitle("NEO Day 16 vs. CTRL Day 16, myeloid")
+
+sig_res_myel %>%
+  mutate(delta = median.NEO_16 - median.ADJ_16,
+         sign = sign(delta),
+         signstr = if_else(sign == 1, "NEO_16", "ADJ_16")) %>%
+  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ "median enrichment score")) +
+    ggtitle("NEO Day 16 vs. ADJ Day 16, myeloid")
+
+sig_res_myel %>%
+  mutate(delta = median.CTRL_16 - median.ADJ_16,
+         sign = sign(delta),
+         signstr = if_else(sign == 1, "CTRL_16", "ADJ_16")) %>%
+  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ "median enrichment score")) +
+    ggtitle("CTRL Day 16 vs. ADJ Day 16, myeloid")
+
+sig_res_myel %>%
+  mutate(delta = median.NEO_12 - median.CTRL_12,
+         sign = sign(delta),
+         signstr = if_else(sign == 1, "NEO_12", "CTRL_12")) %>%
+  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("aquamarine3", "deeppink3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ "median enrichment score")) +
+    ggtitle("NEO Day 12 vs. CTRL Day 12, myeloid")
+
+```
+
+### Significance testing across lymphoid celltypes (L1-6, Treg, NK)
+
+```{r}
+
+lymphoid <- subset(seurat_data, subset = celltype %in% paste0("M", seq(1, 7)))
+
+res_lymp <- lymphoid@meta.data %>%
+  dplyr::select(c("orig.ident", "Treatment_Day", colnames(res)))
+
+sig_res_lymp <- data.frame(getSignificance(res_lymp,
+                                           group = "Treatment_Day",
+                                           fit = "ANOVA"))
+sig_res_lymp$pathways <- rownames(sig_res_lymp)
+sig_res_lymp <- sig_res_lymp %>% filter(FDR < 0.05) %>% arrange(FDR)
+
+dim(sig_res_lymp)
+
+sig_res_lymp %>% dplyr::select(c("pathways"))
+
+```
+
+### Barplot of differentially regulated pathways across lymphoid cell types (L1-6, Treg, NK)
+
+```{r, fig.width=14, fig.height=8}
+
+sig_res_lymp %>%
+  mutate(delta = median.NEO_16 - median.CTRL_16,
+         sign = sign(delta),
+         signstr = if_else(sign == 1, "NEO_16", "CTRL_16")) %>%
+  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ "median enrichment score")) +
+    ggtitle("NEO Day 16 vs. CTRL Day 16, lymphoid")
+
+sig_res_lymp %>%
+  mutate(delta = median.NEO_16 - median.ADJ_16,
+         sign = sign(delta),
+         signstr = if_else(sign == 1, "NEO_16", "ADJ_16")) %>%
+  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ "median enrichment score")) +
+    ggtitle("NEO Day 16 vs. ADJ Day 16, lymphoid")
+
+sig_res_lymp %>%
+  mutate(delta = median.CTRL_16 - median.ADJ_16,
+         sign = sign(delta),
+         signstr = if_else(sign == 1, "CTRL_16", "ADJ_16")) %>%
+  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ "median enrichment score")) +
+    ggtitle("CTRL Day 16 vs. ADJ Day 16, lymphoid")
+
+sig_res_lymp %>%
+  mutate(delta = median.NEO_12 - median.CTRL_12,
+         sign = sign(delta),
+         signstr = if_else(sign == 1, "NEO_12", "CTRL_12")) %>%
+  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("aquamarine3", "deeppink3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ "median enrichment score")) +
+    ggtitle("NEO Day 12 vs. CTRL Day 12, lymphoid")
+
+```
+
+### Heatmaps
 
 ```{r, fig.width=14, fig.height=8}
 

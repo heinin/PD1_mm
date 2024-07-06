@@ -2,7 +2,10 @@
 title: "GO enrichment analysis of the myeloid subset"
 author: "heinin"
 date: "2024-05-06"
-output: workflowr::wflow_html
+output:
+  workflowr::wflow_html:
+    code_folding: hide
+  html_notebook: default
 editor_options:
   chunk_output_type: console
 ---
@@ -97,7 +100,7 @@ length(unique(DEG_ADJ_CTRL_D16$feature))
 
 ```
 
-### Running topGO for each comparison, BP
+### Running topGO for each comparison, BP, MF, CC
 
 ```{r, warning=F, message=F}
 
@@ -107,7 +110,7 @@ inputs <- list("NEO_CTRL_D12" = DEG_NEO_CTRL_D12,
                "ADJ_CTRL_D16" = DEG_ADJ_CTRL_D16)
 
 # Running for each comparison, BP
-GO_BP_list <- lapply(names(inputs), function(comparison){
+run_GO <- function(comparison, onto){
   message(comparison)
   
   DEG_df <- inputs[[comparison]]
@@ -124,9 +127,9 @@ GO_BP_list <- lapply(names(inputs), function(comparison){
     p_val_adj < 0.01
   }
   
-  allGO2genes <- annFUN.org(whichOnto="BP", feasibleGenes=NULL, mapping="org.Hs.eg.db", ID="symbol")
+  allGO2genes <- annFUN.org(whichOnto=onto, feasibleGenes=NULL, mapping="org.Hs.eg.db", ID="symbol")
   GOdata <- new("topGOdata",
-    ontology = "BP",
+    ontology = onto,
     allGenes = genes,
     annot = annFUN.GO2genes,
     GO2genes = allGO2genes,
@@ -145,11 +148,30 @@ GO_BP_list <- lapply(names(inputs), function(comparison){
   goEnrichment$Term <- gsub("\\.\\.\\.$", "", goEnrichment$Term)
   goEnrichment$Term <- paste(goEnrichment$GO.ID, goEnrichment$Term, sep = ", ")
   goEnrichment$Term <- factor(goEnrichment$Term, levels = rev(goEnrichment$Term))
+  
+  write.table(goEnrichment, paste0("/scratch/hnatri/CART/GO_BP_", comparison, "_", onto, ".tsv"),
+              quote = F, row.names = F, sep = "\t")
 
   return(goEnrichment)
+}
+
+names(inputs)
+
+GO_BP_list <- lapply(names(inputs), function(xx){
+  run_GO(xx, "BP")
+})
+
+GO_MF_list <- lapply(names(inputs), function(xx){
+  run_GO(xx, "MF")
+})
+
+GO_CC_list <- lapply(names(inputs), function(xx){
+  run_GO(xx, "CC")
 })
 
 names(GO_BP_list) <- names(inputs)
+names(GO_MF_list) <- names(inputs)
+names(GO_CC_list) <- names(inputs)
 
 lapply(GO_BP_list, dim)
 
@@ -169,6 +191,76 @@ lapply(names(GO_BP_list_sig), function(xx){
   ggplot(aes(x=Term, y=-log10(KS))) +
          stat_summary(geom = "bar", fun.y = mean, position = "dodge") +
          xlab("Biological process") +
+         ylab("Enrichment") +
+         ggtitle(xx) +
+         scale_y_continuous(breaks = round(seq(0, max(-log10(GO_BP_list_sig[[xx]]$KS)), by = 2), 1)) +
+         theme_bw(base_size=24) +
+         theme(
+             legend.position='none',
+             legend.background=element_rect(),
+             plot.title=element_text(angle=0, size=7, face="bold", vjust=1),
+             axis.text.x=element_text(angle=0, size=7, face="bold", hjust=1.10),
+             axis.text.y=element_text(angle=0, size=7, face="bold", vjust=0.5),
+             axis.title=element_text(size=7, face="bold"),
+             legend.key=element_blank(),
+             legend.key.size=unit(1, "cm"),
+             legend.text=element_text(size=7),
+             title=element_text(size=7)) +
+         guides(colour=guide_legend(override.aes = list(size=2.5))) +
+         coord_flip()
+})
+
+```
+
+### Plotting, MF
+
+```{r}
+
+GO_MF_list_sig <- lapply(GO_MF_list, function(xx){
+  xx %>% filter(KS < 0.01) %>%
+    head(n = 20)
+})
+
+lapply(names(GO_MF_list_sig), function(xx){
+  GO_BP_list_sig[[xx]] %>% filter(KS < 0.01) %>%
+  ggplot(aes(x=Term, y=-log10(KS))) +
+         stat_summary(geom = "bar", fun.y = mean, position = "dodge") +
+         xlab("Molecular function") +
+         ylab("Enrichment") +
+         ggtitle(xx) +
+         scale_y_continuous(breaks = round(seq(0, max(-log10(GO_BP_list_sig[[xx]]$KS)), by = 2), 1)) +
+         theme_bw(base_size=24) +
+         theme(
+             legend.position='none',
+             legend.background=element_rect(),
+             plot.title=element_text(angle=0, size=7, face="bold", vjust=1),
+             axis.text.x=element_text(angle=0, size=7, face="bold", hjust=1.10),
+             axis.text.y=element_text(angle=0, size=7, face="bold", vjust=0.5),
+             axis.title=element_text(size=7, face="bold"),
+             legend.key=element_blank(),
+             legend.key.size=unit(1, "cm"),
+             legend.text=element_text(size=7),
+             title=element_text(size=7)) +
+         guides(colour=guide_legend(override.aes = list(size=2.5))) +
+         coord_flip()
+})
+
+```
+
+### Plotting, CC
+
+```{r}
+
+GO_CC_list_sig <- lapply(GO_CC_list, function(xx){
+  xx %>% filter(KS < 0.01) %>%
+    head(n = 20)
+})
+
+lapply(names(GO_CC_list_sig), function(xx){
+  GO_BP_list_sig[[xx]] %>% filter(KS < 0.01) %>%
+  ggplot(aes(x=Term, y=-log10(KS))) +
+         stat_summary(geom = "bar", fun.y = mean, position = "dodge") +
+         xlab("Cellular context") +
          ylab("Enrichment") +
          ggtitle(xx) +
          scale_y_continuous(breaks = round(seq(0, max(-log10(GO_BP_list_sig[[xx]]$KS)), by = 2), 1)) +
