@@ -403,13 +403,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-07-06
+<strong>Last updated:</strong> 2025-04-18
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 2
 </p>
 <p>
 <strong>Knit directory:</strong> <code>PD1_mm/</code> <span
@@ -432,18 +432,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -576,22 +579,6 @@ code/PD1_mm_themes.R
 code/CART_plot_functions.R
 </td>
 </tr>
-<tr>
-<td style="text-align:left;">
-/home/hnatri/PD1_mm/GSEA_myeloid_sig.tsv
-</td>
-<td style="text-align:left;">
-GSEA_myeloid_sig.tsv
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-/home/hnatri/PD1_mm/GSEA_myeloid_celltype_sig.tsv
-</td>
-<td style="text-align:left;">
-GSEA_myeloid_celltype_sig.tsv
-</td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -600,15 +587,15 @@ GSEA_myeloid_celltype_sig.tsv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree25561e8d50c548dcbbea3c06957f175b30a9114ftargetblank25561e8a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreebd872d1ca492e7f87625df8d5038f40aefc1ec98targetblankbd872d1a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/25561e8d50c548dcbbea3c06957f175b30a9114f" target="_blank">25561e8</a>
+<a href="https://github.com/heinin/PD1_mm/tree/bd872d1ca492e7f87625df8d5038f40aefc1ec98" target="_blank">bd872d1</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree25561e8d50c548dcbbea3c06957f175b30a9114ftargetblank25561e8a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreebd872d1ca492e7f87625df8d5038f40aefc1ec98targetblankbd872d1a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -618,7 +605,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/25561e8d50c548dcbbea3c06957f175b30a9114f" target="_blank">25561e8</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/bd872d1ca492e7f87625df8d5038f40aefc1ec98" target="_blank">bd872d1</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -632,19 +619,32 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Ignored files:
-    Ignored:    .RData
-
 Untracked files:
+    Untracked:  .RDataTmp
+    Untracked:  Rplots.pdf
+    Untracked:  code/CellChat.Rout
     Untracked:  code/GSEA.Rout
     Untracked:  code/slurm.11539547.err
     Untracked:  code/slurm.11539547.out
+    Untracked:  code/slurm.19866474.err
+    Untracked:  code/slurm.19866474.out
+    Untracked:  code/slurm.19866736.err
+    Untracked:  code/slurm.19866736.out
+    Untracked:  code/slurm.19866957.err
+    Untracked:  code/slurm.19866957.out
+    Untracked:  code/slurm.19867399.err
+    Untracked:  code/slurm.19867399.out
+    Untracked:  code/slurm.19872309.err
+    Untracked:  code/slurm.19872309.out
 
 Unstaged changes:
     Modified:   GSEA_myeloid_celltype_sig.tsv
     Modified:   GSEA_myeloid_sig.tsv
+    Modified:   analysis/CellChat.Rmd
+    Modified:   analysis/GSEA.Rmd
+    Modified:   analysis/comparative_analysis.Rmd
+    Modified:   code/CellChat.R
     Modified:   code/GSEA.R
-    Modified:   code/run_rscript.sh
 
 </code></pre>
 <p>
@@ -689,6 +689,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/bd872d1ca492e7f87625df8d5038f40aefc1ec98/docs/GSEA.html" target="_blank">bd872d1</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-07-06
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -781,12 +798,12 @@ analysis/index.Rmd
 </div>
 </div>
 </div>
-<div id="introduction" class="section level3">
-<h3>Introduction</h3>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
 <p>Running GSEA for each cell and comparing between groups.</p>
 </div>
-<div id="packages-and-environment-variables" class="section level3">
-<h3>Packages and environment variables</h3>
+<div id="packages-and-environment-variables" class="section level2">
+<h2>Packages and environment variables</h2>
 <pre class="r"><code>suppressPackageStartupMessages({
   library(Seurat)
   library(SeuratObject)
@@ -811,76 +828,99 @@ source(&quot;/home/hnatri/PD1_mm/code/utilities.R&quot;)
 source(&quot;/home/hnatri/PD1_mm/code/PD1_mm_themes.R&quot;)
 source(&quot;/home/hnatri/PD1_mm/code/CART_plot_functions.R&quot;)</code></pre>
 </div>
-<div id="importing-data" class="section level3">
-<h3>Importing data</h3>
+<div id="importing-data" class="section level2">
+<h2>Importing data</h2>
 <pre class="r"><code>#seurat_data &lt;- readRDS(&quot;/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds&quot;)
 #seurat_data$Treatment_Day &lt;- paste0(seurat_data$Treatment, &quot;_&quot;, seurat_data$Day)</code></pre>
 </div>
-<div id="running-gsea-using-rescape" class="section level3">
-<h3>Running GSEA using R/escape</h3>
+<div id="running-gsea-using-rescape" class="section level2">
+<h2>Running GSEA using R/escape</h2>
 <p>GSEA was run using code/GSEA.R.</p>
 </div>
-<div id="importing-gsea-outputs" class="section level3">
-<h3>Importing GSEA outputs</h3>
+<div id="importing-gsea-outputs" class="section level2">
+<h2>Importing GSEA outputs</h2>
 <pre class="r"><code>seurat_data &lt;- readRDS(&quot;/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds&quot;)
-res &lt;- readRDS(&quot;/scratch/hnatri/CART/KlucCD45pos_GSEA_res.rds&quot;)
+
+seurat_data &lt;- subset(seurat_data, subset = Day == 16)
 
 sort(as.character(unique(seurat_data$celltype)))</code></pre>
 <pre><code> [1] &quot;B1&quot;    &quot;B2&quot;    &quot;DC&quot;    &quot;L1&quot;    &quot;L2&quot;    &quot;L3&quot;    &quot;L4&quot;    &quot;L5&quot;    &quot;L6&quot;   
 [10] &quot;M1&quot;    &quot;M2&quot;    &quot;M3&quot;    &quot;M4&quot;    &quot;M5&quot;    &quot;M6&quot;    &quot;M7&quot;    &quot;Neut1&quot; &quot;NK&quot;   
 [19] &quot;NOS1&quot;  &quot;Treg&quot; </code></pre>
-</div>
-<div id="significance-testing-across-all-celltypes"
-class="section level3">
-<h3>Significance testing across all celltypes</h3>
-<pre class="r"><code>res &lt;- seurat_data@meta.data %&gt;%
-  dplyr::select(c(&quot;orig.ident&quot;, &quot;Treatment_Day&quot;, colnames(res)))
-
-sig_res &lt;- data.frame(getSignificance(res,
-                                      group = &quot;Treatment_Day&quot;,
-                                      fit = &quot;ANOVA&quot;))
-sig_res$pathways &lt;- rownames(sig_res)
-sig_res &lt;- sig_res %&gt;% filter(FDR &lt; 0.05) %&gt;% arrange(FDR)
-
-dim(sig_res)</code></pre>
-<pre><code>[1] 15 19</code></pre>
-<pre class="r"><code>sig_res %&gt;% dplyr::select(c(&quot;pathways&quot;))</code></pre>
-<pre><code>                                                                            pathways
-1                                                         BIOCARTA_EXTRINSIC_PATHWAY
-2                                                         BIOCARTA_INTRINSIC_PATHWAY
-3                                           KEGG_COMPLEMENT_AND_COAGULATION_CASCADES
-4                                                        REACTOME_COMPLEMENT_CASCADE
-5  REACTOME_DEFECTS_OF_CONTACT_ACTIVATION_SYSTEM_CAS_AND_KALLIKREIN_KININ_SYSTEM_KKS
-6                                 REACTOME_FORMATION_OF_FIBRIN_CLOT_CLOTTING_CASCADE
-7       REACTOME_GAMMA_CARBOXYLATION_HYPUSINE_FORMATION_AND_ARYLSULFATASE_ACTIVATION
-8                                                                REACTOME_HEMOSTASIS
-9                                                      REACTOME_INNATE_IMMUNE_SYSTEM
-10                               REACTOME_INTRINSIC_PATHWAY_OF_FIBRIN_CLOT_FORMATION
-11                                  REACTOME_POST_TRANSLATIONAL_PROTEIN_MODIFICATION
-12                                                          BIOCARTA_CLASSIC_PATHWAY
-13                                                             BIOCARTA_COMP_PATHWAY
-14                                                           BIOCARTA_LECTIN_PATHWAY
-15                                                 KEGG_SYSTEMIC_LUPUS_ERYTHEMATOSUS</code></pre>
+<pre class="r"><code>seurat_data$Treatment_Day &lt;- factor(seurat_data$Treatment_Day, levels = c(&quot;CTRL_16&quot;, &quot;NEO_16&quot;, &quot;ADJ_16&quot;))
+Idents(seurat_data) &lt;- seurat_data$Treatment_Day</code></pre>
 </div>
 <div
-id="barplot-of-differentially-regulated-pathways-across-all-cell-types"
-class="section level3">
-<h3>Barplot of differentially regulated pathways across all cell
-types</h3>
-<pre class="r"><code>sig_res %&gt;%
-  mutate(delta = median.NEO_16 - median.CTRL_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, &quot;NEO_16&quot;, &quot;CTRL_16&quot;)) %&gt;%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+id="differentially-activated-pathways-between-adj-and-neo-all-cell-types-day-16"
+class="section level2">
+<h2>Differentially activated pathways between ADJ and NEO, all cell
+types, Day 16</h2>
+<pre class="r"><code>gsea_res &lt;- FindMarkers(seurat_data,
+                        assay = &quot;escapeGSVA_normalized&quot;,
+                        ident.1 = &quot;NEO_16&quot;,
+                        ident.2 = &quot;ADJ_16&quot;,
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway &lt;- rownames(gsea_res)
+
+#head(gsea_res)
+#hist(gsea_res$avg_log2FC)
+#hist(gsea_res$p_val_adj)
+
+res_sig &lt;- gsea_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
+
+
+res_sig %&gt;%
+  #arrange(c(&quot;p_val_adj&quot;, avg_log2FC)) %&gt;%
+  #filter(dense_rank(avg_log2FC) &lt;= 10 | dense_rank(desc(avg_log2FC)) &lt;= 10) %&gt;%
+  #filter(abs(avg_log2FC) &gt; 0.1) %&gt;%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, &quot;ADJ_16&quot;, &quot;NEO_16&quot;)) %&gt;%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = &quot;identity&quot;) +
     #geom_col(width = 0.85) +
     scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
     theme_classic() +
     #manuscript_theme +
     ylab(&quot;&quot;) +
-    xlab(expression(Delta ~ &quot;median enrichment score&quot;)) +
+    xlab(expression(Delta ~ &quot; average log2(FC)&quot;)) +
+    ggtitle(&quot;ADJ Day 16 vs. NEO Day 16&quot;)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-4-1.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div
+id="differentially-activated-pathways-between-neo-and-ctrl-all-cell-types-day-16"
+class="section level2">
+<h2>Differentially activated pathways between NEO and CTRL, all cell
+types, Day 16</h2>
+<pre class="r"><code>gsea_res &lt;- FindMarkers(seurat_data,
+                        assay = &quot;escapeGSVA_normalized&quot;, 
+                        ident.1 = &quot;NEO_16&quot;,
+                        ident.2 = &quot;CTRL_16&quot;,
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway &lt;- rownames(gsea_res)
+
+res_sig &lt;- gsea_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
+
+res_sig %&gt;%
+  #filter(abs(avg_log2FC) &gt; 0.15) %&gt;%
+  filter(dense_rank(avg_log2FC) &lt;= 10 | dense_rank(desc(avg_log2FC)) &lt;= 10) %&gt;%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, &quot;NEO_16&quot;, &quot;CTRL_16&quot;)) %&gt;%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab(&quot;&quot;) +
+    xlab(expression(Delta ~ &quot; average log2(FC)&quot;)) +
     ggtitle(&quot;NEO Day 16 vs. CTRL Day 16&quot;)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-5-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-5-1.png" width="1536" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
 Past versions of unnamed-chunk-5-1.png
@@ -905,6 +945,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/bd872d1ca492e7f87625df8d5038f40aefc1ec98/docs/figure/GSEA.Rmd/unnamed-chunk-5-1.png" target="_blank">bd872d1</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-07-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-5-1.png" target="_blank">2e7906a</a>
 </td>
 <td>
@@ -918,26 +969,45 @@ heinin
 </table>
 </div>
 </div>
-<pre class="r"><code>sig_res %&gt;%
-  mutate(delta = median.NEO_16 - median.ADJ_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, &quot;NEO_16&quot;, &quot;ADJ_16&quot;)) %&gt;%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+</div>
+<div
+id="differentially-activated-pathways-between-adj-and-ctrl-all-cell-types-day-16"
+class="section level2">
+<h2>Differentially activated pathways between ADJ and CTRL, all cell
+types, Day 16</h2>
+<pre class="r"><code>gsea_res &lt;- FindMarkers(seurat_data,
+                        assay = &quot;escapeGSVA_normalized&quot;, 
+                        ident.1 = &quot;ADJ_16&quot;,
+                        ident.2 = &quot;CTRL_16&quot;,
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway &lt;- rownames(gsea_res)
+
+res_sig &lt;- gsea_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
+
+res_sig %&gt;%
+  #filter(abs(avg_log2FC) &gt; 0.15) %&gt;%
+  filter(dense_rank(avg_log2FC) &lt;= 10 | dense_rank(desc(avg_log2FC)) &lt;= 10) %&gt;%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, &quot;ADJ_16&quot;, &quot;CTRL_16&quot;)) %&gt;%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = &quot;identity&quot;) +
     #geom_col(width = 0.85) +
     scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
     theme_classic() +
     #manuscript_theme +
     ylab(&quot;&quot;) +
-    xlab(expression(Delta ~ &quot;median enrichment score&quot;)) +
-    ggtitle(&quot;NEO Day 16 vs. ADJ Day 16&quot;)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-5-2.png" width="1344" style="display: block; margin: auto;" /></p>
+    xlab(expression(Delta ~ &quot; average log2(FC)&quot;)) +
+    ggtitle(&quot;ADJ Day 16 vs. CTRL Day 16&quot;)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-6-1.png" width="1536" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-2">
-Past versions of unnamed-chunk-5-2.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-5-2" class="collapse">
+<div id="fig-unnamed-chunk-6-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -956,7 +1026,18 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-5-2.png" target="_blank">2e7906a</a>
+<a href="https://github.com/heinin/PD1_mm/blob/bd872d1ca492e7f87625df8d5038f40aefc1ec98/docs/figure/GSEA.Rmd/unnamed-chunk-6-1.png" target="_blank">bd872d1</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-07-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-6-1.png" target="_blank">2e7906a</a>
 </td>
 <td>
 heinin
@@ -969,94 +1050,81 @@ heinin
 </table>
 </div>
 </div>
-<pre class="r"><code>sig_res %&gt;%
-  mutate(delta = median.CTRL_16 - median.ADJ_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, &quot;CTRL_16&quot;, &quot;ADJ_16&quot;)) %&gt;%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+</div>
+<div
+id="differentially-activated-pathways-between-neo-and-ctrl-all-cell-types-day-12"
+class="section level2">
+<h2>Differentially activated pathways between NEO and CTRL, all cell
+types, Day 12</h2>
+<pre class="r"><code>gsea_res &lt;- FindMarkers(seurat_data,
+                        assay = &quot;escapeGSVA_normalized&quot;, 
+                        ident.1 = &quot;NEO_12&quot;,
+                        ident.2 = &quot;CTRL_12&quot;,
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway &lt;- rownames(gsea_res)
+
+res_sig &lt;- gsea_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
+
+res_sig %&gt;%
+  #filter(abs(avg_log2FC) &gt; 0.15) %&gt;%
+  filter(dense_rank(avg_log2FC) &lt;= 10 | dense_rank(desc(avg_log2FC)) &lt;= 10) %&gt;%
+  #filter(dense_rank(abs(avg_log2FC)) &lt;= 20) %&gt;%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, &quot;NEO_12&quot;, &quot;CTRL_12&quot;)) %&gt;%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = &quot;identity&quot;) +
     #geom_col(width = 0.85) +
     scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
     theme_classic() +
     #manuscript_theme +
     ylab(&quot;&quot;) +
-    xlab(expression(Delta ~ &quot;median enrichment score&quot;)) +
-    ggtitle(&quot;CTRL Day 16 vs. ADJ Day 16&quot;)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-5-3.png" width="1344" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>sig_res %&gt;%
-  mutate(delta = median.NEO_12 - median.CTRL_12,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, &quot;NEO_12&quot;, &quot;CTRL_12&quot;)) %&gt;%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
-    geom_bar(stat = &quot;identity&quot;) +
-    #geom_col(width = 0.85) +
-    scale_fill_manual(values = c(&quot;aquamarine3&quot;, &quot;deeppink3&quot;)) +
-    theme_classic() +
-    #manuscript_theme +
-    ylab(&quot;&quot;) +
-    xlab(expression(Delta ~ &quot;median enrichment score&quot;)) +
+    xlab(expression(Delta ~ &quot; average log2(FC)&quot;)) +
     ggtitle(&quot;NEO Day 12 vs. CTRL Day 12&quot;)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-5-4.png" width="1344" style="display: block; margin: auto;" /></p>
 </div>
 <div id="significance-testing-across-myeloid-celltypes-m1-7-neut"
-class="section level3">
-<h3>Significance testing across myeloid celltypes (M1-7, Neut)</h3>
-<pre class="r"><code>myeloid &lt;- subset(seurat_data, subset = celltype %in% c(&quot;Neut1&quot;, paste0(&quot;M&quot;, seq(1, 7))))
+class="section level2">
+<h2>Significance testing across myeloid celltypes (M1-7, Neut)</h2>
+<div id="neo-vs.-adj-day-16" class="section level3">
+<h3>NEO vs. ADJ, Day 16</h3>
+<pre class="r"><code>unique(seurat_data$celltype)
+myeloid &lt;- subset(seurat_data, subset = celltype %in% c(grep(&quot;^M&quot;, unique(seurat_data$celltype), value = T), c(&quot;Neut1&quot;)))
 
-res_myel &lt;- myeloid@meta.data %&gt;%
-  dplyr::select(c(&quot;orig.ident&quot;, &quot;Treatment_Day&quot;, colnames(res)))
+gsea_res &lt;- FindMarkers(myeloid,
+                        assay = &quot;escapeGSVA_normalized&quot;, 
+                        ident.1 = &quot;NEO_16&quot;,
+                        ident.2 = &quot;ADJ_16&quot;,
+                        min.pct = 0,
+                        logfc.threshold = 0)
 
-sig_res_myel &lt;- data.frame(getSignificance(res_myel,
-                                           group = &quot;Treatment_Day&quot;,
-                                           fit = &quot;ANOVA&quot;))
-sig_res_myel$pathways &lt;- rownames(sig_res_myel)
-sig_res_myel &lt;- sig_res_myel %&gt;% filter(FDR &lt; 0.05) %&gt;% arrange(FDR)
+gsea_res$pathway &lt;- rownames(gsea_res)
 
-dim(sig_res_myel)</code></pre>
-<pre><code>[1] 15 19</code></pre>
-<pre class="r"><code>sig_res_myel %&gt;% dplyr::select(c(&quot;pathways&quot;))</code></pre>
-<pre><code>                                                                            pathways
-1                                                         BIOCARTA_EXTRINSIC_PATHWAY
-2                                                         BIOCARTA_INTRINSIC_PATHWAY
-3                                           KEGG_COMPLEMENT_AND_COAGULATION_CASCADES
-4  REACTOME_DEFECTS_OF_CONTACT_ACTIVATION_SYSTEM_CAS_AND_KALLIKREIN_KININ_SYSTEM_KKS
-5                                 REACTOME_FORMATION_OF_FIBRIN_CLOT_CLOTTING_CASCADE
-6       REACTOME_GAMMA_CARBOXYLATION_HYPUSINE_FORMATION_AND_ARYLSULFATASE_ACTIVATION
-7                                                                REACTOME_HEMOSTASIS
-8                                REACTOME_INTRINSIC_PATHWAY_OF_FIBRIN_CLOT_FORMATION
-9                                   REACTOME_POST_TRANSLATIONAL_PROTEIN_MODIFICATION
-10                                                       REACTOME_COMPLEMENT_CASCADE
-11                                                     REACTOME_INNATE_IMMUNE_SYSTEM
-12                                                          BIOCARTA_CLASSIC_PATHWAY
-13                                                             BIOCARTA_COMP_PATHWAY
-14                                                           BIOCARTA_LECTIN_PATHWAY
-15                                                 KEGG_SYSTEMIC_LUPUS_ERYTHEMATOSUS</code></pre>
-</div>
-<div
-id="barplot-of-differentially-regulated-pathways-across-myeloid-cell-types-m1-7-neut"
-class="section level3">
-<h3>Barplot of differentially regulated pathways across myeloid cell
-types (M1-7, Neut)</h3>
-<pre class="r"><code>sig_res_myel %&gt;%
-  mutate(delta = median.NEO_16 - median.CTRL_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, &quot;NEO_16&quot;, &quot;CTRL_16&quot;)) %&gt;%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+res_sig &lt;- gsea_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
+
+res_sig %&gt;%
+  #filter(abs(avg_log2FC) &gt; 0.1) %&gt;%
+  filter(dense_rank(avg_log2FC) &lt;= 10 | dense_rank(desc(avg_log2FC)) &lt;= 10) %&gt;%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, &quot;NEO_16&quot;, &quot;ADJ_16&quot;)) %&gt;%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = &quot;identity&quot;) +
     #geom_col(width = 0.85) +
     scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
     theme_classic() +
     #manuscript_theme +
     ylab(&quot;&quot;) +
-    xlab(expression(Delta ~ &quot;median enrichment score&quot;)) +
-    ggtitle(&quot;NEO Day 16 vs. CTRL Day 16, myeloid&quot;)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-7-1.png" width="1344" style="display: block; margin: auto;" /></p>
+    xlab(expression(Delta ~ &quot; average log2(FC)&quot;)) +
+    ggtitle(&quot;NEO Day 16 vs. ADJ Day 16, myeloid&quot;)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-8-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
-Past versions of unnamed-chunk-7-1.png
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
 </button>
 </p>
-<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div id="fig-unnamed-chunk-8-1" class="collapse">
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
 <thead>
@@ -1075,7 +1143,18 @@ Date
 <tbody>
 <tr>
 <td>
-<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-7-1.png" target="_blank">2e7906a</a>
+<a href="https://github.com/heinin/PD1_mm/blob/bd872d1ca492e7f87625df8d5038f40aefc1ec98/docs/figure/GSEA.Rmd/unnamed-chunk-8-1.png" target="_blank">bd872d1</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-07-06
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-8-1.png" target="_blank">2e7906a</a>
 </td>
 <td>
 heinin
@@ -1088,101 +1167,35 @@ heinin
 </table>
 </div>
 </div>
-<pre class="r"><code>sig_res_myel %&gt;%
-  mutate(delta = median.NEO_16 - median.ADJ_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, &quot;NEO_16&quot;, &quot;ADJ_16&quot;)) %&gt;%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
-    geom_bar(stat = &quot;identity&quot;) +
-    #geom_col(width = 0.85) +
-    scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
-    theme_classic() +
-    #manuscript_theme +
-    ylab(&quot;&quot;) +
-    xlab(expression(Delta ~ &quot;median enrichment score&quot;)) +
-    ggtitle(&quot;NEO Day 16 vs. ADJ Day 16, myeloid&quot;)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-7-2.png" width="1344" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>sig_res_myel %&gt;%
-  mutate(delta = median.CTRL_16 - median.ADJ_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, &quot;CTRL_16&quot;, &quot;ADJ_16&quot;)) %&gt;%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
-    geom_bar(stat = &quot;identity&quot;) +
-    #geom_col(width = 0.85) +
-    scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
-    theme_classic() +
-    #manuscript_theme +
-    ylab(&quot;&quot;) +
-    xlab(expression(Delta ~ &quot;median enrichment score&quot;)) +
-    ggtitle(&quot;CTRL Day 16 vs. ADJ Day 16, myeloid&quot;)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-7-3.png" width="1344" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>sig_res_myel %&gt;%
-  mutate(delta = median.NEO_12 - median.CTRL_12,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, &quot;NEO_12&quot;, &quot;CTRL_12&quot;)) %&gt;%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
-    geom_bar(stat = &quot;identity&quot;) +
-    #geom_col(width = 0.85) +
-    scale_fill_manual(values = c(&quot;aquamarine3&quot;, &quot;deeppink3&quot;)) +
-    theme_classic() +
-    #manuscript_theme +
-    ylab(&quot;&quot;) +
-    xlab(expression(Delta ~ &quot;median enrichment score&quot;)) +
-    ggtitle(&quot;NEO Day 12 vs. CTRL Day 12, myeloid&quot;)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-7-4.png" width="1344" style="display: block; margin: auto;" /></p>
 </div>
-<div id="significance-testing-across-lymphoid-celltypes-l1-6-treg-nk"
-class="section level3">
-<h3>Significance testing across lymphoid celltypes (L1-6, Treg, NK)</h3>
-<pre class="r"><code>lymphoid &lt;- subset(seurat_data, subset = celltype %in% paste0(&quot;M&quot;, seq(1, 7)))
+<div id="neo-vs.-ctrl-day-16" class="section level3">
+<h3>NEO vs. CTRL, Day 16</h3>
+<pre class="r"><code>gsea_res &lt;- FindMarkers(myeloid,
+                        assay = &quot;escapeGSVA_normalized&quot;, 
+                        ident.1 = &quot;NEO_16&quot;,
+                        ident.2 = &quot;CTRL_16&quot;,
+                        min.pct = 0,
+                        logfc.threshold = 0)
 
-res_lymp &lt;- lymphoid@meta.data %&gt;%
-  dplyr::select(c(&quot;orig.ident&quot;, &quot;Treatment_Day&quot;, colnames(res)))
+gsea_res$pathway &lt;- rownames(gsea_res)
 
-sig_res_lymp &lt;- data.frame(getSignificance(res_lymp,
-                                           group = &quot;Treatment_Day&quot;,
-                                           fit = &quot;ANOVA&quot;))
-sig_res_lymp$pathways &lt;- rownames(sig_res_lymp)
-sig_res_lymp &lt;- sig_res_lymp %&gt;% filter(FDR &lt; 0.05) %&gt;% arrange(FDR)
+res_sig &lt;- gsea_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
 
-dim(sig_res_lymp)</code></pre>
-<pre><code>[1] 15 19</code></pre>
-<pre class="r"><code>sig_res_lymp %&gt;% dplyr::select(c(&quot;pathways&quot;))</code></pre>
-<pre><code>                                                                            pathways
-1                                                         BIOCARTA_EXTRINSIC_PATHWAY
-2                                                         BIOCARTA_INTRINSIC_PATHWAY
-3                                           KEGG_COMPLEMENT_AND_COAGULATION_CASCADES
-4  REACTOME_DEFECTS_OF_CONTACT_ACTIVATION_SYSTEM_CAS_AND_KALLIKREIN_KININ_SYSTEM_KKS
-5                                 REACTOME_FORMATION_OF_FIBRIN_CLOT_CLOTTING_CASCADE
-6       REACTOME_GAMMA_CARBOXYLATION_HYPUSINE_FORMATION_AND_ARYLSULFATASE_ACTIVATION
-7                                                                REACTOME_HEMOSTASIS
-8                                REACTOME_INTRINSIC_PATHWAY_OF_FIBRIN_CLOT_FORMATION
-9                                   REACTOME_POST_TRANSLATIONAL_PROTEIN_MODIFICATION
-10                                                       REACTOME_COMPLEMENT_CASCADE
-11                                                     REACTOME_INNATE_IMMUNE_SYSTEM
-12                                                          BIOCARTA_CLASSIC_PATHWAY
-13                                                             BIOCARTA_COMP_PATHWAY
-14                                                           BIOCARTA_LECTIN_PATHWAY
-15                                                 KEGG_SYSTEMIC_LUPUS_ERYTHEMATOSUS</code></pre>
-</div>
-<div
-id="barplot-of-differentially-regulated-pathways-across-lymphoid-cell-types-l1-6-treg-nk"
-class="section level3">
-<h3>Barplot of differentially regulated pathways across lymphoid cell
-types (L1-6, Treg, NK)</h3>
-<pre class="r"><code>sig_res_lymp %&gt;%
-  mutate(delta = median.NEO_16 - median.CTRL_16,
-         sign = sign(delta),
+res_sig %&gt;%
+  #filter(abs(avg_log2FC) &gt; 0.15) %&gt;%
+  filter(dense_rank(rev(avg_log2FC)) &lt;= 20) %&gt;% #| dense_rank(desc(avg_log2FC)) &lt;= 10) %&gt;%
+  mutate(sign = sign(avg_log2FC),
          signstr = if_else(sign == 1, &quot;NEO_16&quot;, &quot;CTRL_16&quot;)) %&gt;%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = &quot;identity&quot;) +
     #geom_col(width = 0.85) +
     scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
     theme_classic() +
     #manuscript_theme +
     ylab(&quot;&quot;) +
-    xlab(expression(Delta ~ &quot;median enrichment score&quot;)) +
-    ggtitle(&quot;NEO Day 16 vs. CTRL Day 16, lymphoid&quot;)</code></pre>
+    xlab(expression(Delta ~ &quot; average log2(FC)&quot;)) +
+    ggtitle(&quot;NEO Day 16 vs. CTRL Day 16, myeloid&quot;)</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-9-1.png" width="1344" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
@@ -1208,6 +1221,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/bd872d1ca492e7f87625df8d5038f40aefc1ec98/docs/figure/GSEA.Rmd/unnamed-chunk-9-1.png" target="_blank">bd872d1</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-07-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-9-1.png" target="_blank">2e7906a</a>
 </td>
 <td>
@@ -1221,66 +1245,35 @@ heinin
 </table>
 </div>
 </div>
-<pre class="r"><code>sig_res_lymp %&gt;%
-  mutate(delta = median.NEO_16 - median.ADJ_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, &quot;NEO_16&quot;, &quot;ADJ_16&quot;)) %&gt;%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
-    geom_bar(stat = &quot;identity&quot;) +
-    #geom_col(width = 0.85) +
-    scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
-    theme_classic() +
-    #manuscript_theme +
-    ylab(&quot;&quot;) +
-    xlab(expression(Delta ~ &quot;median enrichment score&quot;)) +
-    ggtitle(&quot;NEO Day 16 vs. ADJ Day 16, lymphoid&quot;)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-9-2.png" width="1344" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>sig_res_lymp %&gt;%
-  mutate(delta = median.CTRL_16 - median.ADJ_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, &quot;CTRL_16&quot;, &quot;ADJ_16&quot;)) %&gt;%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
-    geom_bar(stat = &quot;identity&quot;) +
-    #geom_col(width = 0.85) +
-    scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
-    theme_classic() +
-    #manuscript_theme +
-    ylab(&quot;&quot;) +
-    xlab(expression(Delta ~ &quot;median enrichment score&quot;)) +
-    ggtitle(&quot;CTRL Day 16 vs. ADJ Day 16, lymphoid&quot;)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-9-3.png" width="1344" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>sig_res_lymp %&gt;%
-  mutate(delta = median.NEO_12 - median.CTRL_12,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, &quot;NEO_12&quot;, &quot;CTRL_12&quot;)) %&gt;%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
-    geom_bar(stat = &quot;identity&quot;) +
-    #geom_col(width = 0.85) +
-    scale_fill_manual(values = c(&quot;aquamarine3&quot;, &quot;deeppink3&quot;)) +
-    theme_classic() +
-    #manuscript_theme +
-    ylab(&quot;&quot;) +
-    xlab(expression(Delta ~ &quot;median enrichment score&quot;)) +
-    ggtitle(&quot;NEO Day 12 vs. CTRL Day 12, lymphoid&quot;)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-9-4.png" width="1344" style="display: block; margin: auto;" /></p>
 </div>
-<div id="heatmaps" class="section level3">
-<h3>Heatmaps</h3>
-<pre class="r"><code>DefaultAssay(seurat_data) &lt;- &quot;RNA_human&quot;
-seurat_data$Treatment_Day &lt;- factor(seurat_data$Treatment_Day,
-                                    levels = c(&quot;NEO_12&quot;, &quot;NEO_16&quot;,
-                                               &quot;CTRL_12&quot;, &quot;CTRL_16&quot;,
-                                               &quot;ADJ_16&quot;))
+<div id="adj-vs.-ctrl-day-16" class="section level3">
+<h3>ADJ vs. CTRL, Day 16</h3>
+<pre class="r"><code>gsea_res &lt;- FindMarkers(myeloid,
+                        assay = &quot;escapeGSVA_normalized&quot;, 
+                        ident.1 = &quot;ADJ_16&quot;,
+                        ident.2 = &quot;CTRL_16&quot;,
+                        min.pct = 0,
+                        logfc.threshold = 0)
 
-dittoHeatmap(seurat_data,
-             genes = NULL,
-             metas = sig_res$pathways, 
-             heatmap.colors = colorRampPalette(c(&quot;dodgerblue4&quot;, &quot;white&quot;, &quot;tomato&quot;))(100),
-             annot.colors = treatment_day_col,
-             annot.by = &quot;Treatment_Day&quot;,
-             order.by = &quot;Treatment_Day&quot;,
-             cluster_cols = F,
-             fontsize = 7)</code></pre>
+gsea_res$pathway &lt;- rownames(gsea_res)
+
+res_sig &lt;- gsea_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
+
+res_sig %&gt;%
+  #filter(abs(avg_log2FC) &gt; 0.15) %&gt;%
+  filter(dense_rank(desc(avg_log2FC)) &lt;= 20) %&gt;%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, &quot;ADJ_16&quot;, &quot;CTRL_16&quot;)) %&gt;%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab(&quot;&quot;) +
+    xlab(expression(Delta ~ &quot; average log2(FC)&quot;)) +
+    ggtitle(&quot;ADJ Day 16 vs. CTRL Day 16, myeloid&quot;)</code></pre>
 <p><img src="figure/GSEA.Rmd/unnamed-chunk-10-1.png" width="1344" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
@@ -1306,6 +1299,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/bd872d1ca492e7f87625df8d5038f40aefc1ec98/docs/figure/GSEA.Rmd/unnamed-chunk-10-1.png" target="_blank">bd872d1</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-07-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-10-1.png" target="_blank">2e7906a</a>
 </td>
 <td>
@@ -1319,95 +1323,72 @@ heinin
 </table>
 </div>
 </div>
-<pre class="r"><code>dittoHeatmap(seurat_data,
-             genes = NULL,
-             metas = sig_res$pathways, 
-             heatmap.colors = colorRampPalette(c(&quot;dodgerblue4&quot;, &quot;white&quot;, &quot;tomato&quot;))(100),
-             annot.colors = treatment_day_col,
-             annot.by = &quot;Treatment_Day&quot;,
-             cluster_cols = T,
-             fontsize = 7)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-10-2.png" width="1344" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>VlnPlot(seurat_data,
-        features = sig_res$pathways,
-        group.by = &quot;celltype&quot;,
-        split.by = &quot;Treatment_Day&quot;,
-        cols = treatment_day_col,
-        ncol = 1,
-        pt.size = 0) &amp;
-  theme_classic() &amp;
-  xlab(&quot;&quot;) &amp;
-  NoLegend()</code></pre>
-<pre><code>The default behaviour of split.by has changed.
-Separate violin plots are now plotted side-by-side.
-To restore the old behaviour of a single split violin,
-set split.plot = TRUE.
-      
-This message will be shown once per session.</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-11-1.png" width="1536" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
-Past versions of unnamed-chunk-11-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-11-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/heinin/PD1_mm/blob/7c73c80984c7ca3a66242240b31a3497fa8c1d27/docs/figure/GSEA.Rmd/unnamed-chunk-11-1.png" target="_blank">7c73c80</a>
-</td>
-<td>
-heinin
-</td>
-<td>
-2024-05-06
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-11-1.png" target="_blank">2e7906a</a>
-</td>
-<td>
-heinin
-</td>
-<td>
-2024-03-24
-</td>
-</tr>
-</tbody>
-</table>
+</div>
+<div id="neo-vs.-ctrl-day-12" class="section level3">
+<h3>NEO vs. CTRL, Day 12</h3>
+<pre class="r"><code>gsea_res &lt;- FindMarkers(myeloid,
+                        assay = &quot;escapeGSVA_normalized&quot;, 
+                        ident.1 = &quot;NEO_12&quot;,
+                        ident.2 = &quot;CTRL_12&quot;,
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway &lt;- rownames(gsea_res)
+
+res_sig &lt;- gsea_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
+
+res_sig %&gt;%
+  #filter(abs(avg_log2FC) &gt; 0.15) %&gt;%
+  filter(dense_rank(avg_log2FC) &lt;= 16 | dense_rank(desc(avg_log2FC)) &lt;= 4) %&gt;%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, &quot;NEO_12&quot;, &quot;CTRL_12&quot;)) %&gt;%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab(&quot;&quot;) +
+    xlab(expression(Delta ~ &quot; average log2(FC)&quot;)) +
+    ggtitle(&quot;NEO Day 12 vs. CTRL Day 12, myeloid&quot;)</code></pre>
 </div>
 </div>
-</div>
-<div id="plotting-by-celltype-and-treatment-only"
-class="section level3">
-<h3>Plotting by celltype and treatment only</h3>
-<pre class="r"><code>VlnPlot(seurat_data,
-        features = sig_res$pathways,
-        group.by = &quot;celltype&quot;,
-        split.by = &quot;Treatment&quot;,
-        cols = treatment_day_col,
-        ncol = 1,
-        pt.size = 0) &amp;
-  theme_classic() &amp;
-  xlab(&quot;&quot;) &amp;
-  NoLegend()</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-12-1.png" width="2688" style="display: block; margin: auto;" /></p>
+<div id="significance-testing-across-lymphoid-celltypes-l1-6-treg-nk"
+class="section level2">
+<h2>Significance testing across lymphoid celltypes (L1-6, Treg, NK)</h2>
+<div id="neo-vs.-adj-day-16-1" class="section level3">
+<h3>NEO vs. ADJ, Day 16</h3>
+<pre class="r"><code>unique(seurat_data$celltype)
+lymphoid &lt;- subset(seurat_data, subset = celltype %in% c(grep(&quot;^L&quot;, unique(seurat_data$celltype), value = T), c(&quot;NK&quot;, &quot;Treg&quot;)))
+
+gsea_res &lt;- FindMarkers(lymphoid,
+                        assay = &quot;escapeGSVA_normalized&quot;, 
+                        ident.1 = &quot;NEO_16&quot;,
+                        ident.2 = &quot;ADJ_16&quot;,
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway &lt;- rownames(gsea_res)
+
+res_sig &lt;- gsea_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
+
+res_sig %&gt;%
+  #filter(abs(avg_log2FC) &gt; 0.15) %&gt;%
+  filter(dense_rank(desc(avg_log2FC)) &lt;= 20) %&gt;%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, &quot;NEO_16&quot;, &quot;ADJ_16&quot;)) %&gt;%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab(&quot;&quot;) +
+    xlab(expression(Delta ~ &quot; average log2(FC)&quot;)) +
+    ggtitle(&quot;NEO Day 16 vs. ADJ Day 16, lymphoid&quot;)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-12-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
 Past versions of unnamed-chunk-12-1.png
@@ -1432,6 +1413,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/bd872d1ca492e7f87625df8d5038f40aefc1ec98/docs/figure/GSEA.Rmd/unnamed-chunk-12-1.png" target="_blank">bd872d1</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-07-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-12-1.png" target="_blank">2e7906a</a>
 </td>
 <td>
@@ -1446,20 +1438,35 @@ heinin
 </div>
 </div>
 </div>
-<div id="plotting-by-celltype-and-timepoint-only"
-class="section level3">
-<h3>Plotting by celltype and timepoint only</h3>
-<pre class="r"><code>VlnPlot(seurat_data,
-        features = sig_res$pathways,
-        group.by = &quot;celltype&quot;,
-        split.by = &quot;Day&quot;,
-        cols = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;),
-        ncol = 1,
-        pt.size = 0) &amp;
-  theme_classic() &amp;
-  xlab(&quot;&quot;) &amp;
-  NoLegend()</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-13-1.png" width="2688" style="display: block; margin: auto;" /></p>
+<div id="neo-vs.-ctrl-day-16-1" class="section level3">
+<h3>NEO vs. CTRL, Day 16</h3>
+<pre class="r"><code>gsea_res &lt;- FindMarkers(lymphoid,
+                        assay = &quot;escapeGSVA_normalized&quot;, 
+                        ident.1 = &quot;NEO_16&quot;,
+                        ident.2 = &quot;CTRL_16&quot;,
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway &lt;- rownames(gsea_res)
+
+res_sig &lt;- gsea_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
+
+res_sig %&gt;%
+  #filter(abs(avg_log2FC) &gt; 0.15) %&gt;%
+  filter(dense_rank(avg_log2FC) &lt;= 10 | dense_rank(desc(avg_log2FC)) &lt;= 10) %&gt;%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, &quot;NEO_16&quot;, &quot;CTRL_16&quot;)) %&gt;%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab(&quot;&quot;) +
+    xlab(expression(Delta ~ &quot; average log2(FC)&quot;)) +
+    ggtitle(&quot;NEO Day 16 vs. CTRL Day 16, lymphoid&quot;)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-13-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
 Past versions of unnamed-chunk-13-1.png
@@ -1484,6 +1491,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/bd872d1ca492e7f87625df8d5038f40aefc1ec98/docs/figure/GSEA.Rmd/unnamed-chunk-13-1.png" target="_blank">bd872d1</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-07-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-13-1.png" target="_blank">2e7906a</a>
 </td>
 <td>
@@ -1498,18 +1516,35 @@ heinin
 </div>
 </div>
 </div>
-<div id="plotting-by-treatment-only" class="section level3">
-<h3>Plotting by treatment only</h3>
-<pre class="r"><code>VlnPlot(seurat_data,
-        features = sig_res$pathways,
-        group.by = &quot;Treatment&quot;,
-        cols = treatment_col,
-        ncol = 1,
-        pt.size = 0) &amp;
-  theme_classic() &amp;
-  xlab(&quot;&quot;) &amp;
-  NoLegend()</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-14-1.png" width="288" style="display: block; margin: auto;" /></p>
+<div id="adj-vs.-ctrl-day-16-1" class="section level3">
+<h3>ADJ vs. CTRL, Day 16</h3>
+<pre class="r"><code>gsea_res &lt;- FindMarkers(lymphoid,
+                        assay = &quot;escapeGSVA_normalized&quot;, 
+                        ident.1 = &quot;ADJ_16&quot;,
+                        ident.2 = &quot;CTRL_16&quot;,
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway &lt;- rownames(gsea_res)
+
+res_sig &lt;- gsea_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
+
+res_sig %&gt;%
+  #filter(abs(avg_log2FC) &gt; 0.15) %&gt;%
+  filter(dense_rank(avg_log2FC) &lt;= 10 | dense_rank(desc(avg_log2FC)) &lt;= 10) %&gt;%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, &quot;ADJ_16&quot;, &quot;CTRL_16&quot;)) %&gt;%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
+    geom_bar(stat = &quot;identity&quot;) +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;)) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab(&quot;&quot;) +
+    xlab(expression(Delta ~ &quot; average log2(FC)&quot;)) +
+    ggtitle(&quot;NEO Day 16 vs. CTRL Day 16, lymphoid&quot;)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-14-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
 Past versions of unnamed-chunk-14-1.png
@@ -1534,6 +1569,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/bd872d1ca492e7f87625df8d5038f40aefc1ec98/docs/figure/GSEA.Rmd/unnamed-chunk-14-1.png" target="_blank">bd872d1</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-07-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-14-1.png" target="_blank">2e7906a</a>
 </td>
 <td>
@@ -1548,18 +1594,39 @@ heinin
 </div>
 </div>
 </div>
-<div id="plotting-by-timepoint-only" class="section level3">
-<h3>Plotting by timepoint only</h3>
-<pre class="r"><code>VlnPlot(seurat_data,
-        features = sig_res$pathways,
-        group.by = &quot;Day&quot;,
-        cols = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;),
-        ncol = 1,
-        pt.size = 0) &amp;
-  theme_classic() &amp;
-  xlab(&quot;&quot;) &amp;
-  NoLegend()</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-15-1.png" width="288" style="display: block; margin: auto;" /></p>
+</div>
+<div id="heatmaps" class="section level2">
+<h2>Heatmaps</h2>
+<div id="myeloid" class="section level3">
+<h3>Myeloid</h3>
+<pre class="r"><code>myeloid_res &lt;- FindAllMarkers(myeloid,
+                              assay = &quot;escapeGSVA_normalized&quot;, 
+                              return.thresh = 0.01,
+                              logfc.threshold = 0.5,
+                              min.pct = 0.20,
+                              only.pos = T,
+                              verbose = F)
+
+myeloid_res$pathway &lt;- rownames(myeloid_res)
+
+myeloid_res_sig &lt;- myeloid_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
+
+plot_features &lt;- myeloid_res_sig %&gt;%  group_by(cluster) %&gt;% slice_max(order_by = abs(avg_log2FC), n = 20)
+
+# Subset for heatmap
+myeloid_subset &lt;- subset(myeloid, downsample = 30000/length(unique(myeloid$celltype)))
+
+myeloid_subset &lt;- ScaleData(myeloid_subset,
+                            assay = &quot;escapeGSVA_normalized&quot;)
+
+DoHeatmap(
+  myeloid_subset,
+  features = unique(plot_features$gene),
+  group.by = &quot;Treatment_Day&quot;,
+  group.bar = TRUE,
+  assay = &quot;escapeGSVA_normalized&quot;)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-15-1.png" width="1440" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
 Past versions of unnamed-chunk-15-1.png
@@ -1584,6 +1651,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/bd872d1ca492e7f87625df8d5038f40aefc1ec98/docs/figure/GSEA.Rmd/unnamed-chunk-15-1.png" target="_blank">bd872d1</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-07-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-15-1.png" target="_blank">2e7906a</a>
 </td>
 <td>
@@ -1598,123 +1676,36 @@ heinin
 </div>
 </div>
 </div>
-<div id="testing-with-myeloid-cell-types-only" class="section level3">
-<h3>Testing with myeloid cell types only</h3>
-<pre class="r"><code>seurat_data_myeloid &lt;- subset(seurat_data, subset = celltype %in% paste0(&quot;M&quot;, seq(1, 9)))
+<div id="lymphoid" class="section level3">
+<h3>Lymphoid</h3>
+<pre class="r"><code>lymphoid_res &lt;- FindAllMarkers(lymphoid,
+                               assay = &quot;escapeGSVA_normalized&quot;, 
+                               return.thresh = 0.01,
+                               logfc.threshold = 0.5,
+                               min.pct = 0.20,
+                               only.pos = T,
+                               verbose = F)
 
-res_myeloid &lt;- seurat_data_myeloid@meta.data %&gt;%
-  dplyr::select(c(&quot;orig.ident&quot;, &quot;Treatment_Day&quot;, colnames(res)))
+lymphoid_res$pathway &lt;- rownames(lymphoid_res)
 
-sig_res_myeloid &lt;- data.frame(getSignificance(res_myeloid,
-                                              group = &quot;Treatment_Day&quot;,
-                                              fit = &quot;ANOVA&quot;))
-sig_res_myeloid$pathways &lt;- rownames(sig_res_myeloid)
-sig_res_myeloid &lt;- sig_res_myeloid %&gt;% filter(FDR &lt; 0.05) %&gt;% arrange(FDR)
+lymphoid_res_sig &lt;- lymphoid_res %&gt;% filter(abs(avg_log2FC) &gt; 0.1,
+                               p_val_adj &lt; 0.05)
 
-dim(sig_res_myeloid)</code></pre>
-<pre><code>[1] 15 19</code></pre>
-<pre class="r"><code>sig_res_myeloid %&gt;% dplyr::select(c(&quot;pathways&quot;))</code></pre>
-<pre><code>                                                                            pathways
-1                                                         BIOCARTA_EXTRINSIC_PATHWAY
-2                                                         BIOCARTA_INTRINSIC_PATHWAY
-3                                           KEGG_COMPLEMENT_AND_COAGULATION_CASCADES
-4  REACTOME_DEFECTS_OF_CONTACT_ACTIVATION_SYSTEM_CAS_AND_KALLIKREIN_KININ_SYSTEM_KKS
-5                                 REACTOME_FORMATION_OF_FIBRIN_CLOT_CLOTTING_CASCADE
-6       REACTOME_GAMMA_CARBOXYLATION_HYPUSINE_FORMATION_AND_ARYLSULFATASE_ACTIVATION
-7                                                                REACTOME_HEMOSTASIS
-8                                REACTOME_INTRINSIC_PATHWAY_OF_FIBRIN_CLOT_FORMATION
-9                                   REACTOME_POST_TRANSLATIONAL_PROTEIN_MODIFICATION
-10                                                       REACTOME_COMPLEMENT_CASCADE
-11                                                     REACTOME_INNATE_IMMUNE_SYSTEM
-12                                                          BIOCARTA_CLASSIC_PATHWAY
-13                                                             BIOCARTA_COMP_PATHWAY
-14                                                           BIOCARTA_LECTIN_PATHWAY
-15                                                 KEGG_SYSTEMIC_LUPUS_ERYTHEMATOSUS</code></pre>
-<pre class="r"><code>write.table(sig_res_myeloid, &quot;/home/hnatri/PD1_mm/GSEA_myeloid_sig.tsv&quot;,
-            sep = &quot;\t&quot;, quote = F, row.names = F)
+plot_features &lt;- lymphoid_res_sig %&gt;%  group_by(cluster) %&gt;% slice_max(order_by = abs(avg_log2FC), n = 20)
 
-# Overlap of significant pathways for the whole data vs. myeloid only
-intersect(sig_res_myeloid$pathways, sig_res$pathways)</code></pre>
-<pre><code> [1] &quot;BIOCARTA_EXTRINSIC_PATHWAY&quot;                                                       
- [2] &quot;BIOCARTA_INTRINSIC_PATHWAY&quot;                                                       
- [3] &quot;KEGG_COMPLEMENT_AND_COAGULATION_CASCADES&quot;                                         
- [4] &quot;REACTOME_DEFECTS_OF_CONTACT_ACTIVATION_SYSTEM_CAS_AND_KALLIKREIN_KININ_SYSTEM_KKS&quot;
- [5] &quot;REACTOME_FORMATION_OF_FIBRIN_CLOT_CLOTTING_CASCADE&quot;                               
- [6] &quot;REACTOME_GAMMA_CARBOXYLATION_HYPUSINE_FORMATION_AND_ARYLSULFATASE_ACTIVATION&quot;     
- [7] &quot;REACTOME_HEMOSTASIS&quot;                                                              
- [8] &quot;REACTOME_INTRINSIC_PATHWAY_OF_FIBRIN_CLOT_FORMATION&quot;                              
- [9] &quot;REACTOME_POST_TRANSLATIONAL_PROTEIN_MODIFICATION&quot;                                 
-[10] &quot;REACTOME_COMPLEMENT_CASCADE&quot;                                                      
-[11] &quot;REACTOME_INNATE_IMMUNE_SYSTEM&quot;                                                    
-[12] &quot;BIOCARTA_CLASSIC_PATHWAY&quot;                                                         
-[13] &quot;BIOCARTA_COMP_PATHWAY&quot;                                                            
-[14] &quot;BIOCARTA_LECTIN_PATHWAY&quot;                                                          
-[15] &quot;KEGG_SYSTEMIC_LUPUS_ERYTHEMATOSUS&quot;                                                </code></pre>
-<pre class="r"><code># Checking significance by Treatment, Day and celltype in myeloid cells
-seurat_data_myeloid$Treatment_Day_celltype &lt;- paste0(seurat_data_myeloid$Treatment_Day,
-                                                     &quot;_&quot;, seurat_data_myeloid$celltype)
-res_myeloid_celltype &lt;- seurat_data_myeloid@meta.data %&gt;%
-  dplyr::select(c(&quot;orig.ident&quot;, &quot;Treatment_Day_celltype&quot;, colnames(res)))
+# Subset for heatmap
+lymphoid_subset &lt;- subset(lymphoid, downsample = 30000/length(unique(lymphoid$celltype)))
 
-sig_res_myeloid_celltype &lt;- data.frame(getSignificance(res_myeloid_celltype,
-                                              group = &quot;Treatment_Day_celltype&quot;,
-                                              fit = &quot;ANOVA&quot;))
-sig_res_myeloid_celltype$pathways &lt;- rownames(sig_res_myeloid_celltype)
-sig_res_myeloid_celltype &lt;- sig_res_myeloid_celltype %&gt;%
-  filter(FDR &lt; 0.05) %&gt;% arrange(FDR)
+lymphoid_subset &lt;- ScaleData(lymphoid_subset,
+                             assay = &quot;escapeGSVA_normalized&quot;)
 
-unique(sig_res_myeloid_celltype$pathways)</code></pre>
-<pre><code> [1] &quot;BIOCARTA_CLASSIC_PATHWAY&quot;                                                         
- [2] &quot;BIOCARTA_COMP_PATHWAY&quot;                                                            
- [3] &quot;BIOCARTA_EXTRINSIC_PATHWAY&quot;                                                       
- [4] &quot;BIOCARTA_INTRINSIC_PATHWAY&quot;                                                       
- [5] &quot;BIOCARTA_LECTIN_PATHWAY&quot;                                                          
- [6] &quot;KEGG_COMPLEMENT_AND_COAGULATION_CASCADES&quot;                                         
- [7] &quot;KEGG_SYSTEMIC_LUPUS_ERYTHEMATOSUS&quot;                                                
- [8] &quot;REACTOME_COMPLEMENT_CASCADE&quot;                                                      
- [9] &quot;REACTOME_DEFECTS_OF_CONTACT_ACTIVATION_SYSTEM_CAS_AND_KALLIKREIN_KININ_SYSTEM_KKS&quot;
-[10] &quot;REACTOME_FORMATION_OF_FIBRIN_CLOT_CLOTTING_CASCADE&quot;                               
-[11] &quot;REACTOME_GAMMA_CARBOXYLATION_HYPUSINE_FORMATION_AND_ARYLSULFATASE_ACTIVATION&quot;     
-[12] &quot;REACTOME_HEMOSTASIS&quot;                                                              
-[13] &quot;REACTOME_INNATE_IMMUNE_SYSTEM&quot;                                                    
-[14] &quot;REACTOME_INTRINSIC_PATHWAY_OF_FIBRIN_CLOT_FORMATION&quot;                              
-[15] &quot;REACTOME_POST_TRANSLATIONAL_PROTEIN_MODIFICATION&quot;                                 </code></pre>
-<pre class="r"><code># Only keeping comparisons for the same cell type
-sig_res_myeloid_celltype &lt;- t(sig_res_myeloid_celltype)
-sig_res_myeloid_celltype &lt;- sig_res_myeloid_celltype %&gt;% as.data.frame() %&gt;%
-  rownames_to_column(var = &quot;comparison&quot;) %&gt;%
-  separate(col = comparison, sep = &quot;v&quot;, into = c(&quot;group1&quot;, &quot;group2&quot;)) %&gt;%
-  separate(col = group1, sep = &quot;_&quot;, into = c(&quot;group1&quot;, &quot;day1&quot;, &quot;celltype1&quot;)) %&gt;%
-  separate(col = group2, sep = &quot;_&quot;, into = c(&quot;group2&quot;, &quot;day2&quot;, &quot;celltype2&quot;)) %&gt;%
-  separate(col = celltype2, sep = &quot;\\.&quot;, into = c(&quot;celltype2&quot;, &quot;valtype&quot;)) %&gt;% 
-  dplyr::filter(celltype1 == celltype2 | group1 == &quot;f.&quot; | group1 == &quot;p.&quot; | group1 == &quot;pathways&quot;)
-
-dim(sig_res_myeloid_celltype)</code></pre>
-<pre><code>[1] 73 22</code></pre>
-<pre class="r"><code>write.table(sig_res_myeloid_celltype, &quot;/home/hnatri/PD1_mm/GSEA_myeloid_celltype_sig.tsv&quot;,
-            sep = &quot;\t&quot;, quote = F, row.names = F)
-
-# Heatmap of p-values
-sig_res_myeloid_celltype &lt;- sig_res_myeloid_celltype %&gt;% filter(!group1 %in% c(&quot;f.&quot;, &quot;p.&quot;)) %&gt;%
-  select(!c(&quot;valtype&quot;))
-
-colnames(sig_res_myeloid_celltype) &lt;- c(colnames(sig_res_myeloid_celltype)[1:6], as.character(sig_res_myeloid_celltype[nrow(sig_res_myeloid_celltype),][7:ncol(sig_res_myeloid_celltype)]))
-
-# Bottom, left, top, right
-#par(mar=c(2,12,2,3)) 
-
-sig_res_myeloid_celltype %&gt;% unite(&quot;comparison&quot;, group1:celltype2, sep = &quot;_&quot;) %&gt;% 
-  column_to_rownames(var = &quot;comparison&quot;) %&gt;%
-  filter(row_number() &lt;= n()-1) %&gt;%
-  mutate_if(is.character, as.numeric) %&gt;% 
-  filter_all(any_vars(is.numeric(.) &amp; . &lt; 0.05)) %&gt;%
-  as.matrix() %&gt;%
-  pheatmap(color = colorRampPalette(brewer.pal(n = 7, name = &quot;RdYlBu&quot;))(100),
-           fontsize = 7,
-           angle_col = &quot;45&quot;,
-           display_numbers = T,
-           number_format = &quot;%.2f&quot;, number_color = &quot;black&quot;)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-16-1.png" width="1152" style="display: block; margin: auto;" /></p>
+DoHeatmap(
+  lymphoid_subset,
+  features = unique(plot_features$gene),
+  group.by = &quot;Treatment_Day&quot;,
+  group.bar = TRUE,
+  assay = &quot;escapeGSVA_normalized&quot;)</code></pre>
+<p><img src="figure/GSEA.Rmd/unnamed-chunk-16-1.png" width="1440" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
 Past versions of unnamed-chunk-16-1.png
@@ -1739,6 +1730,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/bd872d1ca492e7f87625df8d5038f40aefc1ec98/docs/figure/GSEA.Rmd/unnamed-chunk-16-1.png" target="_blank">bd872d1</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-07-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-16-1.png" target="_blank">2e7906a</a>
 </td>
 <td>
@@ -1752,132 +1754,6 @@ heinin
 </table>
 </div>
 </div>
-</div>
-<div id="plotting-results-for-myeloid" class="section level3">
-<h3>Plotting results for myeloid</h3>
-<pre class="r"><code>dittoHeatmap(seurat_data_myeloid,
-             genes = NULL,
-             metas = sig_res_myeloid$pathways, 
-             heatmap.colors = colorRampPalette(c(&quot;dodgerblue4&quot;, &quot;white&quot;, &quot;tomato&quot;))(100),
-             annot.colors = treatment_day_col,
-             annot.by = &quot;Treatment_Day&quot;,
-             order.by = &quot;Treatment_Day&quot;,
-             cluster_cols = F,
-             fontsize = 7)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-17-1.png" width="1344" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
-Past versions of unnamed-chunk-17-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-17-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/heinin/PD1_mm/blob/2e7906a17e218ee7100f63bfad5b8a1ad6058046/docs/figure/GSEA.Rmd/unnamed-chunk-17-1.png" target="_blank">2e7906a</a>
-</td>
-<td>
-heinin
-</td>
-<td>
-2024-03-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>dittoHeatmap(seurat_data_myeloid,
-             genes = NULL,
-             metas = sig_res_myeloid$pathways, 
-             heatmap.colors = colorRampPalette(c(&quot;dodgerblue4&quot;, &quot;white&quot;, &quot;tomato&quot;))(100),
-             annot.colors = treatment_day_col,
-             annot.by = &quot;Treatment_Day&quot;,
-             cluster_cols = T,
-             fontsize = 7)</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-17-2.png" width="1344" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>VlnPlot(seurat_data_myeloid,
-        features = sig_res$pathways,
-        group.by = &quot;celltype&quot;,
-        split.by = &quot;Treatment_Day&quot;,
-        cols = treatment_day_col,
-        ncol = 1,
-        pt.size = 0) &amp;
-  theme_classic() &amp;
-  xlab(&quot;&quot;) &amp;
-  NoLegend()</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-18-1.png" width="1536" style="display: block; margin: auto;" /></p>
-</div>
-<div id="plotting-by-celltype-and-treatment-myeloid"
-class="section level3">
-<h3>Plotting by celltype and treatment (myeloid)</h3>
-<pre class="r"><code>VlnPlot(seurat_data_myeloid,
-        features = sig_res$pathways,
-        group.by = &quot;celltype&quot;,
-        split.by = &quot;Treatment&quot;,
-        cols = treatment_day_col,
-        ncol = 1,
-        pt.size = 0) &amp;
-  theme_classic() &amp;
-  xlab(&quot;&quot;) &amp;
-  NoLegend()</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-19-1.png" width="2688" style="display: block; margin: auto;" /></p>
-</div>
-<div id="plotting-by-celltype-and-timepoint-only-myeloid"
-class="section level3">
-<h3>Plotting by celltype and timepoint only (myeloid)</h3>
-<pre class="r"><code>VlnPlot(seurat_data_myeloid,
-        features = sig_res$pathways,
-        group.by = &quot;celltype&quot;,
-        split.by = &quot;Day&quot;,
-        cols = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;),
-        ncol = 1,
-        pt.size = 0) &amp;
-  theme_classic() &amp;
-  xlab(&quot;&quot;) &amp;
-  NoLegend()</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-20-1.png" width="2688" style="display: block; margin: auto;" /></p>
-</div>
-<div id="plotting-by-treatment-only-myeloid" class="section level3">
-<h3>Plotting by treatment only (myeloid)</h3>
-<pre class="r"><code>VlnPlot(seurat_data_myeloid,
-        features = sig_res$pathways,
-        group.by = &quot;Treatment&quot;,
-        cols = treatment_col,
-        ncol = 1,
-        pt.size = 0) &amp;
-  theme_classic() &amp;
-  xlab(&quot;&quot;) &amp;
-  NoLegend()</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-21-1.png" width="288" style="display: block; margin: auto;" /></p>
-</div>
-<div id="plotting-by-timepoint-only-myeloid" class="section level3">
-<h3>Plotting by timepoint only (myeloid)</h3>
-<pre class="r"><code>VlnPlot(seurat_data_myeloid,
-        features = sig_res$pathways,
-        group.by = &quot;Day&quot;,
-        cols = c(&quot;deeppink3&quot;, &quot;aquamarine3&quot;),
-        ncol = 1,
-        pt.size = 0) &amp;
-  theme_classic() &amp;
-  xlab(&quot;&quot;) &amp;
-  NoLegend()</code></pre>
-<p><img src="figure/GSEA.Rmd/unnamed-chunk-22-1.png" width="288" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1913,111 +1789,115 @@ attached base packages:
 other attached packages:
  [1] ComplexHeatmap_2.18.0 viridis_0.6.3         viridisLite_0.4.2    
  [4] circlize_0.4.15       plyr_1.8.8            RColorBrewer_1.1-3   
- [7] pheatmap_1.0.12       escape_1.12.0         googlesheets4_1.1.0  
-[10] dittoSeq_1.14.3       ggrepel_0.9.3         ggpubr_0.6.0         
-[13] lubridate_1.9.2       forcats_1.0.0         stringr_1.5.0        
-[16] dplyr_1.1.2           purrr_1.0.2           readr_2.1.4          
-[19] tidyr_1.3.0           tibble_3.2.1          ggplot2_3.4.2        
-[22] tidyverse_2.0.0       SeuratDisk_0.0.0.9021 Seurat_5.0.1         
-[25] SeuratObject_5.0.1    sp_1.6-1              workflowr_1.7.1      
+ [7] pheatmap_1.0.12       escape_2.1.3          googlesheets4_1.1.0  
+[10] dittoSeq_1.14.3       workflowr_1.7.1       ggrepel_0.9.3        
+[13] ggpubr_0.6.0          lubridate_1.9.2       forcats_1.0.0        
+[16] stringr_1.5.0         dplyr_1.1.2           purrr_1.0.2          
+[19] readr_2.1.4           tidyr_1.3.0           tibble_3.2.1         
+[22] ggplot2_3.4.2         tidyverse_2.0.0       SeuratDisk_0.0.0.9021
+[25] Seurat_5.0.1          SeuratObject_5.0.2    sp_1.6-1             
 
 loaded via a namespace (and not attached):
   [1] fs_1.6.2                    matrixStats_1.0.0          
-  [3] GSVA_1.50.5                 spatstat.sparse_3.0-1      
+  [3] GSVA_1.53.22                spatstat.sparse_3.0-1      
   [5] bitops_1.0-7                doParallel_1.0.17          
   [7] httr_1.4.6                  tools_4.3.0                
   [9] sctransform_0.4.1           backports_1.4.1            
  [11] utf8_1.2.3                  R6_2.5.1                   
- [13] HDF5Array_1.30.1            lazyeval_0.2.2             
- [15] uwot_0.1.14                 GetoptLong_1.0.5           
- [17] rhdf5filters_1.14.1         withr_2.5.0                
- [19] gridExtra_2.3               progressr_0.13.0           
- [21] cli_3.6.1                   Biobase_2.62.0             
- [23] Cairo_1.6-0                 spatstat.explore_3.2-1     
+ [13] HDF5Array_1.30.1            ggdist_3.3.0               
+ [15] lazyeval_0.2.2              uwot_0.1.14                
+ [17] GetoptLong_1.0.5            rhdf5filters_1.14.1        
+ [19] withr_2.5.0                 gridExtra_2.3              
+ [21] progressr_0.13.0            cli_3.6.1                  
+ [23] Biobase_2.62.0              spatstat.explore_3.2-1     
  [25] fastDummies_1.7.3           labeling_0.4.2             
  [27] sass_0.4.6                  spatstat.data_3.0-1        
  [29] ggridges_0.5.4              pbapply_1.7-0              
- [31] parallelly_1.36.0           rstudioapi_0.14            
- [33] RSQLite_2.3.1               shape_1.4.6                
- [35] generics_0.1.3              ica_1.0-3                  
- [37] spatstat.random_3.1-5       car_3.1-2                  
- [39] Matrix_1.6-5                ggbeeswarm_0.7.2           
- [41] fansi_1.0.4                 S4Vectors_0.40.2           
- [43] abind_1.4-5                 lifecycle_1.0.3            
- [45] whisker_0.4.1               yaml_2.3.7                 
- [47] carData_3.0-5               SummarizedExperiment_1.32.0
- [49] rhdf5_2.46.1                SparseArray_1.2.4          
- [51] Rtsne_0.16                  blob_1.2.4                 
- [53] promises_1.2.0.1            crayon_1.5.2               
- [55] miniUI_0.1.1.1              lattice_0.21-8             
- [57] msigdbr_7.5.1               beachmat_2.18.1            
- [59] cowplot_1.1.1               annotate_1.80.0            
- [61] KEGGREST_1.42.0             magick_2.7.4               
- [63] pillar_1.9.0                knitr_1.43                 
- [65] GenomicRanges_1.54.1        rjson_0.2.21               
- [67] future.apply_1.11.0         codetools_0.2-19           
- [69] leiden_0.4.3                glue_1.6.2                 
- [71] getPass_0.2-4               data.table_1.14.8          
- [73] vctrs_0.6.5                 png_0.1-8                  
- [75] spam_2.9-1                  cellranger_1.1.0           
- [77] gtable_0.3.3                cachem_1.0.8               
- [79] xfun_0.39                   S4Arrays_1.2.1             
- [81] mime_0.12                   survival_3.5-5             
- [83] gargle_1.4.0                SingleCellExperiment_1.24.0
- [85] iterators_1.0.14            ellipsis_0.3.2             
- [87] fitdistrplus_1.1-11         ROCR_1.0-11                
- [89] nlme_3.1-162                bit64_4.0.5                
- [91] RcppAnnoy_0.0.20            GenomeInfoDb_1.38.8        
- [93] rprojroot_2.0.3             bslib_0.4.2                
- [95] irlba_2.3.5.1               vipor_0.4.5                
- [97] KernSmooth_2.23-21          colorspace_2.1-0           
- [99] BiocGenerics_0.48.1         DBI_1.1.3                  
-[101] ggrastr_1.0.2               UCell_2.6.2                
-[103] tidyselect_1.2.0            processx_3.8.1             
-[105] curl_5.0.1                  bit_4.0.5                  
-[107] compiler_4.3.0              git2r_0.32.0               
-[109] graph_1.80.0                BiocNeighbors_1.20.2       
-[111] hdf5r_1.3.8                 DelayedArray_0.28.0        
-[113] plotly_4.10.2               scales_1.2.1               
-[115] lmtest_0.9-40               callr_3.7.3                
-[117] digest_0.6.31               goftest_1.2-3              
-[119] spatstat.utils_3.0-3        rmarkdown_2.22             
-[121] XVector_0.42.0              htmltools_0.5.5            
-[123] pkgconfig_2.0.3             sparseMatrixStats_1.14.0   
-[125] MatrixGenerics_1.14.0       highr_0.10                 
-[127] fastmap_1.1.1               GlobalOptions_0.1.2        
-[129] rlang_1.1.1                 htmlwidgets_1.6.2          
-[131] shiny_1.7.4                 DelayedMatrixStats_1.24.0  
-[133] farver_2.1.1                jquerylib_0.1.4            
-[135] zoo_1.8-12                  jsonlite_1.8.5             
-[137] BiocParallel_1.36.0         BiocSingular_1.18.0        
-[139] RCurl_1.98-1.12             magrittr_2.0.3             
-[141] GenomeInfoDbData_1.2.11     dotCall64_1.0-2            
-[143] patchwork_1.1.2             Rhdf5lib_1.24.1            
-[145] munsell_0.5.0               Rcpp_1.0.10                
-[147] babelgene_22.9              reticulate_1.29            
-[149] stringi_1.7.12              zlibbioc_1.48.0            
-[151] MASS_7.3-60                 parallel_4.3.0             
-[153] listenv_0.9.0               deldir_1.0-9               
-[155] Biostrings_2.70.3           splines_4.3.0              
-[157] tensor_1.5                  hms_1.1.3                  
-[159] ps_1.7.5                    igraph_1.4.3               
-[161] spatstat.geom_3.2-1         ggsignif_0.6.4             
-[163] RcppHNSW_0.5.0              ScaledMatrix_1.10.0        
-[165] reshape2_1.4.4              stats4_4.3.0               
-[167] XML_3.99-0.14               evaluate_0.21              
-[169] foreach_1.5.2               tzdb_0.4.0                 
-[171] httpuv_1.6.11               RANN_2.6.1                 
-[173] polyclip_1.10-4             clue_0.3-64                
-[175] future_1.32.0               scattermore_1.2            
-[177] rsvd_1.0.5                  broom_1.0.4                
-[179] xtable_1.8-4                RSpectra_0.16-1            
-[181] rstatix_0.7.2               later_1.3.1                
-[183] googledrive_2.1.0           beeswarm_0.4.0             
-[185] memoise_2.0.1               AnnotationDbi_1.64.1       
-[187] IRanges_2.36.0              cluster_2.1.4              
-[189] timechange_0.2.0            globals_0.16.2             
-[191] GSEABase_1.64.0            </code></pre>
+ [31] R.utils_2.12.2              parallelly_1.36.0          
+ [33] limma_3.58.1                rstudioapi_0.14            
+ [35] RSQLite_2.3.1               shape_1.4.6                
+ [37] generics_0.1.3              ica_1.0-3                  
+ [39] spatstat.random_3.1-5       distributional_0.3.2       
+ [41] car_3.1-2                   Matrix_1.6-5               
+ [43] fansi_1.0.4                 S4Vectors_0.40.2           
+ [45] abind_1.4-5                 R.methodsS3_1.8.2          
+ [47] lifecycle_1.0.3             whisker_0.4.1              
+ [49] yaml_2.3.7                  carData_3.0-5              
+ [51] SummarizedExperiment_1.32.0 rhdf5_2.46.1               
+ [53] SparseArray_1.2.4           Rtsne_0.16                 
+ [55] blob_1.2.4                  promises_1.2.0.1           
+ [57] crayon_1.5.2                miniUI_0.1.1.1             
+ [59] lattice_0.21-8              msigdbr_7.5.1              
+ [61] beachmat_2.18.1             cowplot_1.1.1              
+ [63] annotate_1.80.0             KEGGREST_1.42.0            
+ [65] magick_2.7.4                pillar_1.9.0               
+ [67] knitr_1.43                  GenomicRanges_1.54.1       
+ [69] rjson_0.2.21                future.apply_1.11.0        
+ [71] codetools_0.2-19            leiden_0.4.3               
+ [73] glue_1.6.2                  getPass_0.2-4              
+ [75] data.table_1.14.8           vctrs_0.6.5                
+ [77] png_0.1-8                   spam_2.9-1                 
+ [79] cellranger_1.1.0            gtable_0.3.3               
+ [81] cachem_1.0.8                xfun_0.39                  
+ [83] S4Arrays_1.2.1              mime_0.12                  
+ [85] survival_3.5-5              gargle_1.4.0               
+ [87] SingleCellExperiment_1.24.0 iterators_1.0.14           
+ [89] statmod_1.5.0               ellipsis_0.3.2             
+ [91] fitdistrplus_1.1-11         ROCR_1.0-11                
+ [93] nlme_3.1-162                bit64_4.0.5                
+ [95] RcppAnnoy_0.0.20            GenomeInfoDb_1.38.8        
+ [97] rprojroot_2.0.3             bslib_0.4.2                
+ [99] irlba_2.3.5.1               KernSmooth_2.23-21         
+[101] colorspace_2.1-0            BiocGenerics_0.48.1        
+[103] DBI_1.1.3                   UCell_2.6.2                
+[105] tidyselect_1.2.0            processx_3.8.1             
+[107] curl_5.0.1                  bit_4.0.5                  
+[109] compiler_4.3.0              AUCell_1.24.0              
+[111] git2r_0.32.0                graph_1.80.0               
+[113] BiocNeighbors_1.20.2        hdf5r_1.3.8                
+[115] DelayedArray_0.28.0         plotly_4.10.2              
+[117] scales_1.2.1                lmtest_0.9-40              
+[119] callr_3.7.3                 SpatialExperiment_1.12.0   
+[121] digest_0.6.31               goftest_1.2-3              
+[123] presto_1.0.0                spatstat.utils_3.0-3       
+[125] rmarkdown_2.22              XVector_0.42.0             
+[127] htmltools_0.5.5             pkgconfig_2.0.3            
+[129] sparseMatrixStats_1.14.0    MatrixGenerics_1.14.0      
+[131] highr_0.10                  fastmap_1.1.1              
+[133] GlobalOptions_0.1.2         rlang_1.1.1                
+[135] htmlwidgets_1.6.2           shiny_1.7.4                
+[137] DelayedMatrixStats_1.24.0   farver_2.1.1               
+[139] jquerylib_0.1.4             zoo_1.8-12                 
+[141] jsonlite_1.8.5              BiocParallel_1.36.0        
+[143] R.oo_1.25.0                 BiocSingular_1.18.0        
+[145] RCurl_1.98-1.12             magrittr_2.0.3             
+[147] GenomeInfoDbData_1.2.11     dotCall64_1.0-2            
+[149] patchwork_1.1.2             Rhdf5lib_1.24.1            
+[151] munsell_0.5.0               Rcpp_1.0.10                
+[153] babelgene_22.9              reticulate_1.29            
+[155] stringi_1.7.12              zlibbioc_1.48.2            
+[157] MASS_7.3-60                 parallel_4.3.0             
+[159] listenv_0.9.0               deldir_1.0-9               
+[161] Biostrings_2.70.3           splines_4.3.0              
+[163] tensor_1.5                  hms_1.1.3                  
+[165] ps_1.7.5                    igraph_1.4.3               
+[167] spatstat.geom_3.2-1         ggsignif_0.6.4             
+[169] RcppHNSW_0.5.0              ScaledMatrix_1.10.0        
+[171] reshape2_1.4.4              stats4_4.3.0               
+[173] XML_3.99-0.14               evaluate_0.21              
+[175] foreach_1.5.2               tzdb_0.4.0                 
+[177] httpuv_1.6.11               RANN_2.6.1                 
+[179] polyclip_1.10-4             clue_0.3-64                
+[181] future_1.32.0               scattermore_1.2            
+[183] rsvd_1.0.5                  broom_1.0.4                
+[185] xtable_1.8-4                RSpectra_0.16-1            
+[187] rstatix_0.7.2               later_1.3.1                
+[189] ggpointdensity_0.1.0        googledrive_2.1.0          
+[191] memoise_2.0.1               AnnotationDbi_1.64.1       
+[193] IRanges_2.36.0              cluster_2.1.4              
+[195] timechange_0.2.0            globals_0.16.2             
+[197] GSEABase_1.64.0            </code></pre>
+</div>
 </div>
 </div>
 

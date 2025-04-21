@@ -10,7 +10,7 @@ editor_options:
 
 ### TME in Kluc tumors
 
-Analyzing scRNAseq data of CD45+ cells from Kluc mice treated with PD1 antibody and/or CAR T. 
+Analyzing scRNAseq data of CD45+ cells from Kluc mice treated with adjuvant or neoadjuvant PD1 antibody and/or CAR T. 
 
 1. [Processing Seurat objects for analysis](processing.html)\
 2. [Feature expression and cell type annotation](annotate.html)\
@@ -19,4 +19,6 @@ Analyzing scRNAseq data of CD45+ cells from Kluc mice treated with PD1 antibody 
 5. [Gene Set Enrichment Analysis](GSEA.html)\
 6. [CellChat ligand-receptor analysis](CellChat.html)\
 7. [GO enrichment analysis of the myeloid fraction](GO.html)\
+8. [Plots without Day 12](cleaner_plots.html)\
 
+Contact: hnatri@tgen.org

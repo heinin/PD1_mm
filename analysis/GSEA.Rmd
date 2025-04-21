@@ -10,11 +10,11 @@ editor_options:
   chunk_output_type: console
 ---
 
-### Introduction
+## Introduction
 
 Running GSEA for each cell and comparing between groups.
 
-### Packages and environment variables
+## Packages and environment variables
 
 ```{r, warning=F, message=F}
 
@@ -44,549 +44,482 @@ source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
 
 ```
 
-### Importing data
+## Importing data
 
-```{r}
+```{r, warning=F, message=F, eval=F}
 
 #seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 #seurat_data$Treatment_Day <- paste0(seurat_data$Treatment, "_", seurat_data$Day)
 
 ```
 
-### Running GSEA using R/escape
+## Running GSEA using R/escape
 
 GSEA was run using code/GSEA.R.
 
-### Importing GSEA outputs
+## Importing GSEA outputs
 
-```{r}
+```{r, warning=F, message=F}
 
 seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
-res <- readRDS("/scratch/hnatri/CART/KlucCD45pos_GSEA_res.rds")
+
+seurat_data <- subset(seurat_data, subset = Day == 16)
 
 sort(as.character(unique(seurat_data$celltype)))
 
-```
-
-### Significance testing across all celltypes
-
-```{r}
-
-res <- seurat_data@meta.data %>%
-  dplyr::select(c("orig.ident", "Treatment_Day", colnames(res)))
-
-sig_res <- data.frame(getSignificance(res,
-                                      group = "Treatment_Day",
-                                      fit = "ANOVA"))
-sig_res$pathways <- rownames(sig_res)
-sig_res <- sig_res %>% filter(FDR < 0.05) %>% arrange(FDR)
-
-dim(sig_res)
-
-sig_res %>% dplyr::select(c("pathways"))
+seurat_data$Treatment_Day <- factor(seurat_data$Treatment_Day, levels = c("CTRL_16", "NEO_16", "ADJ_16"))
+Idents(seurat_data) <- seurat_data$Treatment_Day
 
 ```
 
-### Barplot of differentially regulated pathways across all cell types
+## Differentially activated pathways between ADJ and NEO, all cell types, Day 16
 
-```{r, fig.width=14, fig.height=8}
+```{r, message = F, warning = F, results = 'hide', fig.width = 8, fig.height = 8}
 
-sig_res %>%
-  mutate(delta = median.NEO_16 - median.CTRL_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, "NEO_16", "CTRL_16")) %>%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+gsea_res <- FindMarkers(seurat_data,
+                        assay = "escapeGSVA_normalized",
+                        ident.1 = "NEO_16",
+                        ident.2 = "ADJ_16",
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway <- rownames(gsea_res)
+
+#head(gsea_res)
+#hist(gsea_res$avg_log2FC)
+#hist(gsea_res$p_val_adj)
+
+res_sig <- gsea_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
+
+
+res_sig %>%
+  #arrange(c("p_val_adj", avg_log2FC)) %>%
+  #filter(dense_rank(avg_log2FC) <= 10 | dense_rank(desc(avg_log2FC)) <= 10) %>%
+  #filter(abs(avg_log2FC) > 0.1) %>%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, "ADJ_16", "NEO_16")) %>%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = "identity") +
     #geom_col(width = 0.85) +
     scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
     theme_classic() +
     #manuscript_theme +
     ylab("") +
-    xlab(expression(Delta ~ "median enrichment score")) +
+    xlab(expression(Delta ~ " average log2(FC)")) +
+    ggtitle("ADJ Day 16 vs. NEO Day 16")
+
+
+```
+
+## Differentially activated pathways between NEO and CTRL, all cell types, Day 16
+
+```{r, message = F, warning = F, results = 'hide', fig.width=16, fig.height=18}
+
+gsea_res <- FindMarkers(seurat_data,
+                        assay = "escapeGSVA_normalized", 
+                        ident.1 = "NEO_16",
+                        ident.2 = "CTRL_16",
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway <- rownames(gsea_res)
+
+res_sig <- gsea_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
+
+res_sig %>%
+  #filter(abs(avg_log2FC) > 0.15) %>%
+  filter(dense_rank(avg_log2FC) <= 10 | dense_rank(desc(avg_log2FC)) <= 10) %>%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, "NEO_16", "CTRL_16")) %>%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ " average log2(FC)")) +
     ggtitle("NEO Day 16 vs. CTRL Day 16")
 
-sig_res %>%
-  mutate(delta = median.NEO_16 - median.ADJ_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, "NEO_16", "ADJ_16")) %>%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+```
+
+## Differentially activated pathways between ADJ and CTRL, all cell types, Day 16
+
+```{r, message = F, warning = F, results = 'hide', fig.width=16, fig.height=18}
+
+gsea_res <- FindMarkers(seurat_data,
+                        assay = "escapeGSVA_normalized", 
+                        ident.1 = "ADJ_16",
+                        ident.2 = "CTRL_16",
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway <- rownames(gsea_res)
+
+res_sig <- gsea_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
+
+res_sig %>%
+  #filter(abs(avg_log2FC) > 0.15) %>%
+  filter(dense_rank(avg_log2FC) <= 10 | dense_rank(desc(avg_log2FC)) <= 10) %>%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, "ADJ_16", "CTRL_16")) %>%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = "identity") +
     #geom_col(width = 0.85) +
     scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
     theme_classic() +
     #manuscript_theme +
     ylab("") +
-    xlab(expression(Delta ~ "median enrichment score")) +
-    ggtitle("NEO Day 16 vs. ADJ Day 16")
+    xlab(expression(Delta ~ " average log2(FC)")) +
+    ggtitle("ADJ Day 16 vs. CTRL Day 16")
 
-sig_res %>%
-  mutate(delta = median.CTRL_16 - median.ADJ_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, "CTRL_16", "ADJ_16")) %>%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
-    geom_bar(stat = "identity") +
-    #geom_col(width = 0.85) +
-    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
-    theme_classic() +
-    #manuscript_theme +
-    ylab("") +
-    xlab(expression(Delta ~ "median enrichment score")) +
-    ggtitle("CTRL Day 16 vs. ADJ Day 16")
+```
 
-sig_res %>%
-  mutate(delta = median.NEO_12 - median.CTRL_12,
-         sign = sign(delta),
+## Differentially activated pathways between NEO and CTRL, all cell types, Day 12
+
+```{r, message = F, warning = F, results = 'hide', fig.width=16, fig.height=18, eval = F}
+
+gsea_res <- FindMarkers(seurat_data,
+                        assay = "escapeGSVA_normalized", 
+                        ident.1 = "NEO_12",
+                        ident.2 = "CTRL_12",
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway <- rownames(gsea_res)
+
+res_sig <- gsea_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
+
+res_sig %>%
+  #filter(abs(avg_log2FC) > 0.15) %>%
+  filter(dense_rank(avg_log2FC) <= 10 | dense_rank(desc(avg_log2FC)) <= 10) %>%
+  #filter(dense_rank(abs(avg_log2FC)) <= 20) %>%
+  mutate(sign = sign(avg_log2FC),
          signstr = if_else(sign == 1, "NEO_12", "CTRL_12")) %>%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = "identity") +
     #geom_col(width = 0.85) +
-    scale_fill_manual(values = c("aquamarine3", "deeppink3")) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
     theme_classic() +
     #manuscript_theme +
     ylab("") +
-    xlab(expression(Delta ~ "median enrichment score")) +
+    xlab(expression(Delta ~ " average log2(FC)")) +
     ggtitle("NEO Day 12 vs. CTRL Day 12")
 
 ```
 
-### Significance testing across myeloid celltypes (M1-7, Neut)
+## Significance testing across myeloid celltypes (M1-7, Neut)
 
-```{r}
+### NEO vs. ADJ, Day 16
 
-myeloid <- subset(seurat_data, subset = celltype %in% c("Neut1", paste0("M", seq(1, 7))))
+```{r, message = F, warning = F, results = 'hide', fig.width = 8, fig.height = 4}
 
-res_myel <- myeloid@meta.data %>%
-  dplyr::select(c("orig.ident", "Treatment_Day", colnames(res)))
+unique(seurat_data$celltype)
+myeloid <- subset(seurat_data, subset = celltype %in% c(grep("^M", unique(seurat_data$celltype), value = T), c("Neut1")))
 
-sig_res_myel <- data.frame(getSignificance(res_myel,
-                                           group = "Treatment_Day",
-                                           fit = "ANOVA"))
-sig_res_myel$pathways <- rownames(sig_res_myel)
-sig_res_myel <- sig_res_myel %>% filter(FDR < 0.05) %>% arrange(FDR)
+gsea_res <- FindMarkers(myeloid,
+                        assay = "escapeGSVA_normalized", 
+                        ident.1 = "NEO_16",
+                        ident.2 = "ADJ_16",
+                        min.pct = 0,
+                        logfc.threshold = 0)
 
-dim(sig_res_myel)
+gsea_res$pathway <- rownames(gsea_res)
 
-sig_res_myel %>% dplyr::select(c("pathways"))
+res_sig <- gsea_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
+
+res_sig %>%
+  #filter(abs(avg_log2FC) > 0.1) %>%
+  filter(dense_rank(avg_log2FC) <= 10 | dense_rank(desc(avg_log2FC)) <= 10) %>%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, "NEO_16", "ADJ_16")) %>%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
+    geom_bar(stat = "identity") +
+    #geom_col(width = 0.85) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
+    theme_classic() +
+    #manuscript_theme +
+    ylab("") +
+    xlab(expression(Delta ~ " average log2(FC)")) +
+    ggtitle("NEO Day 16 vs. ADJ Day 16, myeloid")
 
 ```
 
-### Barplot of differentially regulated pathways across myeloid cell types  (M1-7, Neut)
+### NEO vs. CTRL, Day 16
 
-```{r, fig.width=14, fig.height=8}
+```{r, message = F, warning = F, results = 'hide', fig.width=14, fig.height=18}
 
-sig_res_myel %>%
-  mutate(delta = median.NEO_16 - median.CTRL_16,
-         sign = sign(delta),
+gsea_res <- FindMarkers(myeloid,
+                        assay = "escapeGSVA_normalized", 
+                        ident.1 = "NEO_16",
+                        ident.2 = "CTRL_16",
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway <- rownames(gsea_res)
+
+res_sig <- gsea_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
+
+res_sig %>%
+  #filter(abs(avg_log2FC) > 0.15) %>%
+  filter(dense_rank(rev(avg_log2FC)) <= 20) %>% #| dense_rank(desc(avg_log2FC)) <= 10) %>%
+  mutate(sign = sign(avg_log2FC),
          signstr = if_else(sign == 1, "NEO_16", "CTRL_16")) %>%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = "identity") +
     #geom_col(width = 0.85) +
     scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
     theme_classic() +
     #manuscript_theme +
     ylab("") +
-    xlab(expression(Delta ~ "median enrichment score")) +
+    xlab(expression(Delta ~ " average log2(FC)")) +
     ggtitle("NEO Day 16 vs. CTRL Day 16, myeloid")
 
-sig_res_myel %>%
-  mutate(delta = median.NEO_16 - median.ADJ_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, "NEO_16", "ADJ_16")) %>%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+```
+
+### ADJ vs. CTRL, Day 16
+
+```{r, message = F, warning = F, results = 'hide', fig.width=14, fig.height=18}
+
+gsea_res <- FindMarkers(myeloid,
+                        assay = "escapeGSVA_normalized", 
+                        ident.1 = "ADJ_16",
+                        ident.2 = "CTRL_16",
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway <- rownames(gsea_res)
+
+res_sig <- gsea_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
+
+res_sig %>%
+  #filter(abs(avg_log2FC) > 0.15) %>%
+  filter(dense_rank(desc(avg_log2FC)) <= 20) %>%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, "ADJ_16", "CTRL_16")) %>%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = "identity") +
     #geom_col(width = 0.85) +
     scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
     theme_classic() +
     #manuscript_theme +
     ylab("") +
-    xlab(expression(Delta ~ "median enrichment score")) +
-    ggtitle("NEO Day 16 vs. ADJ Day 16, myeloid")
+    xlab(expression(Delta ~ " average log2(FC)")) +
+    ggtitle("ADJ Day 16 vs. CTRL Day 16, myeloid")
 
-sig_res_myel %>%
-  mutate(delta = median.CTRL_16 - median.ADJ_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, "CTRL_16", "ADJ_16")) %>%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
-    geom_bar(stat = "identity") +
-    #geom_col(width = 0.85) +
-    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
-    theme_classic() +
-    #manuscript_theme +
-    ylab("") +
-    xlab(expression(Delta ~ "median enrichment score")) +
-    ggtitle("CTRL Day 16 vs. ADJ Day 16, myeloid")
+```
 
-sig_res_myel %>%
-  mutate(delta = median.NEO_12 - median.CTRL_12,
-         sign = sign(delta),
+### NEO vs. CTRL, Day 12
+
+```{r, message = F, warning = F, results = 'hide', fig.width=15, fig.height=15, eval = F}
+
+gsea_res <- FindMarkers(myeloid,
+                        assay = "escapeGSVA_normalized", 
+                        ident.1 = "NEO_12",
+                        ident.2 = "CTRL_12",
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway <- rownames(gsea_res)
+
+res_sig <- gsea_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
+
+res_sig %>%
+  #filter(abs(avg_log2FC) > 0.15) %>%
+  filter(dense_rank(avg_log2FC) <= 16 | dense_rank(desc(avg_log2FC)) <= 4) %>%
+  mutate(sign = sign(avg_log2FC),
          signstr = if_else(sign == 1, "NEO_12", "CTRL_12")) %>%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = "identity") +
     #geom_col(width = 0.85) +
-    scale_fill_manual(values = c("aquamarine3", "deeppink3")) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
     theme_classic() +
     #manuscript_theme +
     ylab("") +
-    xlab(expression(Delta ~ "median enrichment score")) +
+    xlab(expression(Delta ~ " average log2(FC)")) +
     ggtitle("NEO Day 12 vs. CTRL Day 12, myeloid")
 
 ```
 
-### Significance testing across lymphoid celltypes (L1-6, Treg, NK)
+## Significance testing across lymphoid celltypes (L1-6, Treg, NK)
 
-```{r}
+### NEO vs. ADJ, Day 16
 
-lymphoid <- subset(seurat_data, subset = celltype %in% paste0("M", seq(1, 7)))
+```{r, message = F, warning = F, results = 'hide', fig.width = 8, fig.height = 4}
 
-res_lymp <- lymphoid@meta.data %>%
-  dplyr::select(c("orig.ident", "Treatment_Day", colnames(res)))
+unique(seurat_data$celltype)
+lymphoid <- subset(seurat_data, subset = celltype %in% c(grep("^L", unique(seurat_data$celltype), value = T), c("NK", "Treg")))
 
-sig_res_lymp <- data.frame(getSignificance(res_lymp,
-                                           group = "Treatment_Day",
-                                           fit = "ANOVA"))
-sig_res_lymp$pathways <- rownames(sig_res_lymp)
-sig_res_lymp <- sig_res_lymp %>% filter(FDR < 0.05) %>% arrange(FDR)
+gsea_res <- FindMarkers(lymphoid,
+                        assay = "escapeGSVA_normalized", 
+                        ident.1 = "NEO_16",
+                        ident.2 = "ADJ_16",
+                        min.pct = 0,
+                        logfc.threshold = 0)
 
-dim(sig_res_lymp)
+gsea_res$pathway <- rownames(gsea_res)
 
-sig_res_lymp %>% dplyr::select(c("pathways"))
+res_sig <- gsea_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
 
-```
-
-### Barplot of differentially regulated pathways across lymphoid cell types (L1-6, Treg, NK)
-
-```{r, fig.width=14, fig.height=8}
-
-sig_res_lymp %>%
-  mutate(delta = median.NEO_16 - median.CTRL_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, "NEO_16", "CTRL_16")) %>%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
-    geom_bar(stat = "identity") +
-    #geom_col(width = 0.85) +
-    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
-    theme_classic() +
-    #manuscript_theme +
-    ylab("") +
-    xlab(expression(Delta ~ "median enrichment score")) +
-    ggtitle("NEO Day 16 vs. CTRL Day 16, lymphoid")
-
-sig_res_lymp %>%
-  mutate(delta = median.NEO_16 - median.ADJ_16,
-         sign = sign(delta),
+res_sig %>%
+  #filter(abs(avg_log2FC) > 0.15) %>%
+  filter(dense_rank(desc(avg_log2FC)) <= 20) %>%
+  mutate(sign = sign(avg_log2FC),
          signstr = if_else(sign == 1, "NEO_16", "ADJ_16")) %>%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = "identity") +
     #geom_col(width = 0.85) +
     scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
     theme_classic() +
     #manuscript_theme +
     ylab("") +
-    xlab(expression(Delta ~ "median enrichment score")) +
+    xlab(expression(Delta ~ " average log2(FC)")) +
     ggtitle("NEO Day 16 vs. ADJ Day 16, lymphoid")
 
-sig_res_lymp %>%
-  mutate(delta = median.CTRL_16 - median.ADJ_16,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, "CTRL_16", "ADJ_16")) %>%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+```
+
+### NEO vs. CTRL, Day 16
+
+```{r, message = F, warning = F, results = 'hide', fig.width = 8, fig.height = 8}
+
+gsea_res <- FindMarkers(lymphoid,
+                        assay = "escapeGSVA_normalized", 
+                        ident.1 = "NEO_16",
+                        ident.2 = "CTRL_16",
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway <- rownames(gsea_res)
+
+res_sig <- gsea_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
+
+res_sig %>%
+  #filter(abs(avg_log2FC) > 0.15) %>%
+  filter(dense_rank(desc(avg_log2FC)) <= 20) %>%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, "NEO_16", "CTRL_16")) %>%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = "identity") +
     #geom_col(width = 0.85) +
     scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
     theme_classic() +
     #manuscript_theme +
     ylab("") +
-    xlab(expression(Delta ~ "median enrichment score")) +
-    ggtitle("CTRL Day 16 vs. ADJ Day 16, lymphoid")
+    xlab(expression(Delta ~ " average log2(FC)")) +
+    ggtitle("NEO Day 16 vs. CTRL Day 16, lymphoid")
 
-sig_res_lymp %>%
-  mutate(delta = median.NEO_12 - median.CTRL_12,
-         sign = sign(delta),
-         signstr = if_else(sign == 1, "NEO_12", "CTRL_12")) %>%
-  ggplot(aes(x = delta, y = reorder(pathways, delta), fill = signstr)) +
+
+```
+
+### ADJ vs. CTRL, Day 16
+
+```{r, message = F, warning = F, results = 'hide', fig.width = 8, fig.height = 8}
+
+gsea_res <- FindMarkers(lymphoid,
+                        assay = "escapeGSVA_normalized", 
+                        ident.1 = "ADJ_16",
+                        ident.2 = "CTRL_16",
+                        min.pct = 0,
+                        logfc.threshold = 0)
+
+gsea_res$pathway <- rownames(gsea_res)
+
+res_sig <- gsea_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
+
+res_sig %>%
+  #filter(abs(avg_log2FC) > 0.15) %>%
+  filter(dense_rank(avg_log2FC) <= 10 | dense_rank(desc(avg_log2FC)) <= 10) %>%
+  mutate(sign = sign(avg_log2FC),
+         signstr = if_else(sign == 1, "ADJ_16", "CTRL_16")) %>%
+  ggplot(aes(x = avg_log2FC, y = reorder(pathway, avg_log2FC), fill = signstr)) +
     geom_bar(stat = "identity") +
     #geom_col(width = 0.85) +
-    scale_fill_manual(values = c("aquamarine3", "deeppink3")) +
+    scale_fill_manual(values = c("deeppink3", "aquamarine3")) +
     theme_classic() +
     #manuscript_theme +
     ylab("") +
-    xlab(expression(Delta ~ "median enrichment score")) +
-    ggtitle("NEO Day 12 vs. CTRL Day 12, lymphoid")
+    xlab(expression(Delta ~ " average log2(FC)")) +
+    ggtitle("NEO Day 16 vs. CTRL Day 16, lymphoid")
 
 ```
 
-### Heatmaps
+## Heatmaps
 
-```{r, fig.width=14, fig.height=8}
+### Myeloid
 
-DefaultAssay(seurat_data) <- "RNA_human"
-seurat_data$Treatment_Day <- factor(seurat_data$Treatment_Day,
-                                    levels = c("NEO_12", "NEO_16",
-                                               "CTRL_12", "CTRL_16",
-                                               "ADJ_16"))
+```{r, message = F, warning = F, results = 'hide', fig.width = 15, fig.height = 10}
 
-dittoHeatmap(seurat_data,
-             genes = NULL,
-             metas = sig_res$pathways, 
-             heatmap.colors = colorRampPalette(c("dodgerblue4", "white", "tomato"))(100),
-             annot.colors = treatment_day_col,
-             annot.by = "Treatment_Day",
-             order.by = "Treatment_Day",
-             cluster_cols = F,
-             fontsize = 7)
+myeloid_res <- FindAllMarkers(myeloid,
+                              assay = "escapeGSVA_normalized", 
+                              return.thresh = 0.01,
+                              logfc.threshold = 0.5,
+                              min.pct = 0.20,
+                              only.pos = T,
+                              verbose = F)
 
-dittoHeatmap(seurat_data,
-             genes = NULL,
-             metas = sig_res$pathways, 
-             heatmap.colors = colorRampPalette(c("dodgerblue4", "white", "tomato"))(100),
-             annot.colors = treatment_day_col,
-             annot.by = "Treatment_Day",
-             cluster_cols = T,
-             fontsize = 7)
+myeloid_res$pathway <- rownames(myeloid_res)
 
-```
+myeloid_res_sig <- myeloid_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
 
-```{r, fig.width=16, fig.height=28}
-VlnPlot(seurat_data,
-        features = sig_res$pathways,
-        group.by = "celltype",
-        split.by = "Treatment_Day",
-        cols = treatment_day_col,
-        ncol = 1,
-        pt.size = 0) &
-  theme_classic() &
-  xlab("") &
-  NoLegend()
-```
+plot_features <- myeloid_res_sig %>%  group_by(cluster) %>% slice_max(order_by = abs(avg_log2FC), n = 20)
 
-### Plotting by celltype and treatment only
+# Subset for heatmap
+myeloid_subset <- subset(myeloid, downsample = 30000/length(unique(myeloid$celltype)))
 
-```{r, fig.width=28, fig.height=42}
-VlnPlot(seurat_data,
-        features = sig_res$pathways,
-        group.by = "celltype",
-        split.by = "Treatment",
-        cols = treatment_day_col,
-        ncol = 1,
-        pt.size = 0) &
-  theme_classic() &
-  xlab("") &
-  NoLegend()
-```
+myeloid_subset <- ScaleData(myeloid_subset,
+                            assay = "escapeGSVA_normalized")
 
-### Plotting by celltype and timepoint only
-
-```{r, fig.width=28, fig.height=42}
-VlnPlot(seurat_data,
-        features = sig_res$pathways,
-        group.by = "celltype",
-        split.by = "Day",
-        cols = c("deeppink3", "aquamarine3"),
-        ncol = 1,
-        pt.size = 0) &
-  theme_classic() &
-  xlab("") &
-  NoLegend()
-```
-
-### Plotting by treatment only
-
-```{r, fig.width=3, fig.height=24}
-VlnPlot(seurat_data,
-        features = sig_res$pathways,
-        group.by = "Treatment",
-        cols = treatment_col,
-        ncol = 1,
-        pt.size = 0) &
-  theme_classic() &
-  xlab("") &
-  NoLegend()
-```
-
-### Plotting by timepoint only
-
-```{r, fig.width=3, fig.height=24}
-VlnPlot(seurat_data,
-        features = sig_res$pathways,
-        group.by = "Day",
-        cols = c("deeppink3", "aquamarine3"),
-        ncol = 1,
-        pt.size = 0) &
-  theme_classic() &
-  xlab("") &
-  NoLegend()
-```
-
-### Testing with myeloid cell types only
-
-```{r, fig.height=10, fig.width=12, warning=F, message=F}
-
-seurat_data_myeloid <- subset(seurat_data, subset = celltype %in% paste0("M", seq(1, 9)))
-
-res_myeloid <- seurat_data_myeloid@meta.data %>%
-  dplyr::select(c("orig.ident", "Treatment_Day", colnames(res)))
-
-sig_res_myeloid <- data.frame(getSignificance(res_myeloid,
-                                              group = "Treatment_Day",
-                                              fit = "ANOVA"))
-sig_res_myeloid$pathways <- rownames(sig_res_myeloid)
-sig_res_myeloid <- sig_res_myeloid %>% filter(FDR < 0.05) %>% arrange(FDR)
-
-dim(sig_res_myeloid)
-
-sig_res_myeloid %>% dplyr::select(c("pathways"))
-
-write.table(sig_res_myeloid, "/home/hnatri/PD1_mm/GSEA_myeloid_sig.tsv",
-            sep = "\t", quote = F, row.names = F)
-
-# Overlap of significant pathways for the whole data vs. myeloid only
-intersect(sig_res_myeloid$pathways, sig_res$pathways)
-
-# Checking significance by Treatment, Day and celltype in myeloid cells
-seurat_data_myeloid$Treatment_Day_celltype <- paste0(seurat_data_myeloid$Treatment_Day,
-                                                     "_", seurat_data_myeloid$celltype)
-res_myeloid_celltype <- seurat_data_myeloid@meta.data %>%
-  dplyr::select(c("orig.ident", "Treatment_Day_celltype", colnames(res)))
-
-sig_res_myeloid_celltype <- data.frame(getSignificance(res_myeloid_celltype,
-                                              group = "Treatment_Day_celltype",
-                                              fit = "ANOVA"))
-sig_res_myeloid_celltype$pathways <- rownames(sig_res_myeloid_celltype)
-sig_res_myeloid_celltype <- sig_res_myeloid_celltype %>%
-  filter(FDR < 0.05) %>% arrange(FDR)
-
-unique(sig_res_myeloid_celltype$pathways)
-
-# Only keeping comparisons for the same cell type
-sig_res_myeloid_celltype <- t(sig_res_myeloid_celltype)
-sig_res_myeloid_celltype <- sig_res_myeloid_celltype %>% as.data.frame() %>%
-  rownames_to_column(var = "comparison") %>%
-  separate(col = comparison, sep = "v", into = c("group1", "group2")) %>%
-  separate(col = group1, sep = "_", into = c("group1", "day1", "celltype1")) %>%
-  separate(col = group2, sep = "_", into = c("group2", "day2", "celltype2")) %>%
-  separate(col = celltype2, sep = "\\.", into = c("celltype2", "valtype")) %>% 
-  dplyr::filter(celltype1 == celltype2 | group1 == "f." | group1 == "p." | group1 == "pathways")
-
-dim(sig_res_myeloid_celltype)
-
-write.table(sig_res_myeloid_celltype, "/home/hnatri/PD1_mm/GSEA_myeloid_celltype_sig.tsv",
-            sep = "\t", quote = F, row.names = F)
-
-# Heatmap of p-values
-sig_res_myeloid_celltype <- sig_res_myeloid_celltype %>% filter(!group1 %in% c("f.", "p.")) %>%
-  select(!c("valtype"))
-
-colnames(sig_res_myeloid_celltype) <- c(colnames(sig_res_myeloid_celltype)[1:6], as.character(sig_res_myeloid_celltype[nrow(sig_res_myeloid_celltype),][7:ncol(sig_res_myeloid_celltype)]))
-
-# Bottom, left, top, right
-#par(mar=c(2,12,2,3)) 
-
-sig_res_myeloid_celltype %>% unite("comparison", group1:celltype2, sep = "_") %>% 
-  column_to_rownames(var = "comparison") %>%
-  filter(row_number() <= n()-1) %>%
-  mutate_if(is.character, as.numeric) %>% 
-  filter_all(any_vars(is.numeric(.) & . < 0.05)) %>%
-  as.matrix() %>%
-  pheatmap(color = colorRampPalette(brewer.pal(n = 7, name = "RdYlBu"))(100),
-           fontsize = 7,
-           angle_col = "45",
-           display_numbers = T,
-           number_format = "%.2f", number_color = "black")
+DoHeatmap(
+  myeloid_subset,
+  features = unique(plot_features$gene),
+  group.by = "Treatment_Day",
+  group.bar = TRUE,
+  assay = "escapeGSVA_normalized")
 
 ```
 
-### Plotting results for myeloid
+### Lymphoid
 
-```{r, fig.width=14, fig.height=6}
+```{r, message = F, warning = F, results = 'hide', fig.width = 15, fig.height = 10}
 
-dittoHeatmap(seurat_data_myeloid,
-             genes = NULL,
-             metas = sig_res_myeloid$pathways, 
-             heatmap.colors = colorRampPalette(c("dodgerblue4", "white", "tomato"))(100),
-             annot.colors = treatment_day_col,
-             annot.by = "Treatment_Day",
-             order.by = "Treatment_Day",
-             cluster_cols = F,
-             fontsize = 7)
+lymphoid_res <- FindAllMarkers(lymphoid,
+                               assay = "escapeGSVA_normalized", 
+                               return.thresh = 0.01,
+                               logfc.threshold = 0.5,
+                               min.pct = 0.20,
+                               only.pos = T,
+                               verbose = F)
 
-dittoHeatmap(seurat_data_myeloid,
-             genes = NULL,
-             metas = sig_res_myeloid$pathways, 
-             heatmap.colors = colorRampPalette(c("dodgerblue4", "white", "tomato"))(100),
-             annot.colors = treatment_day_col,
-             annot.by = "Treatment_Day",
-             cluster_cols = T,
-             fontsize = 7)
+lymphoid_res$pathway <- rownames(lymphoid_res)
 
-```
+lymphoid_res_sig <- lymphoid_res %>% filter(abs(avg_log2FC) > 0.1,
+                               p_val_adj < 0.05)
 
-```{r, fig.width=16, fig.height=28}
-VlnPlot(seurat_data_myeloid,
-        features = sig_res$pathways,
-        group.by = "celltype",
-        split.by = "Treatment_Day",
-        cols = treatment_day_col,
-        ncol = 1,
-        pt.size = 0) &
-  theme_classic() &
-  xlab("") &
-  NoLegend()
-```
+plot_features <- lymphoid_res_sig %>%  group_by(cluster) %>% slice_max(order_by = abs(avg_log2FC), n = 20)
 
-### Plotting by celltype and treatment (myeloid)
+# Subset for heatmap
+lymphoid_subset <- subset(lymphoid, downsample = 30000/length(unique(lymphoid$celltype)))
 
-```{r, fig.width=28, fig.height=42}
-VlnPlot(seurat_data_myeloid,
-        features = sig_res$pathways,
-        group.by = "celltype",
-        split.by = "Treatment",
-        cols = treatment_day_col,
-        ncol = 1,
-        pt.size = 0) &
-  theme_classic() &
-  xlab("") &
-  NoLegend()
-```
+lymphoid_subset <- ScaleData(lymphoid_subset,
+                             assay = "escapeGSVA_normalized")
 
-### Plotting by celltype and timepoint only (myeloid)
+DoHeatmap(
+  lymphoid_subset,
+  features = unique(plot_features$gene),
+  group.by = "Treatment_Day",
+  group.bar = TRUE,
+  assay = "escapeGSVA_normalized")
 
-```{r, fig.width=28, fig.height=42}
-VlnPlot(seurat_data_myeloid,
-        features = sig_res$pathways,
-        group.by = "celltype",
-        split.by = "Day",
-        cols = c("deeppink3", "aquamarine3"),
-        ncol = 1,
-        pt.size = 0) &
-  theme_classic() &
-  xlab("") &
-  NoLegend()
-```
-
-### Plotting by treatment only (myeloid)
-
-```{r, fig.width=3, fig.height=24}
-VlnPlot(seurat_data_myeloid,
-        features = sig_res$pathways,
-        group.by = "Treatment",
-        cols = treatment_col,
-        ncol = 1,
-        pt.size = 0) &
-  theme_classic() &
-  xlab("") &
-  NoLegend()
-```
-
-### Plotting by timepoint only (myeloid)
-
-```{r, fig.width=3, fig.height=24}
-VlnPlot(seurat_data_myeloid,
-        features = sig_res$pathways,
-        group.by = "Day",
-        cols = c("deeppink3", "aquamarine3"),
-        ncol = 1,
-        pt.size = 0) &
-  theme_classic() &
-  xlab("") &
-  NoLegend()
 ```

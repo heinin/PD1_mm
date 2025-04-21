@@ -2,16 +2,19 @@
 title: "Comparative analysis of the Kluc tumor scRNAseq data"
 author: "heinin"
 date: "2024-02-26"
-output: workflowr::wflow_html
+output:
+  workflowr::wflow_html:
+    code_folding: hide
+  html_notebook: default
 editor_options:
   chunk_output_type: console
 ---
 
 ### Introduction
 
-Comparing treatment groups/timepoints. **Note:** The DEGs were called with "data"
-as the assay, but the expression values were not normalized and the analysis was
-thus done on the raw counts (?), yielding more DEGs.
+Comparing treatment groups/timepoints. **Note:** The DEGs were previously called
+with "data" as the assay, but the expression values were not normalized and the
+analysis was thus done on the raw counts (?), yielding more DEGs.
 
 ### Packages and environment variables
 
@@ -44,7 +47,7 @@ source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
 
 ### Importing data
 
-```{r}
+```{r, message = F, warning = F, eval = F}
 
 # Previously PD1_mm_Seurat_merged.Rds, using most up to date object when
 # replotting. PD1_mm_Seurat_GSEA.Rds has GSEA metadata for each cell.
@@ -82,6 +85,12 @@ seurat_data$celltype <- mapvalues(seurat_data$snn_res.0.5,
 #                         verbose = F)
 
 #saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
+
+```
+
+```{r, message = F, warning = F}
+
+seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
 
 ```
 

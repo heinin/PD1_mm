@@ -1,0 +1,950 @@
+
+R version 4.3.0 (2023-04-21) -- "Already Tomorrow"
+Copyright (C) 2023 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> #==============================================================================#
+> # Author(s) : Heini M Natri, hnatri@tgen.org
+> # Date: 02/15/2024
+> # Description: GSEA pathway analysis on the Kluc tumor CD45+ scRNAseq data
+> #==============================================================================#
+> 
+> # Packages and environment variables
+> suppressPackageStartupMessages({
++   library(Seurat)
++   library(SeuratObject)
++   library(SeuratDisk)
++   library(tidyverse)
++   library(tibble)
++   library(ggplot2)
++   library(ggpubr)
++   library(ggrepel)
++   #library(workflowr)
++   library(googlesheets4)
++   library(escape)
++   library(GSVA)
++   library(MatrixGenerics)})
+> 
+> setwd("/home/hnatri/PD1_mm/")
+> set.seed(9999)
+> options(ggrepel.max.overlaps = Inf)
+> 
+> # Colors, themes, cell type markers, and plot functions
+> source("/home/hnatri/PD1_mm/code/utilities.R")
+> source("/home/hnatri/PD1_mm/code/PD1_mm_themes.R")
+------------------------------------------------------------------------------
+You have loaded plyr after dplyr - this is likely to cause problems.
+If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
+library(plyr); library(dplyr)
+------------------------------------------------------------------------------
+
+Attaching package: ‘plyr’
+
+The following object is masked from ‘package:matrixStats’:
+
+    count
+
+The following object is masked from ‘package:ggpubr’:
+
+    mutate
+
+The following objects are masked from ‘package:dplyr’:
+
+    arrange, count, desc, failwith, id, mutate, rename, summarise,
+    summarize
+
+The following object is masked from ‘package:purrr’:
+
+    compact
+
+========================================
+circlize version 0.4.15
+CRAN page: https://cran.r-project.org/package=circlize
+Github page: https://github.com/jokergoo/circlize
+Documentation: https://jokergoo.github.io/circlize_book/book/
+
+If you use it in published research, please cite:
+Gu, Z. circlize implements and enhances circular visualization
+  in R. Bioinformatics 2014.
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(circlize))
+========================================
+
+✔ Reading from "PD1 Kluc scRNAseq tables".
+✔ Range ''Cluster annotations''.
+> source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
+Loading required package: viridisLite
+Loading required package: grid
+========================================
+ComplexHeatmap version 2.18.0
+Bioconductor page: http://bioconductor.org/packages/ComplexHeatmap/
+Github page: https://github.com/jokergoo/ComplexHeatmap
+Documentation: http://jokergoo.github.io/ComplexHeatmap-reference
+
+If you use it in published research, please cite either one:
+- Gu, Z. Complex Heatmap Visualization. iMeta 2022.
+- Gu, Z. Complex heatmaps reveal patterns and correlations in multidimensional 
+    genomic data. Bioinformatics 2016.
+
+
+The new InteractiveComplexHeatmap package can directly export static 
+complex heatmaps into an interactive Shiny app with zero effort. Have a try!
+
+This message can be suppressed by:
+  suppressPackageStartupMessages(library(ComplexHeatmap))
+========================================
+
+> 
+> #==============================================================================#
+> # Modified GSVA functions
+> #==============================================================================#
+> 
+> .GS.check <- function(gene.sets) {
++   if(is.null(gene.sets)) {
++     stop("Please provide the gene.sets you would like to use for 
++             the enrichment analysis")
++   }
++   egc <- gene.sets
++   if(inherits(egc, what = "GeneSetCollection")){
++     egc <- GSEABase::geneIds(egc) # will return a simple list, 
++     #which will work if a matrix is supplied to GSVA
++   }
++   return(egc)
++ }
+> 
+> .cntEval <- function(obj, 
++                      assay = "RNA", 
++                      type = "counts") {
++   if (inherits(x = obj, what = "Seurat")) {
++     cnts <- obj@assays[[assay]][type]
++   } else if (inherits(x = obj, what = "SingleCellExperiment")) {
++     pos <- ifelse(assay == "RNA", "counts", assay) 
++     if(assay == "RNA") {
++       cnts <- assay(obj,pos)
++     } else {
++       cnts <- assay(altExp(obj), pos)
++     }
++   } else {
++     cnts <- obj
++   }
++   cnts <- cnts[rowSums2(cnts) != 0,]
++   return(cnts)
++ }
+> 
+> .split_data.matrix <- function(matrix, chunk.size=1000) {
++   ncols <- dim(matrix)[2]
++   nchunks <- (ncols-1) %/% chunk.size + 1
++   
++   split.data <- list()
++   min <- 1
++   for (i in seq_len(nchunks)) {
++     if (i == nchunks-1) {  #make last two chunks of equal size
++       left <- ncols-(i-1)*chunk.size
++       max <- min+round(left/2)-1
++     } else {
++       max <- min(i*chunk.size, ncols)
++     }
++     split.data[[i]] <- matrix[,min:max]
++     min <- max+1    #for next chunk
++   }
++   return(split.data)
++ }
+> 
+> .gsva.setup <- function(data, egc) {
++   params.to.use <- gsvaParam(exprData = data,
++                              geneSets = egc,
++                              kcdf = "Poisson")
++   return(params.to.use)
++ }
+> 
+> is_seurat_object <- function(obj) inherits(obj, "Seurat")
+> is_se_object <- function(obj) inherits(obj, "SummarizedExperiment")
+> is_seurat_or_se_object <- function(obj) {
++   is_seurat_object(obj) || is_se_object(obj)
++ }
+> 
+> .mapGeneSetsToFeatures <- function(gsets, features) {
++   
++   ## Aaron Lun's suggestion at
++   ## https://github.com/rcastelo/GSVA/issues/39#issuecomment-765549620
++   gsets2 <- CharacterList(gsets)
++   mt <- match(gsets2, features)
++   mapdgenesets <- as.list(mt[!is.na(mt)])
++   
++   if (length(unlist(mapdgenesets, use.names=FALSE)) == 0)
++     stop("No identifiers in the gene sets could be matched to the identifiers in the expression data.")
++   
++   mapdgenesets
++ }
+> 
+> split_rows <- function (matrix, chunk.size = 1000) 
++ {
++   nrows <- dim(matrix)[1]
++   if(is.vector(matrix)){
++     nrows <- length(matrix)
++   }
++   nchunks <- (nrows - 1)%/%chunk.size + 1
++   split.data <- list()
++   min <- 1
++   for (i in seq_len(nchunks)) {
++     if (i == nchunks - 1) {
++       left <- nrows - (i - 1) * chunk.size
++       max <- min + round(left/2) - 1
++     }
++     else {
++       max <- min(i * chunk.size, nrows)
++     }
++     split.data[[i]] <- matrix[min:max,]
++     min <- max + 1
++   }
++   return(split.data)
++ }
+> 
+> split_vector <- function (vector, chunk.size = 1000) 
++ {
++   
++   nrows <- length(vector)
++   nchunks <- (nrows - 1)%/%chunk.size + 1
++   split.data <- list()
++   min <- 1
++   for (i in seq_len(nchunks)) {
++     if (i == nchunks - 1) {
++       left <- nrows - (i - 1) * chunk.size
++       max <- min + round(left/2) - 1
++     }
++     else {
++       max <- min(i * chunk.size, nrows)
++     }
++     split.data[[i]] <- vector[min:max]
++     min <- max + 1
++   }
++   return(split.data)
++ }
+> 
+> performNormalization <- function(sc.data,
++                                  enrichment.data = NULL,
++                                  assay = "escape",
++                                  gene.sets = NULL,
++                                  make.positive = FALSE,
++                                  scale.factor = NULL,
++                                  groups = NULL) {
++   if(!is.null(assay)) {
++     if(is_seurat_object(sc.data)) {
++       assay.present <- assay %in% names(sc.data@assays)
++     } else if (is_se_object(sc.data)) {
++       assay.present <- assay %in% assays(sc.data)
++     }
++   } else {
++     assay.present <- FALSE
++   }
++   
++   .pull.Enrich <- function(sc, enrichment.name) {
++     if (inherits(sc, "Seurat")) {
++       values <- Matrix::t(sc[[enrichment.name]]["data"])
++     } else if (inherits(sc, "SingleCellExperiment")) {
++       if(length(assays(altExp(sc))) == 1) {
++         values <- t(assay(altExps(sc)[[enrichment.name]]))
++       }
++     }
++   }
++   
++   if(is_seurat_or_se_object(sc.data) & !is.null(assay) & assay.present) {
++     enriched <- .pull.Enrich(sc.data, assay)
++   } else {
++     enriched <- enrichment.data
++   }
++   
++   if(!is.null(scale.factor) & length(scale.factor) != dim(sc.data)[2]) {
++     stop("If using a vector as a scale factor, please ensure the length matches the number of cells.")
++   }
++   
++   #Getting the gene sets that passed filters
++   egc <- .GS.check(gene.sets)
++   names(egc) <- str_replace_all(names(egc), "_", "-")
++   egc <- egc[names(egc) %in% colnames(enriched)]
++   
++   #Isolating the number of genes per cell expressed
++   if(is.null(groups)){
++     chunks <- dim(enriched)[[1]]
++   }else{
++     chunks <- min(groups, dim(enriched)[[1]])
++   }
++   
++   if (is.null(scale.factor)) {
++     cnts <- .cntEval(sc.data, assay = "RNA", type = "counts")
++     print("Calculating features per cell...")
++     egc.sizes <- lapply(egc, function(x){
++       scales<-unname(Matrix::colSums(cnts[which(rownames(cnts) %in% x),]!=0))
++       scales[scales==0] <- 1
++       scales
++     })
++     egc.sizes <- split_rows(do.call(cbind,egc.sizes), chunk.size=chunks)
++     rm(cnts)
++   }else{
++     egc.sizes <- split_vector(scale.factor, chunk.size=chunks)
++   }
++   enriched <- split_rows(enriched, chunk.size=chunks)
++   
++   print("Normalizing enrichment scores per cell...")
++   #Dividing the enrichment score by number of genes expressed
++   
++   enriched <- mapply(function(scores, scales){
++     scores/scales
++   }, enriched, egc.sizes, SIMPLIFY = FALSE)
++   
++   enriched <- do.call(rbind, enriched)
++   if(make.positive){
++     enriched <- apply(enriched, 2, function(x){
++       x+max(0, -min(x))
++     })
++   }
++   if(is_seurat_or_se_object(sc.data)) {
++     if(is.null(assay)) {
++       assay <- "escape"
++     }
++     sc.data <- .adding.Enrich(sc.data, enriched, paste0(assay, "_normalized"))
++     return(sc.data)
++   } else {
++     return(enriched)
++   }
++ }
+> 
+> escape.matrix <- function(input.data, 
++                           gene.sets = NULL, 
++                           method = "ssGSEA", 
++                           groups = 1000, 
++                           min.size = 5,
++                           normalize = FALSE,
++                           make.positive = FALSE,
++                           BPPARAM = SerialParam(),
++                           ...) {
++   egc <- .GS.check(gene.sets)
++   cnts <- .cntEval(input.data, assay = "RNA", type = "counts")
++   egc.size <- lapply(egc, function(x) length(which(rownames(cnts) %in% x)))
++   if (!is.null(min.size)){
++     remove <- unname(which(egc.size < min.size))
++     if(length(remove) > 0) {
++       egc <- egc[-remove]
++       egc.size <- egc.size[-remove]
++       if(length(egc) == 0) {
++         stop("No gene sets passed the minimum length - please reconsider the 'min.size' parameter")
++       }
++     }
++   }
++   
++   scores <- list()
++   splits <- seq(1, ncol(cnts), by=groups)
++   print(paste('Using sets of', groups, 'cells. Running', 
++               length(splits), 'times.'))
++   split.data <- .split_data.matrix(matrix=cnts, chunk.size=groups)
++   
++   for (i in seq_along(splits)) {
++     last <- min(ncol(cnts), i+groups-1)
++     if(method == "GSVA") {
++       parameters <- .gsva.setup(split.data[[i]], egc)
++     } else if (method == "ssGSEA") {
++       parameters <- .ssGSEA.setup(split.data[[i]], egc)
++     }
++     if(method %in% c("ssGSEA", "GSVA")) {
++       a <- suppressWarnings(gsva(param = parameters, 
++                                  verbose = FALSE,
++                                  BPPARAM = BPPARAM))
++     }
++     scores[[i]] <- a
++   }
++   
++   # Unable to calculate scores for some pathways for some sets
++   complete_pathways <- lapply(scores, function(xx){
++     rownames(xx)
++   })
++   
++   complete_pathways <- Reduce(intersect, complete_pathways)
++   length(complete_pathways)
++   
++   complete_GS_CANONICAL <- GS_CANONICAL[complete_pathways]
++   
++   scores_complete <- lapply(scores, function(xx){
++     xx[complete_pathways,]
++   })
++   
++   scores_complete <- do.call(cbind, scores_complete)
++   output <- t(as.matrix(scores_complete))
++   
++   gene.sets_complete <- gene.sets[scores_complete]
++   
++   #Normalize based on dropout
++   #if(normalize) {
++   #  output <- performNormalization(sc.data = input.data,
++   #                                 enrichment.data = output,
++   #                                 #assay = NULL,
++   #                                 gene.sets = scores_complete,
++   #                                 make.positive = make.positive,
++   #                                 groups = groups)
++   #}
++   return(output)
++ }
+> 
+> runEscape <- function(input.data, 
++                       gene.sets = NULL, 
++                       method = "ssGSEA", 
++                       groups = 1000, 
++                       min.size = 5,
++                       normalize = FALSE,
++                       make.positive = FALSE,
++                       new.assay.name = "escape",
++                       BPPARAM = BiocParallel::SerialParam(),
++                       ...) {
++   #.checkSingleObject(input.data)
++   enrichment <- escape.matrix(input.data = input.data,
++                               gene.sets = gene.sets,
++                               method = method,
++                               groups = groups,
++                               min.size = min.size,
++                               BPPARAM = BPPARAM)
++   
++   input.data <- .adding.Enrich(input.data, enrichment, new.assay.name)
++   return(input.data)
++ }
+> 
+> .adding.Enrich <- function(sc, enrichment, enrichment.name) {
++   if (inherits(sc, "Seurat")) {
++     if (as.numeric(substr(sc@version,1,1)) == 5) {
++       new.assay <- suppressWarnings(CreateAssay5Object(
++         data = as.matrix(t(enrichment))))
++     } else {
++       new.assay <- suppressWarnings(CreateAssayObject(
++         data = as.matrix(t(enrichment))))
++     }
++     
++     suppressWarnings(sc[[enrichment.name]] <- new.assay)
++   } else if (inherits(sc, "SingleCellExperiment")) {
++     altExp(sc, enrichment.name) <- SummarizedExperiment(assays = t(enrichment))
++     names(assays(altExp(sc, enrichment.name))) <- enrichment.name
++   }
++   return(sc)
++ }
+> 
+> 
+> #==============================================================================#
+> # Import data and run escape/GSVA
+> #==============================================================================#
+> 
+> seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+> seurat_data$Treatment_Day <- paste0(seurat_data$Treatment, "_", seurat_data$Day)
+> 
+> DefaultAssay(seurat_data) <- "RNA"
+> 
+> # C2 = curated gene sets,
+> # H = Hallmark
+> GS <- getGeneSets(species = "Mus musculus", library = c("C2", "H"))
+> GS_CANONICAL <- GS[grep("KEGG|REACTOME|BIOCARTA|HALLMARK", names(GS),
++                         ignore.case = TRUE)]
+> 
+> escape_res <- runEscape(input.data = seurat_data,
++                         method = "GSVA", 
++                         new.assay.name = "escapeGSVA",
++                         gene.sets = GS_CANONICAL, 
++                         groups = 500,
++                         min.size = 5)
+[1] "Using sets of 500 cells. Running 93 times."
+! 8121 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4396 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7908 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4449 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7855 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4523 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7811 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4471 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7980 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4363 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7934 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4499 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7963 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4556 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7966 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4414 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8067 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4448 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8120 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4498 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8114 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4339 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8160 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4410 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7877 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4353 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8066 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4372 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7883 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4511 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8019 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4467 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7866 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4514 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7974 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4724 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7531 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4772 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8000 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4713 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7927 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4669 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7866 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4604 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7831 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4619 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8079 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4713 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7911 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4672 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7948 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4699 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8088 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4673 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8053 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4610 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8031 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4651 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7799 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4665 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7795 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4751 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8018 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4661 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8005 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4710 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8104 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4649 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8040 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4607 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8026 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4578 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7936 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4502 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7976 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4572 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7886 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4502 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7965 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4524 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7974 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4553 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8037 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4513 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7947 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4617 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8027 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4564 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8098 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4601 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8058 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4517 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8038 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4523 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8026 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4603 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8010 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4549 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7807 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4558 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7941 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4499 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8025 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4540 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7876 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4567 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8029 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4483 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8523 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4660 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8309 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4624 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8397 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4623 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8427 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4671 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8529 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4601 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8086 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4711 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8499 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4574 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8527 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4633 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8521 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4664 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8537 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4596 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8461 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4628 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8512 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4618 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8583 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4682 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8484 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4655 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8461 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4703 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8388 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4611 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8441 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4647 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8389 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4675 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8469 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4604 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8360 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4638 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8321 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4638 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7836 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4542 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7655 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4565 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7762 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4519 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7680 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4440 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7624 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4518 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7605 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4479 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7534 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4533 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7788 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4564 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7645 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4597 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7662 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4522 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7948 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4325 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7693 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4517 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7652 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4540 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7602 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4524 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7654 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4514 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 7870 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4466 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8829 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4329 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+! 8464 genes with constant values throughout the samples
+! Genes with constant values are discarded
+! 4415 genes with constant non-zero values throughout the samples
+! Genes with constant non-zero values are discarded
+! Some gene sets have size one. Consider setting minSize > 1
+> 
+> escape_res <- performNormalization(sc.data = escape_res,
++                                    assay = "escapeGSVA", 
++                                    gene.sets = GS_CANONICAL,
++                                    scale.factor = escape_res$nFeature_RNA,
++                                    #groups = 500,
++                                    make.positive = T)
+[1] "Normalizing enrichment scores per cell..."
+> 
+> saveRDS(escape_res, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
+> 
+> 
+> 
+> 
+> proc.time()
+     user    system   elapsed 
+13173.655    50.971 13249.270 
+Error in save(list = names(.GlobalEnv), file = outfile, version = version,  : 
+  error writing to connection
+Calls: sys.save.image -> save.image -> save
+Execution halted

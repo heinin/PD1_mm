@@ -1,0 +1,146 @@
+---
+title: "Plots without Day 12"
+author: "heinin"
+date: "2025-04-19"
+output:
+  workflowr::wflow_html:
+    code_folding: hide
+  html_notebook: default
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Plotting feature expression comparisons etc. with Day 16 samples only.
+
+## Packages and environment variables
+
+```{r, message = F, warning = F, fig.width=12, fig.height=6}
+
+suppressPackageStartupMessages({
+  library(Seurat)
+  library(SeuratObject)
+  library(SeuratDisk)
+  library(tidyverse)
+  library(tibble)
+  library(ggplot2)
+  library(ggpubr)
+  library(workflowr)
+  library(googlesheets4)
+  library(CellChat)})
+
+setwd("/home/hnatri/PD1_mm/")
+set.seed(9999)
+options(ggrepel.max.overlaps = Inf)
+options(future.globals.maxSize = 30000 * 1024^2)
+
+# Colors, themes, cell type markers, and plot functions
+source("/home/hnatri/PD1_mm/code/utilities.R")
+source("/home/hnatri/PD1_mm/code/PD1_mm_themes.R")
+source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
+
+```
+
+## Import data
+
+```{r, message = F, warning = F, fig.width=12, fig.height=6}
+
+seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
+DefaultAssay(seurat_data) <- "RNA"
+
+seurat_data <- subset(seurat_data, subset = Day == 16)
+
+seurat_data$Treatment <- factor(seurat_data$Treatment,
+                                levels = c("CTRL", "NEO", "ADJ"))
+
+```
+
+## Feature expression
+
+### Selected lymphoid markers
+
+```{r, message = F, warning = F, fig.width=12, fig.height=16}
+
+# Mr1, H2-genes, 
+#grep("^H2-", rownames(seurat_data), value = T)
+
+lymph_plot_features <- c("Cd3e", "Cd4", "Cd8a", "Mr1",
+                         grep("^H2-", rownames(seurat_data), value = T))
+
+lymphoid <- subset(seurat_data, subset = celltype %in% c(grep("^L", unique(seurat_data$celltype), value = T), c("NK", "Treg", "B1", "B2")))
+lymphoid$celltype <- factor(lymphoid$celltype,
+                            levels = sort(c(grep("^L", unique(lymphoid$celltype), value = T), c("NK", "Treg", "B1", "B2"))))
+
+VlnPlot(lymphoid,
+        features = lymph_plot_features,
+        group.by = "Treatment",
+        cols = treatment_col,
+        pt.size = 0,
+        ncol = 5,
+        slot = "data") &
+  theme_classic() &
+  NoLegend() &
+  ylab("")
+
+```
+
+```{r, message = F, warning = F, fig.width=10, fig.height=25}
+
+VlnPlot(lymphoid,
+        features = lymph_plot_features,
+        group.by = "celltype",
+        split.by = "Treatment",
+        cols = treatment_col,
+        pt.size = 0,
+        ncol = 2,
+        slot = "data") &
+  theme_classic() &
+  NoLegend()
+
+```
+
+### Selected myeloid markers
+
+```{r, message = F, warning = F, fig.width=12, fig.height=16}
+
+# Mr1, H2-genes, 
+#grep("^H2-", rownames(seurat_data), value = T)
+#grep("^Cd68", rownames(seurat_data), value = T)
+
+myel_plot_features <- c("Cd68", "Spp1", "Mr1",
+                         grep("^H2-", rownames(seurat_data), value = T))
+
+myeloid <- subset(seurat_data, subset = celltype %in% c(grep("^M", unique(seurat_data$celltype), value = T), c("Neut1")))
+myeloid$celltype <- factor(myeloid$celltype,
+                           levels = sort(c(grep("^M", unique(myeloid$celltype), value = T), c("Neut1"))))
+
+VlnPlot(myeloid,
+        features = myel_plot_features,
+        group.by = "Treatment",
+        cols = treatment_col,
+        pt.size = 0,
+        slot = "data") &
+  theme_classic() &
+  NoLegend() &
+  ylab("")
+
+```
+
+```{r, message = F, warning = F, fig.width=10, fig.height=25}
+
+VlnPlot(myeloid,
+        features = myel_plot_features,
+        group.by = "celltype",
+        split.by = "Treatment",
+        cols = treatment_col,
+        pt.size = 0,
+        ncol = 2,
+        slot = "data") &
+  theme_classic() &
+  NoLegend()
+
+```
+
+
+

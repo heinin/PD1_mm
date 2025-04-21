@@ -25,9 +25,6 @@ set.seed(9999)
 
 seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
 
-seurat_data$celltype <- factor(seurat_data$celltype,
-                               levels = sort(as.character(unique(seurat_data$celltype))))
-
 # Updating annotations
 gs4_deauth()
 markers_annotations  <- gs4_get("https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharin#g")
@@ -37,6 +34,11 @@ annotations <- read_sheet(markers_annotations, sheet = "Cluster annotations")
 seurat_data$celltype <- mapvalues(seurat_data$snn_res.0.5,
                                   from = annotations$snn_res.0.5,
                                   to = annotations$annotation)
+
+seurat_data$celltype <- factor(seurat_data$celltype,
+                               levels = sort(as.character(unique(seurat_data$celltype))))
+
+Idents(seurat_data) <- seurat_data$celltype
 
 #==============================================================================
 # Creating inputs
@@ -67,6 +69,9 @@ NEO_CC <- addMeta(NEO_CC, meta = NEO_seurat@meta.data)
 NEO_CC <- setIdent(NEO_CC, ident.use = "celltype")
 ADJ_CC <- addMeta(ADJ_CC, meta = ADJ_seurat@meta.data)
 ADJ_CC <- setIdent(ADJ_CC, ident.use = "celltype")
+
+NEO_CC@idents <- factor(NEO_CC@idents, levels = sort(unique(NEO_CC@idents)))
+ADJ_CC@idents <- factor(ADJ_CC@idents, levels = sort(unique(ADJ_CC@idents)))
 
 #==============================================================================
 # Running CellChat
@@ -122,5 +127,5 @@ CC_objects <- lapply(CC_objects, function(xx){
 CC_objects_compare <- CC_objects[c("NEO_CC", "ADJ_CC")]
 CC_merged_object <- mergeCellChat(CC_objects_compare, add.names = names(CC_objects_compare))
 
-saveRDS(CC_objects_compare, "/scratch/hnatri/CART/NEO_ADJ_16_CellChat_compare.rds")
-saveRDS(CC_merged_object, "/scratch/hnatri/CART/NEO_ADJ_16_CellChat_merged_object.rds")
+saveRDS(CC_objects_compare, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/NEO_ADJ_16_CellChat_compare.rds")
+saveRDS(CC_merged_object, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/NEO_ADJ_16_CellChat_merged_object.rds")

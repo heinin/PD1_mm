@@ -2,16 +2,19 @@
 title: "CellChat analysis on CD45+ Kluc tumor scRNA-seq, NEO vs. ADJ Day 16"
 author: "heinin"
 date: "2024-04-03"
-output: workflowr::wflow_html
+output:
+  workflowr::wflow_html:
+    code_folding: hide
+  html_notebook: default
 editor_options:
   chunk_output_type: console
 ---
 
-### Introduction
+## Introduction
 
-Ligand-receptor analysis using CellChat.
+Ligand-receptor analysis using CellChat. The comparison is NEO vs. ADJ after CAR+anti-PD1 therapy.
 
-### Packages and environment variables
+## Packages and environment variables
 
 ```{r, warning=F, message=F}
 
@@ -47,15 +50,28 @@ CellChat was run for Day 16 only using code/CellChat.R.
 
 ### Import data
 
-```{r}
+```{r, message = F, warning = F}
 
 seurat_object <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
-CC_objects_compare <- readRDS("/scratch/hnatri/CART/NEO_ADJ_16_CellChat_compare.rds")
-CC_merged_object <- readRDS("/scratch/hnatri/CART/NEO_ADJ_16_CellChat_merged_object.rds")
+CC_objects_compare <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/NEO_ADJ_16_CellChat_compare.rds")
+CC_merged_object <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/NEO_ADJ_16_CellChat_merged_object.rds")
+
+# Sorting levels for plotting
+celltypes <- c(sort(c(grep("^M", unique(seurat_object$celltype), value = T), c("Neut1"))),
+               sort(grep("^L", unique(seurat_object$celltype), value = T)), c("NK", "Treg", "B1", "B2"), c("DC", "NOS1"))
+
+CC_objects_compare[[1]]@meta$celltype <- factor(CC_objects_compare[[1]]@meta$celltype,
+                                                  levels = celltypes)
+CC_objects_compare[[1]]@idents <- factor(CC_objects_compare[[1]]@idents,
+                                         levels = celltypes)
+CC_objects_compare[[2]]@meta$celltype <- factor(CC_objects_compare[[2]]@meta$celltype,
+                                                  levels = celltypes)
+CC_objects_compare[[2]]@idents <- factor(CC_objects_compare[[2]]@idents,
+                                         levels = celltypes)
 
 ```
 
-```{r, fig.width=12, fig.height=6}
+```{r, message = F, warning = F, fig.width=12, fig.height=6}
 
 # Compare the total number of interactions and interaction strength
 gg1 <- compareInteractions(CC_merged_object, show.legend = F, group = c(1,2))
@@ -65,7 +81,7 @@ gg1 + gg2
 
 ```
 
-```{r, fig.width=12, fig.height=6}
+```{r, message = F, warning = F, fig.width=12, fig.height=6}
 
 # Differential number of interactions or interaction strength among different cell populations
 par(mfrow = c(1,2), xpd=TRUE)
@@ -125,9 +141,9 @@ patchwork::wrap_plots(plots = gg)
 
 ```
 
-### Identify and visualize the conserved and context-specific signaling pathways
+## Identify and visualize the conserved and context-specific signaling pathways
 
-```{r, fig.height=10}
+```{r, fig.height=13}
 # Identify and visualize the conserved and context-specific signaling pathways:
 # signaling pathways, (i) turn off, (ii) decrease, (iii) turn on or (iv)
 # increase, by change their information flow at one condition as compared to
@@ -149,8 +165,8 @@ ranknet_res
 
 ```
 
+```{r, message = F, warning = F}
 
-```{r}
 ranknet_data <- ggplot_build(ranknet_res)
 info_flow_data <- ranknet_data$plot$data
 
@@ -167,7 +183,7 @@ hist(info_flow_data$contribution, breaks = 20)
 
 ```
 
-```{r, fig.width=12}
+```{r, message = F, warning = F, fig.width=12}
 
 # Plotting delta
 barplot_colors <- c("aquamarine4", "deeppink3")
@@ -199,7 +215,7 @@ delta_plot
 
 ```
 
-```{r, fig.width=12, fig.height=6}
+```{r, message = F, warning = F, fig.width=12, fig.height=6}
 
 # Identify signaling changes associated with one cell group
 # Visualizing differential outgoing and incoming signaling changes
@@ -346,3 +362,62 @@ p1 / p2
 
 ```
 
+## M7 vs. lymphoid cells
+
+```{r, message = F, warning = F, fig.width = 8, fig.height = 20}
+
+# Compare all the interactions sending from M7 to L3 cells
+
+#par(mfrow = c(1, 2), xpd = TRUE)
+#netVisual_chord_gene(CC_objects_compare[["ADJ_CC"]], sources.use = c(18), targets.use = c(20), lab.cex = 0.5, title.name = paste0("Signaling from M7 - ADJ"))
+
+netVisual_bubble(CC_merged_object, sources.use = 20, targets.use = grep("^L", levels(CC_objects_compare[[i]]@idents)), thresh = 1, comparison = c(2, 1), angle.x = 45)
+
+```
+
+## Selected pathways
+
+```{r, message = F, warning = F, fig.width = 9, fig.height = 5}
+
+pathways.show <- c("SPP1")
+par(mfrow = c(1,2), xpd=TRUE)
+ht <- list()
+for (i in 1:length(CC_objects_compare)) {
+  ht[[i]] <- netVisual_heatmap(CC_objects_compare[[i]],
+                               signaling = pathways.show,
+                               color.heatmap = "Reds",
+                               title.name = paste(pathways.show, "signaling ", names(CC_objects_compare)[i]))
+}
+
+ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, "cm"))
+
+pathways.show <- c("MHC-II")
+par(mfrow = c(1,2), xpd=TRUE)
+ht <- list()
+for (i in 1:length(CC_objects_compare)) {
+  ht[[i]] <- netVisual_heatmap(CC_objects_compare[[i]],
+                               signaling = pathways.show,
+                               color.heatmap = "Reds",
+                               title.name = paste(pathways.show, "signaling ", names(CC_objects_compare)[i]))
+}
+
+ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, "cm"))
+
+pathways.show <- c("MHC-I")
+par(mfrow = c(1,2), xpd=TRUE)
+ht <- list()
+for (i in 1:length(CC_objects_compare)) {
+  CC_objects_compare[[i]]@meta$celltype <- factor(CC_objects_compare[[i]]@meta$celltype,
+                                                  levels = celltypes)
+  CC_objects_compare[[i]]@idents <- factor(CC_objects_compare[[i]]@idents,
+                                         levels = celltypes)
+
+  ht[[i]] <- netVisual_heatmap(CC_objects_compare[[i]],
+                               signaling = pathways.show,
+                               color.heatmap = "Reds",
+                               title.name = paste(pathways.show, "signaling ", names(CC_objects_compare)[i]))
+}
+
+ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, "cm"))
+
+```
