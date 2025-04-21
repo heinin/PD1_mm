@@ -402,7 +402,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-04-20
+<strong>Last updated:</strong> 2025-04-21
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -440,10 +440,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -586,15 +586,15 @@ code/CART_plot_functions.R
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreebd872d1ca492e7f87625df8d5038f40aefc1ec98targetblankbd872d1a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreefb5a81292ffffef6e95b999a48ff179dab166551targetblankfb5a812a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/bd872d1ca492e7f87625df8d5038f40aefc1ec98" target="_blank">bd872d1</a>
+<a href="https://github.com/heinin/PD1_mm/tree/fb5a81292ffffef6e95b999a48ff179dab166551" target="_blank">fb5a812</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreebd872d1ca492e7f87625df8d5038f40aefc1ec98targetblankbd872d1a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreefb5a81292ffffef6e95b999a48ff179dab166551targetblankfb5a812a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -604,7 +604,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/bd872d1ca492e7f87625df8d5038f40aefc1ec98" target="_blank">bd872d1</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/fb5a81292ffffef6e95b999a48ff179dab166551" target="_blank">fb5a812</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -618,25 +618,12 @@ depends on. Below is the status of the Git repository when the results
 were generated:
 </p>
 <pre><code>
-Untracked files:
-    Untracked:  .RDataTmp
-    Untracked:  .RDataTmp1
-    Untracked:  Rplots.pdf
-    Untracked:  analysis/cleaner_plots.Rmd
-    Untracked:  code/CellChat.Rout
-    Untracked:  code/GSEA.Rout
-    Untracked:  code/slurm.19959446.err
-    Untracked:  code/slurm.19959446.out
+Ignored files:
+    Ignored:    .RData
 
 Unstaged changes:
-    Modified:   GSEA_myeloid_celltype_sig.tsv
-    Modified:   GSEA_myeloid_sig.tsv
-    Modified:   analysis/CellChat.Rmd
-    Modified:   analysis/GSEA.Rmd
-    Modified:   analysis/comparative_analysis.Rmd
-    Modified:   analysis/index.Rmd
-    Modified:   code/CellChat.R
-    Modified:   code/GSEA.R
+    Deleted:    Rplots.pdf
+    Modified:   analysis/cleaner_plots.Rmd
 
 </code></pre>
 <p>
@@ -651,10 +638,74 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/cleaner_plots.Rmd</code>) and
+HTML (<code>docs/cleaner_plots.html</code>) files. If you’ve configured
+a remote Git repository (see <code>?wflow_git_remote</code>), click on
+the hyperlinks in the table below to view the files as they were in that
+past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/fb5a81292ffffef6e95b999a48ff179dab166551/analysis/cleaner_plots.Rmd" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+<td>
+Updated CellChat and GSEA, added plots without day 12
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/fb5a81292ffffef6e95b999a48ff179dab166551/docs/cleaner_plots.html" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+<td>
+Updated CellChat and GSEA, added plots without day 12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -723,6 +774,43 @@ VlnPlot(lymphoid,
   NoLegend() &amp;
   ylab(&quot;&quot;)</code></pre>
 <p><img src="figure/cleaner_plots.Rmd/unnamed-chunk-3-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/fb5a81292ffffef6e95b999a48ff179dab166551/docs/figure/cleaner_plots.Rmd/unnamed-chunk-3-1.png" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>VlnPlot(lymphoid,
         features = lymph_plot_features,
         group.by = &quot;celltype&quot;,
@@ -734,6 +822,43 @@ VlnPlot(lymphoid,
   theme_classic() &amp;
   NoLegend()</code></pre>
 <p><img src="figure/cleaner_plots.Rmd/unnamed-chunk-4-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/fb5a81292ffffef6e95b999a48ff179dab166551/docs/figure/cleaner_plots.Rmd/unnamed-chunk-4-1.png" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="selected-myeloid-markers" class="section level3">
 <h3>Selected myeloid markers</h3>
@@ -758,6 +883,43 @@ VlnPlot(myeloid,
   NoLegend() &amp;
   ylab(&quot;&quot;)</code></pre>
 <p><img src="figure/cleaner_plots.Rmd/unnamed-chunk-5-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/fb5a81292ffffef6e95b999a48ff179dab166551/docs/figure/cleaner_plots.Rmd/unnamed-chunk-5-1.png" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>VlnPlot(myeloid,
         features = myel_plot_features,
         group.by = &quot;celltype&quot;,
@@ -769,6 +931,43 @@ VlnPlot(myeloid,
   theme_classic() &amp;
   NoLegend()</code></pre>
 <p><img src="figure/cleaner_plots.Rmd/unnamed-chunk-6-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/fb5a81292ffffef6e95b999a48ff179dab166551/docs/figure/cleaner_plots.Rmd/unnamed-chunk-6-1.png" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

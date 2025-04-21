@@ -60,7 +60,7 @@ seurat_data$Treatment <- factor(seurat_data$Treatment,
 
 ### Selected lymphoid markers
 
-```{r, message = F, warning = F, fig.width=12, fig.height=16}
+```{r, message = F, warning = F, fig.width=12, fig.height=18}
 
 # Mr1, H2-genes, 
 #grep("^H2-", rownames(seurat_data), value = T)
@@ -85,7 +85,7 @@ VlnPlot(lymphoid,
 
 ```
 
-```{r, message = F, warning = F, fig.width=10, fig.height=25}
+```{r, message = F, warning = F, fig.width=10, fig.height=28}
 
 VlnPlot(lymphoid,
         features = lymph_plot_features,
@@ -102,7 +102,7 @@ VlnPlot(lymphoid,
 
 ### Selected myeloid markers
 
-```{r, message = F, warning = F, fig.width=12, fig.height=16}
+```{r, message = F, warning = F, fig.width=12, fig.height=18}
 
 # Mr1, H2-genes, 
 #grep("^H2-", rownames(seurat_data), value = T)
@@ -127,7 +127,7 @@ VlnPlot(myeloid,
 
 ```
 
-```{r, message = F, warning = F, fig.width=10, fig.height=25}
+```{r, message = F, warning = F, fig.width=10, fig.height=28}
 
 VlnPlot(myeloid,
         features = myel_plot_features,
