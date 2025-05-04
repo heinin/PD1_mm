@@ -42,6 +42,40 @@ source("/home/hnatri/PD1_mm/code/CART_plot_functions.R")
 
 ```
 
+## Helper functions
+
+```{r, message = F, warning = F, fig.width=12, fig.height=6}
+
+# Calling DEGs between two groups for each cell type
+get_DEGs <- function(seuratdata, celltypes, groupvar, group1, group2){
+  DEGlist <- lapply(celltypes, function(xx){
+    data_subset <- subset(seuratdata, subset = celltype == xx)
+    Idents(data_subset) <- as.character(unlist(data_subset[[groupvar]]))
+    
+    if (min(table(unlist(data_subset[[groupvar]])))<20){
+      return(NULL)
+    }
+    
+    if (all((c(group1, group2) %in% unlist(data_subset[[groupvar]]) == c(T, T)))){
+      markers <- FindMarkers(data_subset,
+                             ident.1 = group1,
+                             ident.2 = group2,
+                             assay = "RNA",
+                             verbose = F)
+      markers$feature <- rownames(markers)
+      markers$celltype <- xx
+      
+      return(markers)
+    } else {
+      return(NULL)
+    }
+    })
+  
+  as.data.frame(do.call(rbind, DEGlist))
+}
+
+```
+
 ## Import data
 
 ```{r, message = F, warning = F, fig.width=12, fig.height=6}
@@ -60,13 +94,13 @@ seurat_data$Treatment <- factor(seurat_data$Treatment,
 
 ### Selected lymphoid markers
 
-```{r, message = F, warning = F, fig.width=12, fig.height=18}
+```{r, message = F, warning = F, fig.width=12, fig.height=16}
 
-# Mr1, H2-genes, 
-#grep("^H2-", rownames(seurat_data), value = T)
-
-lymph_plot_features <- c("Cd3e", "Cd4", "Cd8a", "Mr1",
-                         grep("^H2-", rownames(seurat_data), value = T))
+lymph_plot_features <- c("Cd3e", "Cd4", "Cd8a", "Tcf7", "Ccr7", "Pdcd1", "Tigit",
+                         "Havcr2", "Gzmb", "Gzmk", "Cx3cr1", "Cxcr5", "Foxp3",
+                         "Tnfrsf9", "Ifng", "Prf1", "Cdc6", "Lag3", "Klrc1",
+                         "Klrg1", "Tox", "Slamf6", "Xcl1", "Mt1", "Nfkbia",
+                         "Nr4a1", "Cd69")
 
 lymphoid <- subset(seurat_data, subset = celltype %in% c(grep("^L", unique(seurat_data$celltype), value = T), c("NK", "Treg", "B1", "B2")))
 lymphoid$celltype <- factor(lymphoid$celltype,
@@ -85,7 +119,107 @@ VlnPlot(lymphoid,
 
 ```
 
-```{r, message = F, warning = F, fig.width=10, fig.height=28}
+### DE stats, lineage level
+
+ADJ vs. NEO
+
+```{r, message = F, warning = F, fig.width=10, fig.height=26}
+
+Idents(lymphoid) <- lymphoid$Treatment
+    
+markers <- FindMarkers(lymphoid,
+                       ident.1 = "ADJ",
+                       ident.2 = "NEO",
+                       assay = "RNA",
+                       verbose = F)
+markers$feature <- rownames(markers)
+
+markers %>%
+  filter(p_val_adj < 0.01,
+         abs(avg_log2FC) > 2) %>%
+  mutate(p_val = round(p_val, 3),
+         p_val_adj = round(p_val_adj, 3))
+
+```
+
+ADJ vs. NEO, T cell markers
+
+```{r, message = F, warning = F, fig.width=10, fig.height=26}
+
+markers %>%
+  filter(feature %in% lymph_plot_features) %>%
+  mutate(p_val = round(p_val, 3),
+         p_val_adj = round(p_val_adj, 3))
+
+```
+
+ADJ vs. CTRL
+
+```{r, message = F, warning = F, fig.width=10, fig.height=26}
+
+Idents(lymphoid) <- lymphoid$Treatment
+    
+markers <- FindMarkers(lymphoid,
+                       ident.1 = "ADJ",
+                       ident.2 = "CTRL",
+                       assay = "RNA",
+                       verbose = F)
+markers$feature <- rownames(markers)
+
+markers %>%
+  filter(p_val_adj < 0.01,
+         abs(avg_log2FC) > 2) %>%
+  mutate(p_val = round(p_val, 3),
+         p_val_adj = round(p_val_adj, 3))
+
+```
+
+ADJ vs. CTRL, T cell markers
+
+```{r, message = F, warning = F, fig.width=10, fig.height=26}
+
+markers %>%
+  filter(feature %in% lymph_plot_features) %>%
+  mutate(p_val = round(p_val, 3),
+         p_val_adj = round(p_val_adj, 3))
+
+```
+
+NEO vs. CTRL
+
+```{r, message = F, warning = F, fig.width=10, fig.height=26}
+
+Idents(lymphoid) <- lymphoid$Treatment
+    
+markers <- FindMarkers(lymphoid,
+                       ident.1 = "NEO",
+                       ident.2 = "CTRL",
+                       assay = "RNA",
+                       verbose = F)
+markers$feature <- rownames(markers)
+
+markers %>%
+  filter(p_val_adj < 0.01,
+         abs(avg_log2FC) > 2) %>%
+  mutate(p_val = round(p_val, 3),
+         p_val_adj = round(p_val_adj, 3))
+
+```
+
+NEO vs. CTRL, T cell markers
+
+```{r, message = F, warning = F, fig.width=10, fig.height=26}
+
+markers %>%
+  filter(feature %in% lymph_plot_features) %>%
+  mutate(p_val = round(p_val, 3),
+         p_val_adj = round(p_val_adj, 3))
+
+```
+
+### DE, celltype level
+
+```{r, message = F, warning = F, fig.width=10, fig.height=26}
 
 VlnPlot(lymphoid,
         features = lymph_plot_features,
@@ -100,15 +234,116 @@ VlnPlot(lymphoid,
 
 ```
 
+### Top DE stats
+
+```{r, message = F, warning = F, fig.width=12, fig.height=18}
+
+ADJ_NEO_DEGs <- get_DEGs(seuratdata = lymphoid,
+                         celltypes = unique(lymphoid$celltype),
+                         groupvar = "Treatment",
+                         group1 = "ADJ",
+                         group2 = "NEO")
+
+ADJ_CTRL_DEGs <- get_DEGs(seuratdata = lymphoid,
+                          celltypes = unique(lymphoid$celltype),
+                          groupvar = "Treatment",
+                          group1 = "ADJ",
+                          group2 = "CTRL")
+
+NEO_CTRL_DEGs <- get_DEGs(seuratdata = lymphoid,
+                          celltypes = unique(lymphoid$celltype),
+                          groupvar = "Treatment",
+                          group1 = "NEO",
+                          group2 = "CTRL")
+
+ADJ_NEO_DEGs_sig <- ADJ_NEO_DEGs %>%
+  filter(p_val_adj < 0.01,
+         abs(avg_log2FC) > 2) %>%
+  mutate(p_val = round(p_val, 3),
+         p_val_adj = round(p_val_adj, 3))
+
+ADJ_CTRL_DEGs_sig <- ADJ_CTRL_DEGs %>%
+  filter(p_val_adj < 0.01,
+         abs(avg_log2FC) > 2) %>%
+  mutate(p_val = round(p_val, 3),
+         p_val_adj = round(p_val_adj, 3))
+
+NEO_CTRL_DEGs_sig <- NEO_CTRL_DEGs %>%
+  filter(p_val_adj < 0.01,
+         abs(avg_log2FC) > 2) %>%
+  mutate(p_val = round(p_val, 3),
+         p_val_adj = round(p_val_adj, 3))
+
+```
+
+ADJ_NEO_DEGs_sig
+
+```{r, message = F, warning = F, fig.width=12, fig.height=18}
+
+ADJ_NEO_DEGs_sig
+
+```
+
+ADJ_CTRL_DEGs_sig
+
+```{r, message = F, warning = F, fig.width=12, fig.height=18}
+
+ADJ_CTRL_DEGs_sig
+
+```
+
+NEO_CTRL_DEGs_sig
+
+```{r, message = F, warning = F, fig.width=12, fig.height=18}
+
+NEO_CTRL_DEGs_sig
+
+```
+
+### T cell marker DE stats
+
+ADJ vs. NEO
+
+```{r, message = F, warning = F, fig.width=12, fig.height=18}
+
+ADJ_NEO_DEGs %>%
+  filter(feature %in% lymph_plot_features) %>%
+  mutate(p_val = round(p_val, 3),
+         p_val_adj = round(p_val_adj, 3))
+
+```
+
+ADJ vs. CTRL
+
+```{r, message = F, warning = F, fig.width=12, fig.height=18}
+
+ADJ_CTRL_DEGs %>%
+  filter(feature %in% lymph_plot_features) %>%
+  mutate(p_val = round(p_val, 3),
+         p_val_adj = round(p_val_adj, 3))
+
+```
+
+NEO vs. CTRL
+
+```{r, message = F, warning = F, fig.width=12, fig.height=18}
+
+NEO_CTRL_DEGs %>%
+  filter(feature %in% lymph_plot_features) %>%
+  mutate(p_val = round(p_val, 3),
+         p_val_adj = round(p_val_adj, 3))
+
+```
+
 ### Selected myeloid markers
 
 ```{r, message = F, warning = F, fig.width=12, fig.height=18}
 
 # Mr1, H2-genes, 
 #grep("^H2-", rownames(seurat_data), value = T)
-#grep("^Cd68", rownames(seurat_data), value = T)
+#grep("^Apoe", rownames(seurat_data), value = T)
 
-myel_plot_features <- c("Cd68", "Spp1", "Mr1",
+myel_plot_features <- c("Cd68", "Spp1", "Mr1", "C1qa", "C1qb", "C1qc", "Apoe",
                          grep("^H2-", rownames(seurat_data), value = T))
 
 myeloid <- subset(seurat_data, subset = celltype %in% c(grep("^M", unique(seurat_data$celltype), value = T), c("Neut1")))
