@@ -403,7 +403,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-04-20
+<strong>Last updated:</strong> 2025-05-05
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -587,15 +587,15 @@ code/CART_plot_functions.R
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreebd872d1ca492e7f87625df8d5038f40aefc1ec98targetblankbd872d1a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree0bf242094d7de372f24ccb05a1131794ca018a62targetblank0bf2420a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/bd872d1ca492e7f87625df8d5038f40aefc1ec98" target="_blank">bd872d1</a>
+<a href="https://github.com/heinin/PD1_mm/tree/0bf242094d7de372f24ccb05a1131794ca018a62" target="_blank">0bf2420</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtreebd872d1ca492e7f87625df8d5038f40aefc1ec98targetblankbd872d1a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree0bf242094d7de372f24ccb05a1131794ca018a62targetblank0bf2420a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -605,7 +605,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/bd872d1ca492e7f87625df8d5038f40aefc1ec98" target="_blank">bd872d1</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/0bf242094d7de372f24ccb05a1131794ca018a62" target="_blank">0bf2420</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -623,25 +623,25 @@ Ignored files:
     Ignored:    .RData
 
 Untracked files:
-    Untracked:  .RDataTmp
     Untracked:  Rplots.pdf
-    Untracked:  analysis/cleaner_plots.Rmd
-    Untracked:  code/CellChat.Rout
-    Untracked:  code/GSEA.Rout
-    Untracked:  code/slurm.19959446.err
-    Untracked:  code/slurm.19959446.out
-    Untracked:  code/slurm.19959564.err
-    Untracked:  code/slurm.19959564.out
+    Untracked:  code/slurm.20555266.err
+    Untracked:  code/slurm.20555266.out
+    Untracked:  code/slurm.20555410.err
+    Untracked:  code/slurm.20555410.out
+    Untracked:  code/slurm.20557034.err
+    Untracked:  code/slurm.20557034.out
 
 Unstaged changes:
-    Modified:   GSEA_myeloid_celltype_sig.tsv
-    Modified:   GSEA_myeloid_sig.tsv
+    Modified:   PD1_CART_celltype_markers_top20.tsv
     Modified:   analysis/CellChat.Rmd
     Modified:   analysis/GSEA.Rmd
+    Modified:   analysis/annotate.Rmd
+    Modified:   analysis/cleaner_plots.Rmd
     Modified:   analysis/comparative_analysis.Rmd
-    Modified:   analysis/index.Rmd
-    Modified:   code/CellChat.R
+    Modified:   code/CellChat.Rout
     Modified:   code/GSEA.R
+    Modified:   code/GSEA.Rout
+    Modified:   code/run_rscript.sh
 
 </code></pre>
 <p>
@@ -687,6 +687,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/fb5a81292ffffef6e95b999a48ff179dab166551/analysis/CellChat.Rmd" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+<td>
+Updated CellChat and GSEA, added plots without day 12
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/fb5a81292ffffef6e95b999a48ff179dab166551/docs/CellChat.html" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+<td>
+Updated CellChat and GSEA, added plots without day 12
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -769,9 +803,34 @@ source(&quot;/home/hnatri/PD1_mm/code/CART_plot_functions.R&quot;)</code></pre>
 CC_objects_compare &lt;- readRDS(&quot;/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/NEO_ADJ_16_CellChat_compare.rds&quot;)
 CC_merged_object &lt;- readRDS(&quot;/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/NEO_ADJ_16_CellChat_merged_object.rds&quot;)
 
+# Updating annotations
+gs4_deauth()
+markers_annotations  &lt;- gs4_get(&quot;https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharin#g&quot;)
+sheet_names(markers_annotations)</code></pre>
+<pre><code> [1] &quot;Cluster top markers&quot;                              
+ [2] &quot;Cluster annotations&quot;                              
+ [3] &quot;scImmuCC&quot;                                         
+ [4] &quot;Celltype top markers (all sig)&quot;                   
+ [5] &quot;Celltype top 20 markers&quot;                          
+ [6] &quot;GSEA myeloid&quot;                                     
+ [7] &quot;GSEA myeloid by celltype&quot;                         
+ [8] &quot;NEO vs. CTRL DEGs&quot;                                
+ [9] &quot;NEO vs. CTRL, Seurat DEGs&quot;                        
+[10] &quot;NEO vs. ADJ DEGs&quot;                                 
+[11] &quot;NEO vs. ADJ, Seurat DEGs&quot;                         
+[12] &quot;ADJ vs. CTRL, Seurat DEGs&quot;                        
+[13] &quot;NEO vs. CTRL, NEO vs. ADJ overlapping DEGs&quot;       
+[14] &quot;NEO vs. CTRL, NEO vs. ADJ overlapping Seurat DEGs&quot;
+[15] &quot;Mm immune markers&quot;                                </code></pre>
+<pre class="r"><code>annotations &lt;- read_sheet(markers_annotations, sheet = &quot;Cluster annotations&quot;)
+
+seurat_object$celltype &lt;- mapvalues(seurat_object$snn_res.0.5,
+                                    from = annotations$snn_res.0.5,
+                                    to = annotations$annotation)
+
 # Sorting levels for plotting
 celltypes &lt;- c(sort(c(grep(&quot;^M&quot;, unique(seurat_object$celltype), value = T), c(&quot;Neut1&quot;))),
-               sort(grep(&quot;^L&quot;, unique(seurat_object$celltype), value = T)), c(&quot;NK&quot;, &quot;Treg&quot;, &quot;B1&quot;, &quot;B2&quot;), c(&quot;DC&quot;, &quot;NOS1&quot;))
+               sort(grep(&quot;^L&quot;, unique(seurat_object$celltype), value = T)), c(&quot;NK&quot;, &quot;Treg&quot;, &quot;B1&quot;, &quot;ILC&quot;, &quot;DC&quot;))
 
 CC_objects_compare[[1]]@meta$celltype &lt;- factor(CC_objects_compare[[1]]@meta$celltype,
                                                   levels = celltypes)
@@ -1015,6 +1074,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/fb5a81292ffffef6e95b999a48ff179dab166551/docs/figure/CellChat.Rmd/unnamed-chunk-4-4.png" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/7c73c80984c7ca3a66242240b31a3497fa8c1d27/docs/figure/CellChat.Rmd/unnamed-chunk-4-4.png" target="_blank">7c73c80</a>
 </td>
 <td>
@@ -1076,6 +1146,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/fb5a81292ffffef6e95b999a48ff179dab166551/docs/figure/CellChat.Rmd/unnamed-chunk-5-1.png" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/7c73c80984c7ca3a66242240b31a3497fa8c1d27/docs/figure/CellChat.Rmd/unnamed-chunk-5-1.png" target="_blank">7c73c80</a>
@@ -1766,8 +1847,47 @@ heinin
 #par(mfrow = c(1, 2), xpd = TRUE)
 #netVisual_chord_gene(CC_objects_compare[[&quot;ADJ_CC&quot;]], sources.use = c(18), targets.use = c(20), lab.cex = 0.5, title.name = paste0(&quot;Signaling from M7 - ADJ&quot;))
 
-netVisual_bubble(CC_merged_object, sources.use = 20, targets.use = grep(&quot;^L&quot;, levels(CC_objects_compare[[i]]@idents)), thresh = 1, comparison = c(2, 1), angle.x = 45)</code></pre>
+#CC_merged_object$sources
+
+netVisual_bubble(CC_merged_object, sources.use = 16, targets.use = c(3, 4, 5, 6, 7, 8, 9), thresh = 1, comparison = c(1, 2), angle.x = 45)</code></pre>
 <p><img src="figure/CellChat.Rmd/unnamed-chunk-9-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/fb5a81292ffffef6e95b999a48ff179dab166551/docs/figure/CellChat.Rmd/unnamed-chunk-9-1.png" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="selected-pathways" class="section level2">
 <h2>Selected pathways</h2>
@@ -1775,11 +1895,51 @@ netVisual_bubble(CC_merged_object, sources.use = 20, targets.use = grep(&quot;^L
 par(mfrow = c(1,2), xpd=TRUE)
 ht &lt;- list()
 for (i in 1:length(CC_objects_compare)) {
-  ht[[i]] &lt;- netVisual_heatmap(CC_objects_compare[[i]], signaling = pathways.show, color.heatmap = &quot;Reds&quot;, title.name = paste(pathways.show, &quot;signaling &quot;, names(CC_objects_compare)[i]))
+  ht[[i]] &lt;- netVisual_heatmap(CC_objects_compare[[i]],
+                               signaling = pathways.show,
+                               color.heatmap = &quot;Reds&quot;,
+                               title.name = paste(pathways.show, &quot;signaling &quot;, names(CC_objects_compare)[i]))
 }
 
 ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, &quot;cm&quot;))</code></pre>
 <p><img src="figure/CellChat.Rmd/unnamed-chunk-10-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/fb5a81292ffffef6e95b999a48ff179dab166551/docs/figure/CellChat.Rmd/unnamed-chunk-10-1.png" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pathways.show &lt;- c(&quot;MHC-II&quot;)
 par(mfrow = c(1,2), xpd=TRUE)
 ht &lt;- list()
@@ -1792,16 +1952,97 @@ for (i in 1:length(CC_objects_compare)) {
 
 ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, &quot;cm&quot;))</code></pre>
 <p><img src="figure/CellChat.Rmd/unnamed-chunk-10-2.png" width="864" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-2">
+Past versions of unnamed-chunk-10-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/fb5a81292ffffef6e95b999a48ff179dab166551/docs/figure/CellChat.Rmd/unnamed-chunk-10-2.png" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>pathways.show &lt;- c(&quot;MHC-I&quot;)
 par(mfrow = c(1,2), xpd=TRUE)
 ht &lt;- list()
 for (i in 1:length(CC_objects_compare)) {
+  CC_objects_compare[[i]]@meta$celltype &lt;- factor(CC_objects_compare[[i]]@meta$celltype,
+                                                  levels = celltypes)
+  CC_objects_compare[[i]]@idents &lt;- factor(CC_objects_compare[[i]]@idents,
+                                         levels = celltypes)
+
   ht[[i]] &lt;- netVisual_heatmap(CC_objects_compare[[i]],
-                               signaling = pathways.show, color.heatmap = &quot;Reds&quot;, title.name = paste(pathways.show, &quot;signaling &quot;, names(CC_objects_compare)[i]))
+                               signaling = pathways.show,
+                               color.heatmap = &quot;Reds&quot;,
+                               title.name = paste(pathways.show, &quot;signaling &quot;, names(CC_objects_compare)[i]))
 }
 
 ComplexHeatmap::draw(ht[[1]] + ht[[2]], ht_gap = unit(0.5, &quot;cm&quot;))</code></pre>
 <p><img src="figure/CellChat.Rmd/unnamed-chunk-10-3.png" width="864" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-3">
+Past versions of unnamed-chunk-10-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/fb5a81292ffffef6e95b999a48ff179dab166551/docs/figure/CellChat.Rmd/unnamed-chunk-10-3.png" target="_blank">fb5a812</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-04-21
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

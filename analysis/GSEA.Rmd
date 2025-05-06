@@ -141,7 +141,8 @@ res_sig %>%
     #manuscript_theme +
     ylab("") +
     xlab(expression(Delta ~ " average log2(FC)")) +
-    ggtitle("NEO Day 16 vs. CTRL Day 16")
+    ggtitle("NEO Day 16 vs. CTRL Day 16") +
+    theme(axis.text = element_text(size = 12))
 
 ```
 
@@ -174,7 +175,8 @@ res_sig %>%
     #manuscript_theme +
     ylab("") +
     xlab(expression(Delta ~ " average log2(FC)")) +
-    ggtitle("ADJ Day 16 vs. CTRL Day 16")
+    ggtitle("ADJ Day 16 vs. CTRL Day 16") +
+    theme(axis.text = element_text(size = 12))
 
 ```
 
@@ -208,7 +210,8 @@ res_sig %>%
     #manuscript_theme +
     ylab("") +
     xlab(expression(Delta ~ " average log2(FC)")) +
-    ggtitle("NEO Day 12 vs. CTRL Day 12")
+    ggtitle("NEO Day 12 vs. CTRL Day 12") +
+    theme(axis.text = element_text(size = 12))
 
 ```
 
@@ -246,13 +249,14 @@ res_sig %>%
     #manuscript_theme +
     ylab("") +
     xlab(expression(Delta ~ " average log2(FC)")) +
-    ggtitle("NEO Day 16 vs. ADJ Day 16, myeloid")
+    ggtitle("NEO Day 16 vs. ADJ Day 16, myeloid") +
+    theme(axis.text = element_text(size = 12))
 
 ```
 
 ### NEO vs. CTRL, Day 16
 
-```{r, message = F, warning = F, results = 'hide', fig.width=14, fig.height=18}
+```{r, message = F, warning = F, results = 'hide', fig.width=14, fig.height=14}
 
 gsea_res <- FindMarkers(myeloid,
                         assay = "escapeGSVA_normalized", 
@@ -279,27 +283,28 @@ res_sig %>%
     #manuscript_theme +
     ylab("") +
     xlab(expression(Delta ~ " average log2(FC)")) +
-    ggtitle("NEO Day 16 vs. CTRL Day 16, myeloid")
+    ggtitle("NEO Day 16 vs. CTRL Day 16, myeloid") +
+    theme(axis.text = element_text(size = 12))
 
 ```
 
 ### ADJ vs. CTRL, Day 16
 
-```{r, message = F, warning = F, results = 'hide', fig.width=14, fig.height=18}
+```{r, message = F, warning = F, fig.width=14, fig.height=14}
 
-gsea_res <- FindMarkers(myeloid,
+gsea_res2 <- FindMarkers(myeloid,
                         assay = "escapeGSVA_normalized", 
                         ident.1 = "ADJ_16",
                         ident.2 = "CTRL_16",
                         min.pct = 0,
                         logfc.threshold = 0)
 
-gsea_res$pathway <- rownames(gsea_res)
+gsea_res2$pathway <- rownames(gsea_res2)
 
-res_sig <- gsea_res %>% filter(abs(avg_log2FC) > 0.1,
+res_sig2 <- gsea_res2 %>% filter(abs(avg_log2FC) > 0.1,
                                p_val_adj < 0.05)
 
-res_sig %>%
+res_sig2 %>%
   #filter(abs(avg_log2FC) > 0.15) %>%
   filter(dense_rank(desc(avg_log2FC)) <= 20) %>%
   mutate(sign = sign(avg_log2FC),
@@ -312,7 +317,12 @@ res_sig %>%
     #manuscript_theme +
     ylab("") +
     xlab(expression(Delta ~ " average log2(FC)")) +
-    ggtitle("ADJ Day 16 vs. CTRL Day 16, myeloid")
+    ggtitle("ADJ Day 16 vs. CTRL Day 16, myeloid") +
+    theme(axis.text = element_text(size = 12))
+
+length(intersect(res_sig2$pathway, res_sig$pathway))
+length(setdiff(res_sig2$pathway, res_sig$pathway))
+length(setdiff(res_sig$pathway, res_sig2$pathway))
 
 ```
 
@@ -345,7 +355,8 @@ res_sig %>%
     #manuscript_theme +
     ylab("") +
     xlab(expression(Delta ~ " average log2(FC)")) +
-    ggtitle("NEO Day 12 vs. CTRL Day 12, myeloid")
+    ggtitle("NEO Day 12 vs. CTRL Day 12, myeloid") +
+    theme(axis.text = element_text(size = 2))
 
 ```
 
@@ -383,7 +394,8 @@ res_sig %>%
     #manuscript_theme +
     ylab("") +
     xlab(expression(Delta ~ " average log2(FC)")) +
-    ggtitle("NEO Day 16 vs. ADJ Day 16, lymphoid")
+    ggtitle("NEO Day 16 vs. ADJ Day 16, lymphoid") +
+    theme(axis.text = element_text(size = 12))
 
 ```
 
@@ -416,7 +428,8 @@ res_sig %>%
     #manuscript_theme +
     ylab("") +
     xlab(expression(Delta ~ " average log2(FC)")) +
-    ggtitle("NEO Day 16 vs. CTRL Day 16, lymphoid")
+    ggtitle("NEO Day 16 vs. CTRL Day 16, lymphoid") +
+    theme(axis.text = element_text(size = 12))
 
 
 ```
@@ -450,7 +463,8 @@ res_sig %>%
     #manuscript_theme +
     ylab("") +
     xlab(expression(Delta ~ " average log2(FC)")) +
-    ggtitle("NEO Day 16 vs. CTRL Day 16, lymphoid")
+    ggtitle("NEO Day 16 vs. CTRL Day 16, lymphoid") +
+    theme(axis.text = element_text(size = 12))
 
 ```
 

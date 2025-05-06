@@ -390,13 +390,13 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-04-09
+<strong>Last updated:</strong> 2025-05-04
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 5
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 2
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>PD1_mm/</code> <span
@@ -419,21 +419,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -590,15 +587,15 @@ docs/Layer1_scImmuCC_label.csv
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree18c6a12ca5e8e8fa9fbcd97c30f53f6f0c8504catargetblank18c6a12a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree0bf242094d7de372f24ccb05a1131794ca018a62targetblank0bf2420a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/18c6a12ca5e8e8fa9fbcd97c30f53f6f0c8504ca" target="_blank">18c6a12</a>
+<a href="https://github.com/heinin/PD1_mm/tree/0bf242094d7de372f24ccb05a1131794ca018a62" target="_blank">0bf2420</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree18c6a12ca5e8e8fa9fbcd97c30f53f6f0c8504catargetblank18c6a12a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree0bf242094d7de372f24ccb05a1131794ca018a62targetblank0bf2420a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -608,7 +605,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/18c6a12ca5e8e8fa9fbcd97c30f53f6f0c8504ca" target="_blank">18c6a12</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/0bf242094d7de372f24ccb05a1131794ca018a62" target="_blank">0bf2420</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -624,36 +621,6 @@ were generated:
 <pre><code>
 Ignored files:
     Ignored:    .RData
-    Ignored:    analysis/figure/
-
-Untracked files:
-    Untracked:  GSEA_myeloid_celltype_sig.tsv
-    Untracked:  GSEA_myeloid_sig.tsv
-    Untracked:  Rplots.pdf
-    Untracked:  analysis/CellChat.Rmd
-    Untracked:  code/CellChat.R
-    Untracked:  code/CellChat.Rout
-    Untracked:  code/GSEA.R
-    Untracked:  code/run_rscript.sh
-    Untracked:  code/slurm.10245069.err
-    Untracked:  code/slurm.10245069.out
-    Untracked:  code/slurm.10253566.err
-    Untracked:  code/slurm.10253566.out
-    Untracked:  code/slurm.10347650.err
-    Untracked:  code/slurm.10347650.out
-    Untracked:  code/slurm.10348263.err
-    Untracked:  code/slurm.10348263.out
-    Untracked:  code/slurm.10348264.err
-    Untracked:  code/slurm.10348264.out
-
-Unstaged changes:
-    Modified:   PD1_CART_celltype_markers_top20.tsv
-    Modified:   analysis/GSEA.Rmd
-    Modified:   analysis/annotate.Rmd
-    Modified:   analysis/comparative_analysis.Rmd
-    Modified:   analysis/myeloid_lymphoid_markers_compare.Rmd
-    Modified:   code/CART_plot_functions.R
-    Modified:   code/PD1_mm_themes.R
 
 </code></pre>
 <p>
@@ -699,6 +666,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/7c73c80984c7ca3a66242240b31a3497fa8c1d27/analysis/annotate.Rmd" target="_blank">7c73c80</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-05-06
+</td>
+<td>
+Added GO analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/7c73c80984c7ca3a66242240b31a3497fa8c1d27/docs/annotate.html" target="_blank">7c73c80</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-05-06
+</td>
+<td>
+Added GO analysis
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1072,6 +1073,7 @@ seurat_data[[&quot;RNA_human&quot;]] &lt;- CreateAssayObject(assay_data,
                                                 min.features = 0)</code></pre>
 <pre><code>Warning: Non-unique features (rownames) present in the input matrix, making
 unique</code></pre>
+<pre><code>Warning: Different cells and/or features from existing assay RNA_human</code></pre>
 <pre class="r"><code>saveRDS(seurat_data, &quot;/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds&quot;)</code></pre>
 </div>
 <div id="visualizing-clusters" class="section level3">
@@ -1194,6 +1196,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/7c73c80984c7ca3a66242240b31a3497fa8c1d27/docs/figure/annotate.Rmd/unnamed-chunk-5-1.png" target="_blank">7c73c80</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-05-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/ea97b276dd30ea0aa00e9589a40b037133d3aacb/docs/figure/annotate.Rmd/unnamed-chunk-5-1.png" target="_blank">ea97b27</a>
 </td>
 <td>
@@ -1263,6 +1276,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/7c73c80984c7ca3a66242240b31a3497fa8c1d27/docs/figure/annotate.Rmd/unnamed-chunk-6-1.png" target="_blank">7c73c80</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-05-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/ea97b276dd30ea0aa00e9589a40b037133d3aacb/docs/figure/annotate.Rmd/unnamed-chunk-6-1.png" target="_blank">ea97b27</a>
 </td>
 <td>
@@ -1302,27 +1326,35 @@ gs4_deauth()
 canonical_markers  &lt;- gs4_get(&quot;https://docs.google.com/spreadsheets/d/1ApwXjEVtpPB87al6q3ab8TKvZYJTh3iNH1cuO-A_OoU/edit?usp=sharing&quot;)
 sheet_names(canonical_markers)</code></pre>
 <pre><code> [1] &quot;Sample summary&quot;                                   
- [2] &quot;Deconvolution markers&quot;                            
- [3] &quot;GSEA GBM, immune+fibro&quot;                           
- [4] &quot;Mm immune markers&quot;                                
- [5] &quot;Cluster annotations, JAK mouse&quot;                   
- [6] &quot;Sherri-Cluster annotations, JAK mouse&quot;            
- [7] &quot;Cluster markers, JAK mouse&quot;                       
- [8] &quot;Sherri-Cluster markers, JAK mouse&quot;                
- [9] &quot;DL_cluster_res&quot;                                   
-[10] &quot;Cluster markers, final data, UPN109pre, no UPN208&quot;
-[11] &quot;Cluster annotations, GBM+mouse&quot;                   
-[12] &quot;Cluster markers, GBM+JAK1KO&quot;                      
-[13] &quot;Sherri-Cluster markers, GBM+JAK1KO&quot;               
-[14] &quot;Cluster markers, final data, immune+fibroblast&quot;   
-[15] &quot;Cluster annotations, immune+fibroblast&quot;           
-[16] &quot;Cluster markers, immune+fibroblast, top 100&quot;      
-[17] &quot;Sherri - Cluster annotations, immune+fibroblast&quot;  
-[18] &quot;Sherri-Only GBM Charactarization 50 genes&quot;        
-[19] &quot;Sherri only GBM immune+fibroblast, top 100&quot;       
-[20] &quot;Cluster annotations&quot;                              
-[21] &quot;Heatmap genes&quot;                                    
-[22] &quot;Tumor and CSF sample summary&quot;                     </code></pre>
+ [2] &quot;Sheet39&quot;                                          
+ [3] &quot;NatMed clinical data&quot;                             
+ [4] &quot;Clinical info&quot;                                    
+ [5] &quot;GSEA tumor, response&quot;                             
+ [6] &quot;GSEA tumor, SPP1/survival top vs. bottom&quot;         
+ [7] &quot;GSEA, CD45- JAK1KO vs. WT, CTRL&quot;                  
+ [8] &quot;GSEA myeloid, SPP1/survival top. vs. bottom&quot;      
+ [9] &quot;Deconvolution markers&quot;                            
+[10] &quot;GSEA GBM, immune+fibro&quot;                           
+[11] &quot;Mm immune markers&quot;                                
+[12] &quot;Cluster annotations, JAK mouse&quot;                   
+[13] &quot;Sherri-Cluster annotations, JAK mouse&quot;            
+[14] &quot;Cluster markers, JAK mouse&quot;                       
+[15] &quot;Sherri-Cluster markers, JAK mouse&quot;                
+[16] &quot;DL_cluster_res&quot;                                   
+[17] &quot;Cluster markers, final data, UPN109pre, no UPN208&quot;
+[18] &quot;Cluster annotations, GBM+mouse&quot;                   
+[19] &quot;Cluster markers, GBM+JAK1KO&quot;                      
+[20] &quot;Sherri-Cluster markers, GBM+JAK1KO&quot;               
+[21] &quot;Cluster markers, final data, immune+fibroblast&quot;   
+[22] &quot;Cluster annotations, immune+fibroblast&quot;           
+[23] &quot;Sheet40&quot;                                          
+[24] &quot;Cluster markers, immune+fibroblast, top 100&quot;      
+[25] &quot;Sherri - Cluster annotations, immune+fibroblast&quot;  
+[26] &quot;Sherri-Only GBM Charactarization 50 genes&quot;        
+[27] &quot;Sherri only GBM immune+fibroblast, top 100&quot;       
+[28] &quot;Cluster annotations&quot;                              
+[29] &quot;Heatmap genes&quot;                                    
+[30] &quot;Tumor and CSF sample summary&quot;                     </code></pre>
 <pre class="r"><code>mm_immune_markers &lt;- read_sheet(canonical_markers, sheet = &quot;Mm immune markers&quot;)</code></pre>
 <pre><code>✔ Reading from &quot;13384 tumor scRNAseq tables&quot;.</code></pre>
 <pre><code>✔ Range &#39;&#39;Mm immune markers&#39;&#39;.</code></pre>
@@ -1356,6 +1388,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/7c73c80984c7ca3a66242240b31a3497fa8c1d27/docs/figure/annotate.Rmd/unnamed-chunk-8-1.png" target="_blank">7c73c80</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-05-06
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/heinin/PD1_mm/blob/ea97b276dd30ea0aa00e9589a40b037133d3aacb/docs/figure/annotate.Rmd/unnamed-chunk-8-1.png" target="_blank">ea97b27</a>
@@ -1629,6 +1672,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/7c73c80984c7ca3a66242240b31a3497fa8c1d27/docs/figure/annotate.Rmd/unnamed-chunk-11-1.png" target="_blank">7c73c80</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-05-06
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/ea97b276dd30ea0aa00e9589a40b037133d3aacb/docs/figure/annotate.Rmd/unnamed-chunk-11-1.png" target="_blank">ea97b27</a>
 </td>
 <td>
@@ -1662,6 +1716,43 @@ heinin
   theme_bw() &amp;
   NoLegend()</code></pre>
 <p><img src="figure/annotate.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-2">
+Past versions of unnamed-chunk-11-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/7c73c80984c7ca3a66242240b31a3497fa8c1d27/docs/figure/annotate.Rmd/unnamed-chunk-11-2.png" target="_blank">7c73c80</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2024-05-06
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>saveRDS(seurat_data, &quot;/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds&quot;)</code></pre>
 <br>
 <p>
@@ -1698,13 +1789,13 @@ attached base packages:
 other attached packages:
  [1] ComplexHeatmap_2.18.0 viridis_0.6.3         viridisLite_0.4.2    
  [4] circlize_0.4.15       plyr_1.8.8            RColorBrewer_1.1-3   
- [7] scImmuCC_1.0.0        GSVA_1.50.0           googlesheets4_1.1.0  
+ [7] scImmuCC_1.0.0        GSVA_1.53.22          googlesheets4_1.1.0  
 [10] workflowr_1.7.1       ggrepel_0.9.3         ggpubr_0.6.0         
 [13] lubridate_1.9.2       forcats_1.0.0         stringr_1.5.0        
 [16] dplyr_1.1.2           purrr_1.0.2           readr_2.1.4          
 [19] tidyr_1.3.0           tibble_3.2.1          ggplot2_3.4.2        
 [22] tidyverse_2.0.0       SeuratDisk_0.0.0.9021 Seurat_5.0.1         
-[25] SeuratObject_5.0.1    sp_1.6-1             
+[25] SeuratObject_5.0.2    sp_1.6-1             
 
 loaded via a namespace (and not attached):
   [1] fs_1.6.2                    matrixStats_1.0.0          
@@ -1712,7 +1803,7 @@ loaded via a namespace (and not attached):
   [5] doParallel_1.0.17           httr_1.4.6                 
   [7] tools_4.3.0                 sctransform_0.4.1          
   [9] backports_1.4.1             utf8_1.2.3                 
- [11] R6_2.5.1                    HDF5Array_1.30.0           
+ [11] R6_2.5.1                    HDF5Array_1.30.1           
  [13] lazyeval_0.2.2              uwot_0.1.14                
  [15] GetoptLong_1.0.5            rhdf5filters_1.14.1        
  [17] withr_2.5.0                 gridExtra_2.3              
@@ -1734,7 +1825,7 @@ loaded via a namespace (and not attached):
  [49] Rtsne_0.16                  blob_1.2.4                 
  [51] promises_1.2.0.1            crayon_1.5.2               
  [53] miniUI_0.1.1.1              lattice_0.21-8             
- [55] beachmat_2.18.0             cowplot_1.1.1              
+ [55] beachmat_2.18.1             cowplot_1.1.1              
  [57] annotate_1.80.0             KEGGREST_1.42.0            
  [59] magick_2.7.4                pillar_1.9.0               
  [61] knitr_1.43                  GenomicRanges_1.54.1       
@@ -1751,7 +1842,7 @@ loaded via a namespace (and not attached):
  [83] ellipsis_0.3.2              fitdistrplus_1.1-11        
  [85] ROCR_1.0-11                 nlme_3.1-162               
  [87] bit64_4.0.5                 RcppAnnoy_0.0.20           
- [89] GenomeInfoDb_1.38.7         rprojroot_2.0.3            
+ [89] GenomeInfoDb_1.38.8         rprojroot_2.0.3            
  [91] bslib_0.4.2                 irlba_2.3.5.1              
  [93] KernSmooth_2.23-21          colorspace_2.1-0           
  [95] BiocGenerics_0.48.1         DBI_1.1.3                  
@@ -1761,15 +1852,15 @@ loaded via a namespace (and not attached):
 [103] graph_1.80.0                hdf5r_1.3.8                
 [105] DelayedArray_0.28.0         plotly_4.10.2              
 [107] scales_1.2.1                lmtest_0.9-40              
-[109] callr_3.7.3                 digest_0.6.31              
-[111] goftest_1.2-3               presto_1.0.0               
-[113] spatstat.utils_3.0-3        rmarkdown_2.22             
-[115] XVector_0.42.0              htmltools_0.5.5            
-[117] pkgconfig_2.0.3             sparseMatrixStats_1.14.0   
-[119] MatrixGenerics_1.14.0       highr_0.10                 
-[121] fastmap_1.1.1               GlobalOptions_0.1.2        
-[123] rlang_1.1.1                 htmlwidgets_1.6.2          
-[125] shiny_1.7.4                 DelayedMatrixStats_1.24.0  
+[109] callr_3.7.3                 SpatialExperiment_1.12.0   
+[111] digest_0.6.31               goftest_1.2-3              
+[113] presto_1.0.0                spatstat.utils_3.0-3       
+[115] rmarkdown_2.22              XVector_0.42.0             
+[117] htmltools_0.5.5             pkgconfig_2.0.3            
+[119] sparseMatrixStats_1.14.0    MatrixGenerics_1.14.0      
+[121] highr_0.10                  fastmap_1.1.1              
+[123] GlobalOptions_0.1.2         rlang_1.1.1                
+[125] htmlwidgets_1.6.2           shiny_1.7.4                
 [127] farver_2.1.1                jquerylib_0.1.4            
 [129] zoo_1.8-12                  jsonlite_1.8.5             
 [131] BiocParallel_1.36.0         BiocSingular_1.18.0        
@@ -1778,9 +1869,9 @@ loaded via a namespace (and not attached):
 [137] patchwork_1.1.2             Rhdf5lib_1.24.1            
 [139] munsell_0.5.0               Rcpp_1.0.10                
 [141] reticulate_1.29             stringi_1.7.12             
-[143] zlibbioc_1.48.0             MASS_7.3-60                
+[143] zlibbioc_1.48.2             MASS_7.3-60                
 [145] parallel_4.3.0              listenv_0.9.0              
-[147] deldir_1.0-9                Biostrings_2.70.2          
+[147] deldir_1.0-9                Biostrings_2.70.3          
 [149] splines_4.3.0               tensor_1.5                 
 [151] hms_1.1.3                   ps_1.7.5                   
 [153] igraph_1.4.3                spatstat.geom_3.2-1        

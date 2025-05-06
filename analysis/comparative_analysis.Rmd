@@ -66,6 +66,9 @@ seurat_data$celltype <- mapvalues(seurat_data$snn_res.0.5,
                                   from = annotations$snn_res.0.5,
                                   to = annotations$annotation)
 
+seurat_data$celltype <- factor(seurat_data$celltype,
+                               levels = sort(unique(as.character(seurat_data$celltype))))
+
 #saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 
 # Normalizing all features in the Seurat object for plotting
@@ -88,9 +91,22 @@ seurat_data$celltype <- mapvalues(seurat_data$snn_res.0.5,
 
 ```
 
-```{r, message = F, warning = F}
+```{r, message = F, warning = F, eval = T}
 
 seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
+
+# Updating annotations
+gs4_deauth()
+markers_annotations  <- gs4_get("https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharin#g")
+sheet_names(markers_annotations)
+annotations <- read_sheet(markers_annotations, sheet = "Cluster annotations")
+
+seurat_data$celltype <- mapvalues(seurat_data$snn_res.0.5,
+                                  from = annotations$snn_res.0.5,
+                                  to = annotations$annotation)
+
+seurat_data$celltype <- factor(seurat_data$celltype,
+                               levels = sort(unique(as.character(seurat_data$celltype))))
 
 ```
 
@@ -168,6 +184,19 @@ dotplot_heatmap <- create_dotplot_heatmap_horizontal(seurat_object = seurat_data
 ```
 
 ### Cell type proportion differences
+
+```{r}
+
+create_barplot(subset(seurat_data, subset = Day == 16),
+               group_var = "Treatment",
+               plot_var = "celltype",
+               plot_levels = sort((unique(seurat_data$celltype))),
+               group_levels = c("CTRL", "ADJ", "NEO"),
+               plot_colors = PD1_Kluc_celltype_col,
+               var_names =  c("Frequency (%)", ""),
+               legend_title = "Celltype")
+
+```
 
 In scatter plots, the proportions of cell types in each pair of treatment groups
 are plotted against each other with one group on each axis. The forest plots show
@@ -338,11 +367,13 @@ perm_plot + scale_colour_manual(values = c("tomato", "azure2")) +
 
 ```{r}
 
+DefaultAssay(seurat_data) <- "RNA_human"
+
 # Dropping MT and RP genes before calling markers
 RBMTgenes <- grep(pattern = "^RP[SL]|^MRP[SL]|^MT-",
                   x = rownames(seurat_data@assays$RNA_human@data),
                   value = TRUE, invert = TRUE)
-seurat_data <- subset(seurat_data, features = RBMTgenes)
+#seurat_data <- subset(seurat_data, features = RBMTgenes)
 
 # Top markers for each cluster
 markers <- presto::wilcoxauc(seurat_data,
@@ -942,5 +973,8 @@ DEG_NEO_ADJ_df_sig %>% filter(feature %in% canonical_markers$RNA)
 # Overlapping with DEGs from the Seurat analysis
 DEG_NEO_CTRL_Seurat_df_sig %>% filter(feature %in% canonical_markers$RNA)
 DEG_NEO_ADJ_Seurat_df_sig %>% filter(feature %in% canonical_markers$RNA)
+
+# To build on command line, run Rscript -e "rmarkdown::render('/home/hnatri/PD1_mm/analysis/comparative_analysis.Rmd')"
+# Then "mv *.html /home/hnatri/PD1_mm/docs/"
 
 ```

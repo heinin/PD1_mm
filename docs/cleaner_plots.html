@@ -402,7 +402,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2025-04-28
+<strong>Last updated:</strong> 2025-05-05
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -586,15 +586,15 @@ code/CART_plot_functions.R
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree6984f3691c37f5617533c7ab818581c72d229067targetblank6984f36a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree0bf242094d7de372f24ccb05a1131794ca018a62targetblank0bf2420a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/heinin/PD1_mm/tree/6984f3691c37f5617533c7ab818581c72d229067" target="_blank">6984f36</a>
+<a href="https://github.com/heinin/PD1_mm/tree/0bf242094d7de372f24ccb05a1131794ca018a62" target="_blank">0bf2420</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree6984f3691c37f5617533c7ab818581c72d229067targetblank6984f36a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomheininPD1mmtree0bf242094d7de372f24ccb05a1131794ca018a62targetblank0bf2420a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -604,7 +604,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/heinin/PD1_mm/tree/6984f3691c37f5617533c7ab818581c72d229067" target="_blank">6984f36</a>.
+<a href="https://github.com/heinin/PD1_mm/tree/0bf242094d7de372f24ccb05a1131794ca018a62" target="_blank">0bf2420</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -621,9 +621,20 @@ were generated:
 Ignored files:
     Ignored:    .RData
 
+Untracked files:
+    Untracked:  Rplots.pdf
+    Untracked:  code/slurm.20555266.err
+    Untracked:  code/slurm.20555266.out
+    Untracked:  code/slurm.20555410.err
+    Untracked:  code/slurm.20555410.out
+
 Unstaged changes:
+    Modified:   PD1_CART_celltype_markers_top20.tsv
+    Modified:   analysis/CellChat.Rmd
+    Modified:   analysis/annotate.Rmd
     Modified:   analysis/cleaner_plots.Rmd
-    Modified:   code/CellChat.R
+    Modified:   analysis/comparative_analysis.Rmd
+    Modified:   code/CellChat.Rout
 
 </code></pre>
 <p>
@@ -669,6 +680,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/0bf242094d7de372f24ccb05a1131794ca018a62/analysis/cleaner_plots.Rmd" target="_blank">0bf2420</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-05-04
+</td>
+<td>
+Updated plots
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/heinin/PD1_mm/0bf242094d7de372f24ccb05a1131794ca018a62/docs/cleaner_plots.html" target="_blank">0bf2420</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-05-04
+</td>
+<td>
+Updated plots
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -808,6 +853,32 @@ get_DEGs &lt;- function(seuratdata, celltypes, groupvar, group1, group2){
 <pre class="r"><code>seurat_data &lt;- readRDS(&quot;/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds&quot;)
 DefaultAssay(seurat_data) &lt;- &quot;RNA&quot;
 
+# Updating annotations
+gs4_deauth()
+markers_annotations  &lt;- gs4_get(&quot;https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharin#g&quot;)
+sheet_names(markers_annotations)</code></pre>
+<pre><code> [1] &quot;Cluster top markers&quot;                              
+ [2] &quot;Cluster annotations&quot;                              
+ [3] &quot;scImmuCC&quot;                                         
+ [4] &quot;Celltype top markers (all sig)&quot;                   
+ [5] &quot;Celltype top 20 markers&quot;                          
+ [6] &quot;GSEA myeloid&quot;                                     
+ [7] &quot;GSEA myeloid by celltype&quot;                         
+ [8] &quot;NEO vs. CTRL DEGs&quot;                                
+ [9] &quot;NEO vs. CTRL, Seurat DEGs&quot;                        
+[10] &quot;NEO vs. ADJ DEGs&quot;                                 
+[11] &quot;NEO vs. ADJ, Seurat DEGs&quot;                         
+[12] &quot;ADJ vs. CTRL, Seurat DEGs&quot;                        
+[13] &quot;NEO vs. CTRL, NEO vs. ADJ overlapping DEGs&quot;       
+[14] &quot;NEO vs. CTRL, NEO vs. ADJ overlapping Seurat DEGs&quot;
+[15] &quot;Mm immune markers&quot;                                </code></pre>
+<pre class="r"><code>annotations &lt;- read_sheet(markers_annotations, sheet = &quot;Cluster annotations&quot;)
+
+seurat_data$celltype &lt;- mapvalues(seurat_data$snn_res.0.5,
+                                  from = annotations$snn_res.0.5,
+                                  to = annotations$annotation)
+
+
 seurat_data &lt;- subset(seurat_data, subset = Day == 16)
 
 seurat_data$Treatment &lt;- factor(seurat_data$Treatment,
@@ -862,6 +933,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/heinin/PD1_mm/blob/0bf242094d7de372f24ccb05a1131794ca018a62/docs/figure/cleaner_plots.Rmd/unnamed-chunk-4-1.png" target="_blank">0bf2420</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-05-04
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/heinin/PD1_mm/blob/6984f3691c37f5617533c7ab818581c72d229067/docs/figure/cleaner_plots.Rmd/unnamed-chunk-4-1.png" target="_blank">6984f36</a>
 </td>
 <td>
@@ -905,49 +987,49 @@ markers %&gt;%
   mutate(p_val = round(p_val, 3),
          p_val_adj = round(p_val_adj, 3))</code></pre>
 <pre><code>        p_val avg_log2FC pct.1 pct.2 p_val_adj feature
-Gzmc        0   2.836984 0.162 0.045     0.000    Gzmc
-Gzmf        0   3.930203 0.025 0.004     0.000    Gzmf
-Gm36888     0  -3.631396 0.001 0.018     0.000 Gm36888
-Dgki        0  -2.339319 0.015 0.037     0.000    Dgki
-Arg1        0   3.144504 0.033 0.013     0.000    Arg1
-Tshz2       0  -2.104372 0.010 0.029     0.000   Tshz2
-F10         0   2.254657 0.034 0.014     0.000     F10
-Iglc1       0   2.340020 0.071 0.040     0.000   Iglc1
-Rbms3       0  -2.061351 0.010 0.027     0.001   Rbms3
-Gm10406     0  -2.449032 0.004 0.017     0.001 Gm10406
-Trav7-4     0  -3.401053 0.002 0.011     0.005 Trav7-4
-Ntn1        0  -2.542014 0.010 0.026     0.005    Ntn1
-Gm3667      0  -2.327663 0.005 0.018     0.008  Gm3667
-Ccl24       0   4.043596 0.030 0.013     0.009   Ccl24</code></pre>
+Gzmc        0   2.837919 0.167 0.047     0.000    Gzmc
+Gzmf        0   3.930682 0.026 0.005     0.000    Gzmf
+Gm36888     0  -3.619798 0.001 0.019     0.000 Gm36888
+Dlg2        0  -2.203450 0.014 0.040     0.000    Dlg2
+Tshz2       0  -2.129072 0.011 0.030     0.000   Tshz2
+Gm10406     0  -2.929053 0.003 0.017     0.000 Gm10406
+Arg1        0   3.267527 0.033 0.013     0.000    Arg1
+Rbms3       0  -2.060511 0.011 0.029     0.001   Rbms3
+Iglc1       0   2.348972 0.067 0.038     0.001   Iglc1
+Dgki        0  -2.428266 0.013 0.031     0.001    Dgki
+Matn2       0  -2.230021 0.013 0.031     0.002   Matn2
+Trav7-4     0  -3.400212 0.002 0.011     0.005 Trav7-4
+Ntn1        0  -2.541174 0.011 0.027     0.005    Ntn1</code></pre>
 <p>ADJ vs. NEO, T cell markers</p>
 <pre class="r"><code>markers %&gt;%
   filter(feature %in% lymph_plot_features) %&gt;%
   mutate(p_val = round(p_val, 3),
          p_val_adj = round(p_val_adj, 3))</code></pre>
 <pre><code>        p_val avg_log2FC pct.1 pct.2 p_val_adj feature
-Cd4     0.000 -1.1628684 0.188 0.357     0.000     Cd4
-Tox     0.000 -0.7291804 0.617 0.707     0.000     Tox
-Gzmb    0.000  1.1562579 0.432 0.312     0.000    Gzmb
-Foxp3   0.000 -0.9808091 0.075 0.161     0.000   Foxp3
-Klrc1   0.000  0.6128789 0.423 0.306     0.000   Klrc1
-Xcl1    0.000  0.2754180 0.455 0.344     0.000    Xcl1
-Tigit   0.000 -1.1356552 0.112 0.166     0.000   Tigit
-Cd8a    0.000  0.3944113 0.347 0.275     0.000    Cd8a
-Cx3cr1  0.000 -0.8054502 0.330 0.379     0.000  Cx3cr1
-Ccr7    0.000  0.4867760 0.180 0.128     0.000    Ccr7
-Prf1    0.000  0.3944871 0.354 0.289     0.000    Prf1
-Tnfrsf9 0.000  0.2060815 0.383 0.317     0.002 Tnfrsf9
-Cdc6    0.000  0.5727930 0.056 0.033     0.019    Cdc6
-Klrg1   0.000 -0.5604058 0.077 0.108     0.050   Klrg1
-Tcf7    0.000  0.1442359 0.450 0.395     0.060    Tcf7
-Nr4a1   0.000 -0.7009271 0.078 0.108     0.114   Nr4a1
-Cd3e    0.000 -0.1061116 0.645 0.706     1.000    Cd3e
-Nfkbia  0.000  0.1898662 0.715 0.675     1.000  Nfkbia
-Lag3    0.001 -0.3281816 0.360 0.375     1.000    Lag3
-Slamf6  0.049 -0.1248160 0.357 0.378     1.000  Slamf6
-Cxcr5   0.076  0.3890038 0.106 0.095     1.000   Cxcr5
-Gzmk    0.134 -0.1606079 0.121 0.132     1.000    Gzmk
-Pdcd1   0.589  0.1256223 0.267 0.266     1.000   Pdcd1</code></pre>
+Cd4     0.000 -1.2107825 0.175 0.346     0.000     Cd4
+Tox     0.000 -0.7295766 0.641 0.735     0.000     Tox
+Gzmb    0.000  1.1576941 0.449 0.324     0.000    Gzmb
+Foxp3   0.000 -0.9791470 0.078 0.168     0.000   Foxp3
+Klrc1   0.000  0.6132691 0.440 0.319     0.000   Klrc1
+Xcl1    0.000  0.2754120 0.473 0.357     0.000    Xcl1
+Tigit   0.000 -1.1422033 0.116 0.173     0.000   Tigit
+Cd8a    0.000  0.4086730 0.346 0.272     0.000    Cd8a
+Cx3cr1  0.000 -0.8212934 0.336 0.389     0.000  Cx3cr1
+Ccr7    0.000  0.4880586 0.183 0.132     0.000    Ccr7
+Prf1    0.000  0.3955390 0.369 0.301     0.000    Prf1
+Tnfrsf9 0.000  0.2103454 0.400 0.330     0.001 Tnfrsf9
+Nr4a1   0.000 -0.7883065 0.078 0.111     0.010   Nr4a1
+Cdc6    0.000  0.5822946 0.058 0.034     0.017    Cdc6
+Klrg1   0.000 -0.5582081 0.081 0.113     0.058   Klrg1
+Tcf7    0.000  0.1431809 0.467 0.412     0.068    Tcf7
+Cd3e    0.000 -0.1065022 0.670 0.735     1.000    Cd3e
+Nfkbia  0.002  0.1753719 0.718 0.679     1.000  Nfkbia
+Lag3    0.004 -0.3377843 0.344 0.356     1.000    Lag3
+Slamf6  0.070 -0.1186231 0.349 0.370     1.000  Slamf6
+Gzmk    0.142 -0.1580990 0.126 0.136     1.000    Gzmk
+Havcr2  0.276 -0.1113962 0.298 0.307     1.000  Havcr2
+Cxcr5   0.298  0.3163086 0.104 0.098     1.000   Cxcr5
+Pdcd1   0.539  0.1277162 0.278 0.276     1.000   Pdcd1</code></pre>
 <p>ADJ vs. CTRL</p>
 <pre class="r"><code>Idents(lymphoid) &lt;- lymphoid$Treatment
     
@@ -964,60 +1046,58 @@ markers %&gt;%
   mutate(p_val = round(p_val, 3),
          p_val_adj = round(p_val_adj, 3))</code></pre>
 <pre><code>         p_val avg_log2FC pct.1 pct.2 p_val_adj  feature
-Igkc         0  -2.427291 0.201 0.544     0.000     Igkc
-Ighg2c       0 -11.343798 0.001 0.090     0.000   Ighg2c
-Ighg2b       0  -3.680714 0.015 0.112     0.000   Ighg2b
-Jchain       0  -2.386996 0.009 0.054     0.000   Jchain
-Ccdc160      0  -7.013639 0.000 0.032     0.000  Ccdc160
-Slpi         0  -2.579524 0.042 0.110     0.000     Slpi
-Cxcl2        0  -2.189619 0.012 0.044     0.000    Cxcl2
-Ccl24        0   5.398647 0.030 0.008     0.000    Ccl24
-Iglv1        0  -4.251857 0.010 0.033     0.000    Iglv1
-Nuggc        0  -3.506658 0.001 0.015     0.000    Nuggc
-Alpl         0  -3.365844 0.003 0.019     0.000     Alpl
-Endou        0  -2.420099 0.005 0.020     0.000    Endou
-Prg2         0  -2.999891 0.005 0.019     0.000     Prg2
-Fkbp11       0  -2.895257 0.012 0.031     0.000   Fkbp11
-Hbb-bs       0   3.702222 0.032 0.012     0.000   Hbb-bs
-A4galt       0  -2.867945 0.002 0.013     0.000   A4galt
-Prlr         0  -2.359166 0.003 0.015     0.000     Prlr
-Il10         0  -2.027386 0.009 0.026     0.001     Il10
-Gzmf         0   3.142878 0.025 0.009     0.001     Gzmf
-Fmr1nb       0   2.109225 0.012 0.002     0.001   Fmr1nb
-Cacna1h      0  -2.403738 0.002 0.013     0.002  Cacna1h
-Igkv8-30     0  -3.335310 0.001 0.010     0.004 Igkv8-30
-Derl3        0  -2.720553 0.013 0.030     0.006    Derl3
-Iglv3        0  -2.085193 0.007 0.021     0.007    Iglv3</code></pre>
+Igkc         0  -2.420166 0.181 0.532     0.000     Igkc
+Ighg2c       0 -11.258104 0.001 0.088     0.000   Ighg2c
+Ighg2b       0  -3.659909 0.014 0.111     0.000   Ighg2b
+Slpi         0  -2.735918 0.024 0.088     0.000     Slpi
+S100a9       0  -2.282713 0.032 0.099     0.000   S100a9
+Jchain       0  -2.319936 0.008 0.054     0.000   Jchain
+Ccdc160      0  -6.979127 0.000 0.033     0.000  Ccdc160
+Ccl24        0   5.416476 0.030 0.008     0.000    Ccl24
+Iglv1        0  -4.241429 0.010 0.033     0.000    Iglv1
+Nuggc        0  -3.490900 0.001 0.016     0.000    Nuggc
+Bhlha15      0  -3.280735 0.002 0.016     0.000  Bhlha15
+Alpl         0  -3.273077 0.003 0.018     0.000     Alpl
+Fkbp11       0  -2.966415 0.011 0.031     0.000   Fkbp11
+A4galt       0  -2.764829 0.002 0.013     0.000   A4galt
+Prlr         0  -2.375361 0.003 0.015     0.000     Prlr
+Il10         0  -2.045702 0.010 0.027     0.000     Il10
+Prg2         0  -2.938444 0.005 0.019     0.000     Prg2
+Gzmf         0   3.143385 0.026 0.009     0.001     Gzmf
+Endou        0  -2.196384 0.005 0.019     0.001    Endou
+Hbb-bs       0   3.283163 0.031 0.012     0.001   Hbb-bs
+Fmr1nb       0   2.102784 0.013 0.002     0.001   Fmr1nb
+Iglv3        0  -2.088072 0.006 0.020     0.007    Iglv3
+Derl3        0  -2.949605 0.012 0.029     0.007    Derl3
+Igkv8-30     0  -3.331761 0.001 0.010     0.009 Igkv8-30</code></pre>
 <p>ADJ vs. CTRL, T cell markers</p>
 <pre class="r"><code>markers %&gt;%
   filter(feature %in% lymph_plot_features) %&gt;%
   mutate(p_val = round(p_val, 3),
          p_val_adj = round(p_val_adj, 3))</code></pre>
 <pre><code>        p_val avg_log2FC pct.1 pct.2 p_val_adj feature
-Cd4     0.000 -1.0225989 0.188 0.304     0.000     Cd4
-Cd8a    0.000  0.5093602 0.347 0.223     0.000    Cd8a
-Klrc1   0.000  0.3487256 0.423 0.301     0.000   Klrc1
-Xcl1    0.000  0.2740381 0.455 0.334     0.000    Xcl1
-Foxp3   0.000 -0.8384133 0.075 0.141     0.000   Foxp3
-Havcr2  0.000  0.3713601 0.294 0.202     0.000  Havcr2
-Cx3cr1  0.000  0.4030943 0.330 0.243     0.000  Cx3cr1
-Gzmb    0.000  0.2416828 0.432 0.348     0.000    Gzmb
-Prf1    0.000  0.4731180 0.354 0.271     0.000    Prf1
-Lag3    0.000  0.1415182 0.360 0.285     0.000    Lag3
-Cd69    0.000  0.1004426 0.503 0.413     0.000    Cd69
-Tcf7    0.000  0.1097990 0.450 0.378     0.015    Tcf7
-Mt1     0.000 -0.1436174 0.218 0.174     0.534     Mt1
-Pdcd1   0.000  0.2224907 0.267 0.231     1.000   Pdcd1
-Cd3e    0.001 -0.1885721 0.645 0.638     1.000    Cd3e
-Ccr7    0.006 -0.1829533 0.180 0.152     1.000    Ccr7
-Klrg1   0.017 -0.6558645 0.077 0.091     1.000   Klrg1
-Tox     0.026 -0.2220738 0.617 0.602     1.000     Tox
-Tnfrsf9 0.042 -0.1730912 0.383 0.342     1.000 Tnfrsf9
-Slamf6  0.117 -0.2951943 0.357 0.357     1.000  Slamf6
-Tigit   0.167 -0.8256399 0.112 0.118     1.000   Tigit
-Cxcr5   0.186  0.1183365 0.106 0.097     1.000   Cxcr5
-Nfkbia  0.439 -0.1332977 0.715 0.683     1.000  Nfkbia
-Nr4a1   0.616 -0.3638265 0.078 0.074     1.000   Nr4a1</code></pre>
+Cd4     0.000 -1.0680923 0.175 0.295     0.000     Cd4
+Cd8a    0.000  0.5522714 0.346 0.216     0.000    Cd8a
+Klrc1   0.000  0.3410212 0.440 0.315     0.000   Klrc1
+Foxp3   0.000 -0.8458689 0.078 0.148     0.000   Foxp3
+Xcl1    0.000  0.2676134 0.473 0.349     0.000    Xcl1
+Havcr2  0.000  0.3610301 0.298 0.205     0.000  Havcr2
+Cx3cr1  0.000  0.3980815 0.336 0.247     0.000  Cx3cr1
+Prf1    0.000  0.4670909 0.369 0.284     0.000    Prf1
+Gzmb    0.000  0.2345581 0.449 0.365     0.000    Gzmb
+Lag3    0.000  0.1782369 0.344 0.265     0.000    Lag3
+Tcf7    0.000  0.1038941 0.467 0.394     0.029    Tcf7
+Mt1     0.000 -0.1298946 0.224 0.177     0.264     Mt1
+Cd3e    0.000 -0.1969101 0.670 0.666     1.000    Cd3e
+Pdcd1   0.000  0.2147972 0.278 0.242     1.000   Pdcd1
+Ccr7    0.006 -0.1762708 0.183 0.155     1.000    Ccr7
+Tox     0.007 -0.2276258 0.641 0.630     1.000     Tox
+Klrg1   0.021 -0.6543055 0.081 0.095     1.000   Klrg1
+Tnfrsf9 0.062 -0.1786067 0.400 0.358     1.000 Tnfrsf9
+Tigit   0.119 -0.8393338 0.116 0.123     1.000   Tigit
+Slamf6  0.187 -0.2859103 0.349 0.349     1.000  Slamf6
+Nfkbia  0.385 -0.1400776 0.718 0.685     1.000  Nfkbia
+Nr4a1   0.894 -0.4388070 0.078 0.076     1.000   Nr4a1</code></pre>
 <p>NEO vs. CTRL</p>
 <pre class="r"><code>Idents(lymphoid) &lt;- lymphoid$Treatment
     
@@ -1034,66 +1114,65 @@ markers %&gt;%
   mutate(p_val = round(p_val, 3),
          p_val_adj = round(p_val_adj, 3))</code></pre>
 <pre><code>          p_val avg_log2FC pct.1 pct.2 p_val_adj   feature
-Igkc          0  -3.439609 0.175 0.544     0.000      Igkc
-Hspa1a        0   2.109542 0.173 0.035     0.000    Hspa1a
-Ighg2b        0  -5.068184 0.008 0.112     0.000    Ighg2b
-Ighg2c        0 -10.207438 0.002 0.090     0.000    Ighg2c
-Jchain        0  -4.891345 0.006 0.054     0.000    Jchain
-Slpi          0  -4.251533 0.037 0.110     0.000      Slpi
-Ccdc160       0  -7.065486 0.000 0.032     0.000   Ccdc160
-Hbb-bs        0   3.943695 0.052 0.012     0.000    Hbb-bs
-Iglv1         0  -4.635130 0.006 0.033     0.000     Iglv1
-Cxcl2         0  -2.113275 0.013 0.044     0.000     Cxcl2
-Prg2          0  -5.232100 0.001 0.019     0.000      Prg2
-Igha          0  -3.929116 0.010 0.035     0.000      Igha
-Mzb1          0  -2.287025 0.078 0.127     0.000      Mzb1
-Capn11        0   2.105790 0.029 0.006     0.000    Capn11
-Nuggc         0  -4.107549 0.001 0.015     0.000     Nuggc
-Gm32296       0   2.363270 0.017 0.002     0.000   Gm32296
-Fkbp11        0  -3.292906 0.009 0.031     0.000    Fkbp11
-Mcpt2         0  -6.735032 0.000 0.012     0.000     Mcpt2
-Tomt          0   2.136715 0.020 0.004     0.000      Tomt
-Derl3         0  -3.037184 0.010 0.030     0.000     Derl3
-A4galt        0  -3.255612 0.001 0.013     0.000    A4galt
-Prlr          0  -2.331953 0.002 0.015     0.000      Prlr
-Arg1          0  -2.726279 0.013 0.034     0.000      Arg1
-Gm30329       0   2.096938 0.021 0.005     0.000   Gm30329
-Igkv8-30      0  -7.114394 0.000 0.010     0.000  Igkv8-30
-Gpm6a         0  -2.348873 0.003 0.016     0.000     Gpm6a
-Ly6k          0  -2.050396 0.018 0.040     0.000      Ly6k
-Cacna1h       0  -2.174552 0.002 0.013     0.000   Cacna1h
-Ccr10         0  -3.677845 0.002 0.012     0.000     Ccr10
-Eef1akmt3     0  -2.064500 0.002 0.012     0.000 Eef1akmt3
-Treml1        0   2.430267 0.011 0.001     0.000    Treml1
-Scube1        0   2.261197 0.015 0.003     0.001    Scube1
-Hba-a2        0   3.769625 0.017 0.004     0.002    Hba-a2
-Gm5420        0   2.365173 0.011 0.002     0.002    Gm5420</code></pre>
+Igkc          0  -3.425058 0.157 0.532     0.000      Igkc
+Hspa1a        0   2.122213 0.178 0.035     0.000    Hspa1a
+Ighg2b        0  -5.047768 0.007 0.111     0.000    Ighg2b
+Ighg2c        0 -10.122585 0.003 0.088     0.000    Ighg2c
+Slpi          0  -6.512839 0.016 0.088     0.000      Slpi
+Jchain        0  -4.831800 0.005 0.054     0.000    Jchain
+Ccdc160       0  -7.031815 0.000 0.033     0.000   Ccdc160
+Hbb-bs        0   3.419330 0.052 0.012     0.000    Hbb-bs
+Iglv1         0  -4.630443 0.005 0.033     0.000     Iglv1
+Prg2          0  -5.171494 0.001 0.019     0.000      Prg2
+Mzb1          0  -2.805003 0.048 0.092     0.000      Mzb1
+Gm10848       0   2.006472 0.034 0.008     0.000   Gm10848
+Capn11        0   2.165705 0.029 0.006     0.000    Capn11
+Igha          0  -4.014322 0.009 0.034     0.000      Igha
+Nuggc         0  -4.092631 0.001 0.016     0.000     Nuggc
+Gm32296       0   2.469954 0.018 0.001     0.000   Gm32296
+Fkbp11        0  -3.285234 0.009 0.031     0.000    Fkbp11
+Derl3         0  -3.207139 0.008 0.029     0.000     Derl3
+Mcpt2         0  -6.702284 0.000 0.012     0.000     Mcpt2
+Tomt          0   2.212210 0.020 0.003     0.000      Tomt
+Bhlha15       0  -2.808507 0.002 0.016     0.000   Bhlha15
+Prlr          0  -2.493135 0.002 0.015     0.000      Prlr
+A4galt        0  -3.153336 0.001 0.013     0.000    A4galt
+Gm30329       0   2.119137 0.021 0.005     0.000   Gm30329
+Arg1          0  -2.863861 0.013 0.033     0.000      Arg1
+Igkv8-30      0  -7.111685 0.000 0.010     0.000  Igkv8-30
+Ccr10         0  -3.813771 0.002 0.013     0.000     Ccr10
+Eef1akmt3     0  -2.002572 0.002 0.013     0.001 Eef1akmt3
+Treml1        0   2.403514 0.012 0.001     0.001    Treml1
+Gm5420        0   2.357891 0.012 0.002     0.002    Gm5420
+Meig1         0   2.208707 0.013 0.002     0.003     Meig1
+Scube1        0   2.205788 0.014 0.003     0.003    Scube1
+Hba-a2        0   3.312817 0.017 0.005     0.006    Hba-a2</code></pre>
 <p>NEO vs. CTRL, T cell markers</p>
 <pre class="r"><code>markers %&gt;%
   filter(feature %in% lymph_plot_features) %&gt;%
   mutate(p_val = round(p_val, 3),
          p_val_adj = round(p_val_adj, 3))</code></pre>
 <pre><code>        p_val avg_log2FC pct.1 pct.2 p_val_adj feature
-Cx3cr1  0.000  1.2085445 0.379 0.243     0.000  Cx3cr1
-Tox     0.000  0.5071066 0.707 0.602     0.000     Tox
-Havcr2  0.000  0.4668878 0.300 0.202     0.000  Havcr2
-Lag3    0.000  0.4696999 0.375 0.285     0.000    Lag3
-Tigit   0.000  0.3100153 0.166 0.118     0.000   Tigit
-Nr4a1   0.000  0.3371006 0.108 0.074     0.010   Nr4a1
-Gzmb    0.000 -0.9145751 0.312 0.348     0.012    Gzmb
-Gzmk    0.000  0.1716219 0.132 0.096     0.057    Gzmk
-Cd8a    0.000  0.1149489 0.275 0.223     0.095    Cd8a
-Cd69    0.000  0.1174883 0.468 0.413     0.619    Cd69
-Nfkbia  0.000 -0.3231639 0.675 0.683     0.830  Nfkbia
-Cd4     0.000  0.1402694 0.357 0.304     1.000     Cd4
-Mt1     0.000 -0.2318590 0.216 0.174     1.000     Mt1
-Ccr7    0.001 -0.6697293 0.128 0.152     1.000    Ccr7
-Tnfrsf9 0.001 -0.3791727 0.317 0.342     1.000 Tnfrsf9
-Cdc6    0.007 -0.6450483 0.033 0.044     1.000    Cdc6
-Foxp3   0.017  0.1423959 0.161 0.141     1.000   Foxp3
-Klrc1   0.427 -0.2641533 0.306 0.301     1.000   Klrc1
-Cxcr5   0.662 -0.2706672 0.095 0.097     1.000   Cxcr5
-Slamf6  0.768 -0.1703783 0.378 0.357     1.000  Slamf6</code></pre>
+Cx3cr1  0.000  1.2193749 0.389 0.247     0.000  Cx3cr1
+Tox     0.000  0.5019508 0.735 0.630     0.000     Tox
+Havcr2  0.000  0.4724262 0.307 0.205     0.000  Havcr2
+Lag3    0.000  0.5160211 0.356 0.265     0.000    Lag3
+Tigit   0.000  0.3028694 0.173 0.123     0.000   Tigit
+Gzmb    0.000 -0.9231361 0.324 0.365     0.002    Gzmb
+Nr4a1   0.000  0.3494995 0.111 0.076     0.006   Nr4a1
+Cd8a    0.000  0.1435984 0.272 0.216     0.012    Cd8a
+Gzmk    0.000  0.1620812 0.136 0.100     0.127    Gzmk
+Cd69    0.000  0.1234163 0.476 0.417     0.359    Cd69
+Mt1     0.000 -0.2175395 0.224 0.177     0.648     Mt1
+Nfkbia  0.000 -0.3154495 0.679 0.685     1.000  Nfkbia
+Cd4     0.000  0.1426902 0.346 0.295     1.000     Cd4
+Tnfrsf9 0.000 -0.3889521 0.330 0.358     1.000 Tnfrsf9
+Ccr7    0.001 -0.6643294 0.132 0.155     1.000    Ccr7
+Cdc6    0.007 -0.6478803 0.034 0.046     1.000    Cdc6
+Foxp3   0.026  0.1332781 0.168 0.148     1.000   Foxp3
+Klrc1   0.311 -0.2722479 0.319 0.315     1.000   Klrc1
+Slamf6  0.692 -0.1672872 0.370 0.349     1.000  Slamf6
+Cxcr5   0.839 -0.2375300 0.098 0.098     1.000   Cxcr5</code></pre>
 </div>
 <div id="de-celltype-level" class="section level3">
 <h3>DE, celltype level</h3>
@@ -1108,6 +1187,43 @@ Slamf6  0.768 -0.1703783 0.378 0.357     1.000  Slamf6</code></pre>
   theme_classic() &amp;
   NoLegend()</code></pre>
 <p><img src="figure/cleaner_plots.Rmd/unnamed-chunk-11-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/0bf242094d7de372f24ccb05a1131794ca018a62/docs/figure/cleaner_plots.Rmd/unnamed-chunk-11-1.png" target="_blank">0bf2420</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-05-04
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="top-de-stats" class="section level3">
 <h3>Top DE stats</h3>
@@ -1168,7 +1284,7 @@ Ly6k3         0   2.611786 0.147 0.028     0.000     Ly6k       L5
 Gzmc3         0   2.371769 0.161 0.055     0.000     Gzmc       L5
 Socs14        0   2.407447 0.489 0.253     0.000    Socs1       B1
 AA4671975     0   2.860851 0.098 0.021     0.007 AA467197       NK
-F107          0   2.500715 0.475 0.175     0.000      F10       L6</code></pre>
+F106          0   2.500715 0.475 0.175     0.000      F10       L6</code></pre>
 <p>ADJ_CTRL_DEGs_sig</p>
 <pre class="r"><code>ADJ_CTRL_DEGs_sig</code></pre>
 <pre><code>           p_val avg_log2FC pct.1 pct.2 p_val_adj   feature celltype
@@ -1233,8 +1349,8 @@ Igkc5          0  -3.971785 0.043 0.423     0.000      Igkc       NK
 Ighg2b5        0  -4.650380 0.003 0.076     0.000    Ighg2b       NK
 S100a95        0  -3.006636 0.016 0.084     0.003    S100a9       NK
 Igkc6          0  -3.907063 0.056 0.473     0.000      Igkc     Treg
-Igkc9          0  -2.270560 0.188 0.634     0.000      Igkc       L6
-Ighg2c9        0  -3.879195 0.000 0.161     0.006    Ighg2c       L6</code></pre>
+Igkc8          0  -2.270560 0.188 0.634     0.000      Igkc       L6
+Ighg2c8        0  -3.879195 0.000 0.161     0.006    Ighg2c       L6</code></pre>
 <p>NEO_CTRL_DEGs_sig</p>
 <pre class="r"><code>NEO_CTRL_DEGs_sig</code></pre>
 <pre><code>         p_val avg_log2FC pct.1 pct.2 p_val_adj feature celltype
@@ -1294,9 +1410,9 @@ Bhlha15      0  -2.334696 0.024 0.155     0.005 Bhlha15       B1
 Spon14       0  -2.176663 0.080 0.234     0.008   Spon1       B1
 Igkc4        0  -3.909083 0.033 0.423     0.000    Igkc       NK
 Ighg2b5      0  -4.663957 0.002 0.076     0.000  Ighg2b       NK
-Arg17        0  -5.260647 0.076 0.344     0.000    Arg1       L6
-Ighg2c9      0  -3.975119 0.000 0.161     0.002  Ighg2c       L6
-Arg26        0  -3.203293 0.035 0.247     0.004    Arg2       L6</code></pre>
+Arg16        0  -5.260647 0.076 0.344     0.000    Arg1       L6
+Ighg2c8      0  -3.975119 0.000 0.161     0.002  Ighg2c       L6
+Arg25        0  -3.203293 0.035 0.247     0.004    Arg2       L6</code></pre>
 </div>
 <div id="t-cell-marker-de-stats" class="section level3">
 <h3>T cell marker DE stats</h3>
@@ -1463,78 +1579,55 @@ Cd694    0.723 -0.5013448 0.118 0.128     1.000    Cd69     Treg
 Cd3e3    0.758  0.1446610 0.096 0.107     1.000    Cd3e     Treg
 Gzmk5    0.834  0.8290155 0.017 0.020     1.000    Gzmk     Treg
 Havcr26  0.856  0.3493914 0.146 0.161     1.000  Havcr2     Treg
-Cxcr57   0.000  2.1596860 0.152 0.034     1.000   Cxcr5       B2
-Cd695    0.001  1.0345276 0.456 0.291     1.000    Cd69       B2
-Cd411    0.007 -0.5041363 0.468 0.606     1.000     Cd4       B2
-Nr4a16   0.017  2.8373838 0.088 0.029     1.000   Nr4a1       B2
-Ccr77    0.038  0.3135635 0.105 0.046     1.000    Ccr7       B2
-Lag35    0.051 -0.2383471 0.708 0.800     1.000    Lag3       B2
-Nfkbia6  0.076  0.8278320 0.643 0.606     1.000  Nfkbia       B2
-Tcf75    0.097  1.1380611 0.058 0.023     1.000    Tcf7       B2
-Havcr27  0.136  0.9429638 0.199 0.143     1.000  Havcr2       B2
-Klrc15   0.147  0.8503998 0.053 0.023     1.000   Klrc1       B2
-Cx3cr16  0.198  0.9656643 0.205 0.160     1.000  Cx3cr1       B2
-Tnfrsf97 0.236 -2.1133733 0.023 0.046     1.000 Tnfrsf9       B2
-Mt14     0.238  0.2771275 0.094 0.057     1.000     Mt1       B2
-Slamf66  0.310 -0.2690069 0.515 0.543     1.000  Slamf6       B2
-Cd3e4    0.312  0.4112700 0.099 0.069     1.000    Cd3e       B2
-Foxp36   0.326 -1.0268751 0.006 0.017     1.000   Foxp3       B2
-Gzmb7    0.347  0.4223561 0.070 0.046     1.000    Gzmb       B2
-Tigit6   0.393  0.7197462 0.023 0.011     1.000   Tigit       B2
-Pdcd17   0.550 -0.3559424 0.023 0.034     1.000   Pdcd1       B2
-Xcl16    0.620  1.1452209 0.076 0.063     1.000    Xcl1       B2
-Ifng4    0.662 -1.3725380 0.012 0.017     1.000    Ifng       B2
-Gzmk6    0.711 -0.8069390 0.018 0.023     1.000    Gzmk       B2
-Tox10    0.798 -0.1265907 0.094 0.103     1.000     Tox       B2
-Gzmb8    0.003  2.1604800 0.340 0.125     1.000    Gzmb       L4
-Havcr28  0.007  0.9358211 0.280 0.083     1.000  Havcr2       L4
-Klrc16   0.017  1.0018601 0.360 0.167     1.000   Klrc1       L4
+Gzmb7    0.003  2.1604800 0.340 0.125     1.000    Gzmb       L4
+Havcr27  0.007  0.9358211 0.280 0.083     1.000  Havcr2       L4
+Klrc15   0.017  1.0018601 0.360 0.167     1.000   Klrc1       L4
 Cd8a5    0.043  1.3649347 0.260 0.111     1.000    Cd8a       L4
-Tnfrsf98 0.076 -0.7577088 0.320 0.153     1.000 Tnfrsf9       L4
-Cx3cr17  0.095  1.0268191 0.280 0.153     1.000  Cx3cr1       L4
-Pdcd18   0.122  0.7695192 0.220 0.111     1.000   Pdcd1       L4
+Tnfrsf97 0.076 -0.7577088 0.320 0.153     1.000 Tnfrsf9       L4
+Cx3cr16  0.095  1.0268191 0.280 0.153     1.000  Cx3cr1       L4
+Pdcd17   0.122  0.7695192 0.220 0.111     1.000   Pdcd1       L4
 Prf14    0.158  0.6619036 0.300 0.181     1.000    Prf1       L4
-Cd3e5    0.264 -0.3077625 0.340 0.431     1.000    Cd3e       L4
-Lag36    0.348 -0.3961043 0.180 0.111     1.000    Lag3       L4
-Nr4a17   0.418 -1.1870334 0.100 0.056     1.000   Nr4a1       L4
+Cd3e4    0.264 -0.3077625 0.340 0.431     1.000    Cd3e       L4
+Lag35    0.348 -0.3961043 0.180 0.111     1.000    Lag3       L4
+Nr4a16   0.418 -1.1870334 0.100 0.056     1.000   Nr4a1       L4
 Klrg17   0.510 -1.0535964 0.020 0.042     1.000   Klrg1       L4
-Cxcr58   0.510 -1.7020744 0.020 0.042     1.000   Cxcr5       L4
-Tigit7   0.598  0.3470031 0.080 0.056     1.000   Tigit       L4
-Slamf67  0.615 -0.4917922 0.200 0.153     1.000  Slamf6       L4
-Cd696    0.624 -0.3751407 0.200 0.236     1.000    Cd69       L4
-Gzmk7    0.667 -0.3705407 0.060 0.042     1.000    Gzmk       L4
-Foxp37   0.717  0.8269706 0.040 0.028     1.000   Foxp3       L4
-Nfkbia7  0.744 -0.6990574 0.280 0.222     1.000  Nfkbia       L4
+Cxcr57   0.510 -1.7020744 0.020 0.042     1.000   Cxcr5       L4
+Tigit6   0.598  0.3470031 0.080 0.056     1.000   Tigit       L4
+Slamf66  0.615 -0.4917922 0.200 0.153     1.000  Slamf6       L4
+Cd695    0.624 -0.3751407 0.200 0.236     1.000    Cd69       L4
+Gzmk6    0.667 -0.3705407 0.060 0.042     1.000    Gzmk       L4
+Foxp36   0.717  0.8269706 0.040 0.028     1.000   Foxp3       L4
+Nfkbia6  0.744 -0.6990574 0.280 0.222     1.000  Nfkbia       L4
 Cdc66    0.795  2.1050199 0.020 0.014     1.000    Cdc6       L4
-Tcf76    0.806 -0.3752742 0.380 0.319     1.000    Tcf7       L4
-Ccr78    0.818 -0.8953911 0.060 0.069     1.000    Ccr7       L4
-Mt15     0.883 -1.6961844 0.080 0.083     1.000     Mt1       L4
-Tox11    0.883 -0.1641352 0.740 0.708     1.000     Tox       L4
-Ifng5    0.921 -0.7244537 0.140 0.139     1.000    Ifng       L4
-Xcl17    0.969  0.2519859 0.240 0.236     1.000    Xcl1       L4
-Cd412    0.000 -1.1178358 0.300 0.567     0.052     Cd4       L6
-Xcl18    0.000  2.2874633 0.469 0.287     1.000    Xcl1       L6
-Cx3cr18  0.000 -0.8008515 0.719 0.795     1.000  Cx3cr1       L6
-Tox12    0.001 -0.5169049 0.806 0.854     1.000     Tox       L6
-Foxp38   0.002 -1.2562798 0.181 0.322     1.000   Foxp3       L6
-Klrc17   0.002  1.1220937 0.431 0.292     1.000   Klrc1       L6
-Tigit8   0.002 -1.3256641 0.144 0.275     1.000   Tigit       L6
-Gzmb9    0.003  1.6514745 0.462 0.339     1.000    Gzmb       L6
-Cd3e6    0.012 -0.2504455 0.831 0.953     1.000    Cd3e       L6
+Tcf75    0.806 -0.3752742 0.380 0.319     1.000    Tcf7       L4
+Ccr77    0.818 -0.8953911 0.060 0.069     1.000    Ccr7       L4
+Mt14     0.883 -1.6961844 0.080 0.083     1.000     Mt1       L4
+Tox10    0.883 -0.1641352 0.740 0.708     1.000     Tox       L4
+Ifng4    0.921 -0.7244537 0.140 0.139     1.000    Ifng       L4
+Xcl16    0.969  0.2519859 0.240 0.236     1.000    Xcl1       L4
+Cd411    0.000 -1.1178358 0.300 0.567     0.052     Cd4       L6
+Xcl17    0.000  2.2874633 0.469 0.287     1.000    Xcl1       L6
+Cx3cr17  0.000 -0.8008515 0.719 0.795     1.000  Cx3cr1       L6
+Tox11    0.001 -0.5169049 0.806 0.854     1.000     Tox       L6
+Foxp37   0.002 -1.2562798 0.181 0.322     1.000   Foxp3       L6
+Klrc16   0.002  1.1220937 0.431 0.292     1.000   Klrc1       L6
+Tigit7   0.002 -1.3256641 0.144 0.275     1.000   Tigit       L6
+Gzmb8    0.003  1.6514745 0.462 0.339     1.000    Gzmb       L6
+Cd3e5    0.012 -0.2504455 0.831 0.953     1.000    Cd3e       L6
 Prf15    0.015  0.9837839 0.369 0.246     1.000    Prf1       L6
-Tcf77    0.025  0.3747961 0.581 0.456     1.000    Tcf7       L6
-Ifng6    0.027  0.7542950 0.306 0.211     1.000    Ifng       L6
-Nfkbia8  0.054  0.2797903 0.950 0.918     1.000  Nfkbia       L6
+Tcf76    0.025  0.3747961 0.581 0.456     1.000    Tcf7       L6
+Ifng5    0.027  0.7542950 0.306 0.211     1.000    Ifng       L6
+Nfkbia7  0.054  0.2797903 0.950 0.918     1.000  Nfkbia       L6
 Klrg18   0.062 -1.1515869 0.094 0.164     1.000   Klrg1       L6
-Mt16     0.068 -0.4856225 0.425 0.509     1.000     Mt1       L6
-Nr4a18   0.087 -0.9472928 0.181 0.257     1.000   Nr4a1       L6
+Mt15     0.068 -0.4856225 0.425 0.509     1.000     Mt1       L6
+Nr4a17   0.087 -0.9472928 0.181 0.257     1.000   Nr4a1       L6
 Cd8a6    0.129  0.5160862 0.400 0.316     1.000    Cd8a       L6
-Slamf68  0.423  0.1941344 0.613 0.602     1.000  Slamf6       L6
-Ccr79    0.428  0.5725915 0.144 0.117     1.000    Ccr7       L6
-Pdcd19   0.466  0.7021186 0.344 0.333     1.000   Pdcd1       L6
-Havcr29  0.495  0.1630509 0.637 0.637     1.000  Havcr2       L6
-Cxcr59   0.630  0.2218904 0.056 0.070     1.000   Cxcr5       L6
-Lag37    0.706 -0.2532949 0.344 0.345     1.000    Lag3       L6</code></pre>
+Slamf67  0.423  0.1941344 0.613 0.602     1.000  Slamf6       L6
+Ccr78    0.428  0.5725915 0.144 0.117     1.000    Ccr7       L6
+Pdcd18   0.466  0.7021186 0.344 0.333     1.000   Pdcd1       L6
+Havcr28  0.495  0.1630509 0.637 0.637     1.000  Havcr2       L6
+Cxcr58   0.630  0.2218904 0.056 0.070     1.000   Cxcr5       L6
+Lag36    0.706 -0.2532949 0.344 0.345     1.000    Lag3       L6</code></pre>
 <p>ADJ vs. CTRL</p>
 <pre class="r"><code>ADJ_CTRL_DEGs %&gt;%
   filter(feature %in% lymph_plot_features) %&gt;%
@@ -1692,78 +1785,55 @@ Pdcd16   0.882  0.6260222 0.101 0.099     1.000   Pdcd1     Treg
 Slamf63  0.887  0.6256596 0.062 0.059     1.000  Slamf6     Treg
 Xcl14    0.947  0.9897485 0.051 0.049     1.000    Xcl1     Treg
 Tox6     0.950 -0.3794448 0.073 0.074     1.000     Tox     Treg
-Cd696    0.009  0.8163107 0.456 0.337     1.000    Cd69       B2
-Cxcr56   0.019  0.8015888 0.152 0.074     1.000   Cxcr5       B2
-Gzmb6    0.024  1.8097992 0.070 0.021     1.000    Gzmb       B2
-Xcl15    0.032  0.3780306 0.076 0.026     1.000    Xcl1       B2
-Klrg17   0.057 -2.7115449 0.000 0.021     1.000   Klrg1       B2
-Nr4a17   0.071  1.5231330 0.088 0.042     1.000   Nr4a1       B2
-Tox7     0.099 -0.3966548 0.094 0.047     1.000     Tox       B2
-Klrc16   0.104  1.7264164 0.053 0.021     1.000   Klrc1       B2
-Havcr27  0.112  0.6767086 0.199 0.137     1.000  Havcr2       B2
-Slamf64  0.117 -0.5036627 0.515 0.511     1.000  Slamf6       B2
-Cd411    0.214 -0.3750931 0.468 0.495     1.000     Cd4       B2
-Gzmk6    0.269  0.5054188 0.018 0.005     1.000    Gzmk       B2
-Cx3cr17  0.307  0.4487088 0.205 0.168     1.000  Cx3cr1       B2
-Tigit7   0.335  0.9449038 0.023 0.011     1.000   Tigit       B2
-Mt14     0.388 -1.5428333 0.094 0.116     1.000     Mt1       B2
-Cd3e3    0.546  0.8816929 0.099 0.084     1.000    Cd3e       B2
-Pdcd17   0.600  0.9569992 0.023 0.016     1.000   Pdcd1       B2
-Cdc66    0.623 -0.9303982 0.006 0.011     1.000    Cdc6       B2
-Prf16    0.636 -0.1419947 0.029 0.021     1.000    Prf1       B2
-Cd8a5    0.644 -0.5320279 0.363 0.368     1.000    Cd8a       B2
-Ifng6    0.731 -1.1142691 0.012 0.016     1.000    Ifng       B2
-Tnfrsf95 0.831 -1.0418923 0.023 0.026     1.000 Tnfrsf9       B2
-Ccr75    0.893 -1.8439914 0.105 0.095     1.000    Ccr7       B2
-Klrc17   0.002  2.1157814 0.360 0.109     1.000   Klrc1       L4
-Prf17    0.041  2.0583344 0.300 0.145     1.000    Prf1       L4
-Cd3e4    0.055 -0.9740433 0.340 0.473     1.000    Cd3e       L4
-Tox8     0.070  0.5663757 0.740 0.564     1.000     Tox       L4
-Mt15     0.151  0.9523764 0.080 0.018     1.000     Mt1       L4
-Cd8a6    0.171  0.9237234 0.260 0.145     1.000    Cd8a       L4
+Klrc16   0.002  2.1157814 0.360 0.109     1.000   Klrc1       L4
+Prf16    0.041  2.0583344 0.300 0.145     1.000    Prf1       L4
+Cd3e3    0.055 -0.9740433 0.340 0.473     1.000    Cd3e       L4
+Tox7     0.070  0.5663757 0.740 0.564     1.000     Tox       L4
+Mt14     0.151  0.9523764 0.080 0.018     1.000     Mt1       L4
+Cd8a5    0.171  0.9237234 0.260 0.145     1.000    Cd8a       L4
 Tcf77    0.206  0.1526406 0.380 0.236     1.000    Tcf7       L4
-Cx3cr18  0.240  0.2082742 0.280 0.164     1.000  Cx3cr1       L4
-Gzmk7    0.266  2.4139942 0.060 0.018     1.000    Gzmk       L4
+Cx3cr17  0.240  0.2082742 0.280 0.164     1.000  Cx3cr1       L4
+Gzmk6    0.266  2.4139942 0.060 0.018     1.000    Gzmk       L4
 Nfkbia2  0.291 -0.8101770 0.280 0.345     1.000  Nfkbia       L4
 Foxp35   0.296 -1.4201004 0.040 0.091     1.000   Foxp3       L4
-Tnfrsf96 0.298 -0.8198271 0.320 0.200     1.000 Tnfrsf9       L4
-Gzmb7    0.301 -0.3932916 0.340 0.236     1.000    Gzmb       L4
-Cxcr57   0.303  2.0275635 0.020 0.000     1.000   Cxcr5       L4
-Klrg18   0.358 -3.2354888 0.020 0.055     1.000   Klrg1       L4
-Nr4a18   0.407 -0.3581242 0.100 0.055     1.000   Nr4a1       L4
-Havcr28  0.417 -0.2280128 0.280 0.200     1.000  Havcr2       L4
-Xcl16    0.473  0.5213752 0.240 0.182     1.000    Xcl1       L4
-Cd412    0.477 -0.3621682 0.200 0.255     1.000     Cd4       L4
-Ccr76    0.578  0.7856746 0.060 0.036     1.000    Ccr7       L4
-Cdc67    0.641 -0.2192774 0.020 0.036     1.000    Cdc6       L4
-Ifng7    0.648 -1.1444746 0.140 0.164     1.000    Ifng       L4
-Pdcd18   0.666  0.1672336 0.220 0.182     1.000   Pdcd1       L4
-Cd697    0.718  0.5881162 0.200 0.182     1.000    Cd69       L4
-Slamf65  0.734 -0.2720778 0.200 0.164     1.000  Slamf6       L4
+Tnfrsf95 0.298 -0.8198271 0.320 0.200     1.000 Tnfrsf9       L4
+Gzmb6    0.301 -0.3932916 0.340 0.236     1.000    Gzmb       L4
+Cxcr56   0.303  2.0275635 0.020 0.000     1.000   Cxcr5       L4
+Klrg17   0.358 -3.2354888 0.020 0.055     1.000   Klrg1       L4
+Nr4a17   0.407 -0.3581242 0.100 0.055     1.000   Nr4a1       L4
+Havcr27  0.417 -0.2280128 0.280 0.200     1.000  Havcr2       L4
+Xcl15    0.473  0.5213752 0.240 0.182     1.000    Xcl1       L4
+Cd411    0.477 -0.3621682 0.200 0.255     1.000     Cd4       L4
+Ccr75    0.578  0.7856746 0.060 0.036     1.000    Ccr7       L4
+Cdc66    0.641 -0.2192774 0.020 0.036     1.000    Cdc6       L4
+Ifng6    0.648 -1.1444746 0.140 0.164     1.000    Ifng       L4
+Pdcd17   0.666  0.1672336 0.220 0.182     1.000   Pdcd1       L4
+Cd696    0.718  0.5881162 0.200 0.182     1.000    Cd69       L4
+Slamf64  0.734 -0.2720778 0.200 0.164     1.000  Slamf6       L4
 Lag36    0.871 -0.8255871 0.180 0.182     1.000    Lag3       L4
-Tigit8   0.950 -0.8912377 0.080 0.073     1.000   Tigit       L4
-Mt16     0.007 -1.1572190 0.425 0.548     1.000     Mt1       L6
-Ifng8    0.007  1.3439811 0.306 0.161     1.000    Ifng       L6
+Tigit7   0.950 -0.8912377 0.080 0.073     1.000   Tigit       L4
+Mt15     0.007 -1.1572190 0.425 0.548     1.000     Mt1       L6
+Ifng7    0.007  1.3439811 0.306 0.161     1.000    Ifng       L6
 Tcf78    0.008  0.6510756 0.581 0.419     1.000    Tcf7       L6
-Cd8a7    0.016  1.0807004 0.400 0.258     1.000    Cd8a       L6
-Xcl17    0.020  1.6422979 0.469 0.333     1.000    Xcl1       L6
+Cd8a6    0.016  1.0807004 0.400 0.258     1.000    Cd8a       L6
+Xcl16    0.020  1.6422979 0.469 0.333     1.000    Xcl1       L6
 Foxp36   0.022 -0.8852514 0.181 0.301     1.000   Foxp3       L6
-Cd413    0.045 -0.7548615 0.300 0.409     1.000     Cd4       L6
+Cd412    0.045 -0.7548615 0.300 0.409     1.000     Cd4       L6
 Nfkbia3  0.048 -0.4458112 0.950 0.957     1.000  Nfkbia       L6
-Ccr77    0.125  0.3529547 0.144 0.075     1.000    Ccr7       L6
-Klrg19   0.159 -1.1058814 0.094 0.151     1.000   Klrg1       L6
-Slamf66  0.194  0.3261030 0.613 0.548     1.000  Slamf6       L6
-Pdcd19   0.252  1.0851549 0.344 0.301     1.000   Pdcd1       L6
-Klrc18   0.320  0.2847168 0.431 0.376     1.000   Klrc1       L6
-Cd698    0.321  0.4970412 0.650 0.602     1.000    Cd69       L6
-Cd3e5    0.333  0.1623472 0.831 0.828     1.000    Cd3e       L6
-Havcr29  0.340  0.1202587 0.637 0.548     1.000  Havcr2       L6
-Cdc68    0.383  0.3196372 0.056 0.032     1.000    Cdc6       L6
-Gzmk8    0.435  0.2850284 0.169 0.129     1.000    Gzmk       L6
-Tnfrsf97 0.442 -0.6143672 0.456 0.495     1.000 Tnfrsf9       L6
-Tigit9   0.538 -0.2755016 0.144 0.172     1.000   Tigit       L6
-Cxcr58   0.553 -0.5320764 0.056 0.075     1.000   Cxcr5       L6
-Tox9     0.828 -0.1759592 0.806 0.753     1.000     Tox       L6
+Ccr76    0.125  0.3529547 0.144 0.075     1.000    Ccr7       L6
+Klrg18   0.159 -1.1058814 0.094 0.151     1.000   Klrg1       L6
+Slamf65  0.194  0.3261030 0.613 0.548     1.000  Slamf6       L6
+Pdcd18   0.252  1.0851549 0.344 0.301     1.000   Pdcd1       L6
+Klrc17   0.320  0.2847168 0.431 0.376     1.000   Klrc1       L6
+Cd697    0.321  0.4970412 0.650 0.602     1.000    Cd69       L6
+Cd3e4    0.333  0.1623472 0.831 0.828     1.000    Cd3e       L6
+Havcr28  0.340  0.1202587 0.637 0.548     1.000  Havcr2       L6
+Cdc67    0.383  0.3196372 0.056 0.032     1.000    Cdc6       L6
+Gzmk7    0.435  0.2850284 0.169 0.129     1.000    Gzmk       L6
+Tnfrsf96 0.442 -0.6143672 0.456 0.495     1.000 Tnfrsf9       L6
+Tigit8   0.538 -0.2755016 0.144 0.172     1.000   Tigit       L6
+Cxcr57   0.553 -0.5320764 0.056 0.075     1.000   Cxcr5       L6
+Tox8     0.828 -0.1759592 0.806 0.753     1.000     Tox       L6
 Lag37    0.886  0.3986647 0.344 0.344     1.000    Lag3       L6</code></pre>
 <p>NEO vs. CTRL</p>
 <pre class="r"><code>NEO_CTRL_DEGs %&gt;%
@@ -1929,83 +1999,57 @@ Cdc64    0.749  0.4918512 0.013 0.010     1.000    Cdc6     Treg
 Prf15    0.754 -0.4962852 0.007 0.010     1.000    Prf1     Treg
 Cd3e4    0.827 -0.2191113 0.107 0.099     1.000    Cd3e     Treg
 Gzmk3    0.962  0.7467637 0.020 0.020     1.000    Gzmk     Treg
-Nfkbia7  0.018 -0.8148935 0.606 0.653     1.000  Nfkbia       B2
-Mt16     0.041 -1.8199608 0.057 0.116     1.000     Mt1       B2
-Tox9     0.054 -0.2700641 0.103 0.047     1.000     Tox       B2
-Ccr77    0.059 -2.1575549 0.046 0.095     1.000    Ccr7       B2
-Tcf75    0.064 -1.0948526 0.023 0.063     1.000    Tcf7       B2
-Xcl15    0.098 -0.7671903 0.063 0.026     1.000    Xcl1       B2
-Cxcr56   0.098 -1.3580971 0.034 0.074     1.000   Cxcr5       B2
-Gzmk4    0.148  1.3123578 0.023 0.005     1.000    Gzmk       B2
-Lag36    0.165  0.1471678 0.800 0.679     1.000    Lag3       B2
-Cd411    0.178  0.1290432 0.606 0.495     1.000     Cd4       B2
-Gzmb7    0.183  1.3874432 0.046 0.021     1.000    Gzmb       B2
-Klrg17   0.211 -1.7283944 0.006 0.021     1.000   Klrg1       B2
-Cd8a5    0.236 -0.4775908 0.337 0.368     1.000    Cd8a       B2
-Pdcd16   0.255  1.3129416 0.034 0.016     1.000   Pdcd1       B2
-Foxp36   0.274  1.7483238 0.017 0.005     1.000   Foxp3       B2
-Tnfrsf95 0.319  1.0714810 0.046 0.026     1.000 Tnfrsf9       B2
-Cd695    0.431 -0.2182169 0.291 0.337     1.000    Cd69       B2
-Nr4a16   0.476 -1.3142508 0.029 0.042     1.000   Nr4a1       B2
-Cdc65    0.609 -0.4338672 0.006 0.011     1.000    Cdc6       B2
-Cd3e5    0.620  0.4704228 0.069 0.084     1.000    Cd3e       B2
-Slamf65  0.633 -0.2346558 0.543 0.511     1.000  Slamf6       B2
-Cx3cr17  0.744 -0.5169555 0.160 0.168     1.000  Cx3cr1       B2
-Klrc16   0.899  0.8760166 0.023 0.021     1.000   Klrc1       B2
-Ifng7    0.916  0.2582689 0.017 0.016     1.000    Ifng       B2
-Tigit6   0.936  0.2251576 0.011 0.011     1.000   Tigit       B2
-Havcr26  0.940 -0.2662552 0.143 0.137     1.000  Havcr2       B2
-Havcr27  0.061 -1.1638339 0.083 0.200     1.000  Havcr2       L4
-Tox10    0.070  0.7305110 0.708 0.564     1.000     Tox       L4
-Gzmb8    0.084 -2.5537716 0.125 0.236     1.000    Gzmb       L4
-Mt17     0.114  2.6485608 0.083 0.018     1.000     Mt1       L4
-Foxp37   0.120 -2.2470710 0.028 0.091     1.000   Foxp3       L4
-Cxcr57   0.129  3.7296380 0.042 0.000     1.000   Cxcr5       L4
-Nfkbia8  0.193 -0.1111196 0.222 0.345     1.000  Nfkbia       L4
-Pdcd17   0.273 -0.6022856 0.111 0.182     1.000   Pdcd1       L4
-Cd412    0.274 -0.4002737 0.167 0.255     1.000     Cd4       L4
-Cd3e6    0.281 -0.6662807 0.431 0.473     1.000    Cd3e       L4
-Lag37    0.291 -0.4294829 0.111 0.182     1.000    Lag3       L4
-Tcf76    0.294  0.5279148 0.319 0.236     1.000    Tcf7       L4
-Klrc17   0.342  1.1139213 0.167 0.109     1.000   Klrc1       L4
-Cd696    0.351  0.9632569 0.236 0.182     1.000    Cd69       L4
-Cdc66    0.405 -2.3242974 0.014 0.036     1.000    Cdc6       L4
-Ccr78    0.417  1.6810657 0.069 0.036     1.000    Ccr7       L4
-Gzmk5    0.455  2.7845349 0.042 0.018     1.000    Gzmk       L4
-Xcl16    0.459  0.2693893 0.236 0.182     1.000    Xcl1       L4
+Havcr26  0.061 -1.1638339 0.083 0.200     1.000  Havcr2       L4
+Tox9     0.070  0.7305110 0.708 0.564     1.000     Tox       L4
+Gzmb7    0.084 -2.5537716 0.125 0.236     1.000    Gzmb       L4
+Mt16     0.114  2.6485608 0.083 0.018     1.000     Mt1       L4
+Foxp36   0.120 -2.2470710 0.028 0.091     1.000   Foxp3       L4
+Cxcr56   0.129  3.7296380 0.042 0.000     1.000   Cxcr5       L4
+Nfkbia7  0.193 -0.1111196 0.222 0.345     1.000  Nfkbia       L4
+Pdcd16   0.273 -0.6022856 0.111 0.182     1.000   Pdcd1       L4
+Cd411    0.274 -0.4002737 0.167 0.255     1.000     Cd4       L4
+Cd3e5    0.281 -0.6662807 0.431 0.473     1.000    Cd3e       L4
+Lag36    0.291 -0.4294829 0.111 0.182     1.000    Lag3       L4
+Tcf75    0.294  0.5279148 0.319 0.236     1.000    Tcf7       L4
+Klrc16   0.342  1.1139213 0.167 0.109     1.000   Klrc1       L4
+Cd695    0.351  0.9632569 0.236 0.182     1.000    Cd69       L4
+Cdc65    0.405 -2.3242974 0.014 0.036     1.000    Cdc6       L4
+Ccr77    0.417  1.6810657 0.069 0.036     1.000    Ccr7       L4
+Gzmk4    0.455  2.7845349 0.042 0.018     1.000    Gzmk       L4
+Xcl15    0.459  0.2693893 0.236 0.182     1.000    Xcl1       L4
 Prf16    0.461  1.3964308 0.181 0.145     1.000    Prf1       L4
-Cd8a6    0.592 -0.4412113 0.111 0.145     1.000    Cd8a       L4
-Tigit7   0.665 -1.2382408 0.056 0.073     1.000   Tigit       L4
-Ifng8    0.675 -0.4200209 0.139 0.164     1.000    Ifng       L4
-Cx3cr18  0.727 -0.8185450 0.153 0.164     1.000  Cx3cr1       L4
-Klrg18   0.736 -2.1818924 0.042 0.055     1.000   Klrg1       L4
-Slamf66  0.911  0.2197144 0.153 0.164     1.000  Slamf6       L4
-Nr4a17   0.966  0.8289092 0.056 0.055     1.000   Nr4a1       L4
-Cx3cr19  0.000  0.7274127 0.795 0.602     1.000  Cx3cr1       L6
-Nfkbia9  0.000 -0.7256016 0.918 0.957     1.000  Nfkbia       L6
-Cd3e7    0.001  0.4127927 0.953 0.828     1.000    Cd3e       L6
-Tox11    0.008  0.3409457 0.854 0.753     1.000     Tox       L6
-Gzmb9    0.034 -1.6592688 0.339 0.452     1.000    Gzmb       L6
-Tigit8   0.038  1.0501625 0.275 0.172     1.000   Tigit       L6
-Cd413    0.045  0.3629743 0.567 0.409     1.000     Cd4       L6
-Klrc18   0.093 -0.8373769 0.292 0.376     1.000   Klrc1       L6
-Mt18     0.182 -0.6715965 0.509 0.548     1.000     Mt1       L6
-Nr4a18   0.207  1.0274767 0.257 0.194     1.000   Nr4a1       L6
-Cd8a7    0.234  0.5646143 0.316 0.258     1.000    Cd8a       L6
+Cd8a5    0.592 -0.4412113 0.111 0.145     1.000    Cd8a       L4
+Tigit6   0.665 -1.2382408 0.056 0.073     1.000   Tigit       L4
+Ifng7    0.675 -0.4200209 0.139 0.164     1.000    Ifng       L4
+Cx3cr17  0.727 -0.8185450 0.153 0.164     1.000  Cx3cr1       L4
+Klrg17   0.736 -2.1818924 0.042 0.055     1.000   Klrg1       L4
+Slamf65  0.911  0.2197144 0.153 0.164     1.000  Slamf6       L4
+Nr4a16   0.966  0.8289092 0.056 0.055     1.000   Nr4a1       L4
+Cx3cr18  0.000  0.7274127 0.795 0.602     1.000  Cx3cr1       L6
+Nfkbia8  0.000 -0.7256016 0.918 0.957     1.000  Nfkbia       L6
+Cd3e6    0.001  0.4127927 0.953 0.828     1.000    Cd3e       L6
+Tox10    0.008  0.3409457 0.854 0.753     1.000     Tox       L6
+Gzmb8    0.034 -1.6592688 0.339 0.452     1.000    Gzmb       L6
+Tigit7   0.038  1.0501625 0.275 0.172     1.000   Tigit       L6
+Cd412    0.045  0.3629743 0.567 0.409     1.000     Cd4       L6
+Klrc17   0.093 -0.8373769 0.292 0.376     1.000   Klrc1       L6
+Mt17     0.182 -0.6715965 0.509 0.548     1.000     Mt1       L6
+Nr4a17   0.207  1.0274767 0.257 0.194     1.000   Nr4a1       L6
+Cd8a6    0.234  0.5646143 0.316 0.258     1.000    Cd8a       L6
 Prf17    0.243 -0.9774681 0.246 0.301     1.000    Prf1       L6
-Cd697    0.287  0.4513839 0.620 0.602     1.000    Cd69       L6
-Xcl17    0.304 -0.6451654 0.287 0.333     1.000    Xcl1       L6
-Ifng9    0.326  0.5896860 0.211 0.161     1.000    Ifng       L6
-Ccr79    0.339 -0.2196368 0.117 0.075     1.000    Ccr7       L6
-Cdc67    0.342  0.3791631 0.058 0.032     1.000    Cdc6       L6
-Tnfrsf96 0.437 -0.5754994 0.456 0.495     1.000 Tnfrsf9       L6
-Tcf77    0.491  0.2762796 0.456 0.419     1.000    Tcf7       L6
-Slamf67  0.529  0.1319687 0.602 0.548     1.000  Slamf6       L6
-Pdcd18   0.575  0.3830363 0.333 0.301     1.000   Pdcd1       L6
-Lag38    0.588  0.6519597 0.345 0.344     1.000    Lag3       L6
-Foxp38   0.616  0.3710284 0.322 0.301     1.000   Foxp3       L6
-Cxcr58   0.851 -0.7539669 0.070 0.075     1.000   Cxcr5       L6
-Gzmk6    0.980  0.3825908 0.129 0.129     1.000    Gzmk       L6</code></pre>
+Cd696    0.287  0.4513839 0.620 0.602     1.000    Cd69       L6
+Xcl16    0.304 -0.6451654 0.287 0.333     1.000    Xcl1       L6
+Ifng8    0.326  0.5896860 0.211 0.161     1.000    Ifng       L6
+Ccr78    0.339 -0.2196368 0.117 0.075     1.000    Ccr7       L6
+Cdc66    0.342  0.3791631 0.058 0.032     1.000    Cdc6       L6
+Tnfrsf95 0.437 -0.5754994 0.456 0.495     1.000 Tnfrsf9       L6
+Tcf76    0.491  0.2762796 0.456 0.419     1.000    Tcf7       L6
+Slamf66  0.529  0.1319687 0.602 0.548     1.000  Slamf6       L6
+Pdcd17   0.575  0.3830363 0.333 0.301     1.000   Pdcd1       L6
+Lag37    0.588  0.6519597 0.345 0.344     1.000    Lag3       L6
+Foxp37   0.616  0.3710284 0.322 0.301     1.000   Foxp3       L6
+Cxcr57   0.851 -0.7539669 0.070 0.075     1.000   Cxcr5       L6
+Gzmk5    0.980  0.3825908 0.129 0.129     1.000    Gzmk       L6</code></pre>
 </div>
 <div id="selected-myeloid-markers" class="section level3">
 <h3>Selected myeloid markers</h3>
@@ -2030,6 +2074,43 @@ VlnPlot(myeloid,
   NoLegend() &amp;
   ylab(&quot;&quot;)</code></pre>
 <p><img src="figure/cleaner_plots.Rmd/unnamed-chunk-19-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-19-1">
+Past versions of unnamed-chunk-19-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-19-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/0bf242094d7de372f24ccb05a1131794ca018a62/docs/figure/cleaner_plots.Rmd/unnamed-chunk-19-1.png" target="_blank">0bf2420</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-05-04
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>VlnPlot(myeloid,
         features = myel_plot_features,
         group.by = &quot;celltype&quot;,
@@ -2041,6 +2122,43 @@ VlnPlot(myeloid,
   theme_classic() &amp;
   NoLegend()</code></pre>
 <p><img src="figure/cleaner_plots.Rmd/unnamed-chunk-20-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-20-1">
+Past versions of unnamed-chunk-20-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-20-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/heinin/PD1_mm/blob/0bf242094d7de372f24ccb05a1131794ca018a62/docs/figure/cleaner_plots.Rmd/unnamed-chunk-20-1.png" target="_blank">0bf2420</a>
+</td>
+<td>
+heinin
+</td>
+<td>
+2025-05-04
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

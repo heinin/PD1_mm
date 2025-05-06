@@ -1,5 +1,5 @@
 ---
-title: "Annotating cell types in Kluc tumors"
+title: "Annotating cell types in CAR T + anti-PD1 treated Kluc tumors"
 author: "heinin"
 date: "2024-02-23"
 output: workflowr::wflow_html
@@ -51,7 +51,7 @@ seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_m
 
 ### Adding human gene names to a separate assay
 
-```{r}
+```{r, eval = F}
 
 # Converting mouse gene names to human
 mouse_human_genes <- read.csv("http://www.informatics.jax.org/downloads/reports/HOM_MouseHumanSequence.rpt", sep="\t")
@@ -171,7 +171,7 @@ dotplot_heatmap <- create_dotplot_heatmap(seurat_object = seurat_data,
 
 ### Saving top markers to a file
 
-```{r}
+```{r, eval = F}
 
 top_markers <- markers %>%  group_by(group) %>% slice_max(order_by = auc, n = 20)
 
@@ -230,7 +230,7 @@ DimPlot(seurat_data,
   NoLegend() &
   manuscript_theme
 
-saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
+#saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 
 ```
 
@@ -286,3 +286,44 @@ FeaturePlot(seurat_data,
 saveRDS(seurat_data, "/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 
 ```
+
+```{r}
+
+grep("Cd1", rownames(seurat_data), value = T)
+
+FeaturePlot(seurat_data,
+            features = c("C1qa", "C1qb", "C1qc", "Spp1", "Apoe", "Cd68", "Cd14", "Cd19", "S100a8",
+                         "Cd79b", "Cd3d", "Cd4", "Cd8a", "Plac8", "Ccr7", "Gzma", "Cdk1",
+                         "Cdc20"),
+            reduction = "umap",
+            raster = T,
+            ncol = 5) &
+  coord_fixed(ratio = 1) &
+  theme_bw() &
+  NoLegend()
+
+```
+
+## Cell cycle scoring
+
+```{r}
+
+s.genes <- cc.genes.updated.2019$s.genes
+g2m.genes <- cc.genes.updated.2019$g2m.genes
+              
+seurat_data <- CellCycleScoring(seurat_data,
+                                s.features = s.genes,
+                                g2m.features = g2m.genes,
+                                set.ident = F)
+
+DimPlot(seurat_data,
+        group.by = "Phase",
+        reduction = "umap",
+        raster = T) &
+  coord_fixed(ratio = 1) &
+  theme_bw() &
+  NoLegend()
+
+```
+
+

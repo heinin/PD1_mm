@@ -56,9 +56,19 @@ seurat_object <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat
 CC_objects_compare <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/NEO_ADJ_16_CellChat_compare.rds")
 CC_merged_object <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/NEO_ADJ_16_CellChat_merged_object.rds")
 
+# Updating annotations
+gs4_deauth()
+markers_annotations  <- gs4_get("https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharin#g")
+sheet_names(markers_annotations)
+annotations <- read_sheet(markers_annotations, sheet = "Cluster annotations")
+
+seurat_object$celltype <- mapvalues(seurat_object$snn_res.0.5,
+                                    from = annotations$snn_res.0.5,
+                                    to = annotations$annotation)
+
 # Sorting levels for plotting
 celltypes <- c(sort(c(grep("^M", unique(seurat_object$celltype), value = T), c("Neut1"))),
-               sort(grep("^L", unique(seurat_object$celltype), value = T)), c("NK", "Treg", "B1", "B2"), c("DC", "NOS1"))
+               sort(grep("^L", unique(seurat_object$celltype), value = T)), c("NK", "Treg", "B1", "ILC", "DC"))
 
 CC_objects_compare[[1]]@meta$celltype <- factor(CC_objects_compare[[1]]@meta$celltype,
                                                   levels = celltypes)
@@ -371,7 +381,9 @@ p1 / p2
 #par(mfrow = c(1, 2), xpd = TRUE)
 #netVisual_chord_gene(CC_objects_compare[["ADJ_CC"]], sources.use = c(18), targets.use = c(20), lab.cex = 0.5, title.name = paste0("Signaling from M7 - ADJ"))
 
-netVisual_bubble(CC_merged_object, sources.use = 20, targets.use = grep("^L", levels(CC_objects_compare[[i]]@idents)), thresh = 1, comparison = c(2, 1), angle.x = 45)
+#CC_merged_object$sources
+
+netVisual_bubble(CC_merged_object, sources.use = 16, targets.use = c(3, 4, 5, 6, 7, 8, 9), thresh = 1, comparison = c(1, 2), angle.x = 45)
 
 ```
 

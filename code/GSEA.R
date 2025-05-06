@@ -366,6 +366,19 @@ runEscape <- function(input.data,
 seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_merged.Rds")
 seurat_data$Treatment_Day <- paste0(seurat_data$Treatment, "_", seurat_data$Day)
 
+# Updating annotations
+gs4_deauth()
+markers_annotations  <- gs4_get("https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharin#g")
+sheet_names(markers_annotations)
+annotations <- read_sheet(markers_annotations, sheet = "Cluster annotations")
+
+seurat_data$celltype <- mapvalues(seurat_data$snn_res.0.5,
+                                  from = annotations$snn_res.0.5,
+                                  to = annotations$annotation)
+
+seurat_data$celltype <- factor(seurat_data$celltype,
+                               levels = sort(unique(as.character(seurat_data$celltype))))
+
 DefaultAssay(seurat_data) <- "RNA"
 
 # C2 = curated gene sets,

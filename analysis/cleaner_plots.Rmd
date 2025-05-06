@@ -83,6 +83,17 @@ get_DEGs <- function(seuratdata, celltypes, groupvar, group1, group2){
 seurat_data <- readRDS("/tgen_labs/banovich/BCTCSF/PD1_mm_Seurat/PD1_mm_Seurat_GSEA.Rds")
 DefaultAssay(seurat_data) <- "RNA"
 
+# Updating annotations
+gs4_deauth()
+markers_annotations  <- gs4_get("https://docs.google.com/spreadsheets/d/1iWYBouwQlQboI-rwiujC0QKJ6lq9XeTffbKm2Nz8es0/edit?usp=sharin#g")
+sheet_names(markers_annotations)
+annotations <- read_sheet(markers_annotations, sheet = "Cluster annotations")
+
+seurat_data$celltype <- mapvalues(seurat_data$snn_res.0.5,
+                                  from = annotations$snn_res.0.5,
+                                  to = annotations$annotation)
+
+
 seurat_data <- subset(seurat_data, subset = Day == 16)
 
 seurat_data$Treatment <- factor(seurat_data$Treatment,
